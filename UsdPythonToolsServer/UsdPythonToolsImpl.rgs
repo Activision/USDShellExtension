@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove %CLSID_USDPYTHONTOOLS% = s 'Activision USD Python Tools Server'
+		{
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+		}
+	}
+}

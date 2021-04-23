@@ -1,0 +1,194 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral (Default) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_REGISTRY_SHELLPREVIEWHANDLERIMPL REGISTRY                "ShellPreviewHandlerImpl.rgs"
+
+IDR_REGISTRY_SHELLTHUMBNAILPROVIDERIMPL REGISTRY                "ShellThumbnailProviderImpl.rgs"
+
+IDR_REGISTRY_MODULE     REGISTRY                "ShellExtModule.rgs"
+
+IDR_REGISTRY_SHELLPROPERTYSTOREIMPL REGISTRY                "ShellPropertyStoreImpl.rgs"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON_USD            ICON                    "usd.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_LOADSCREEN DIALOGEX 0, 0, 231, 130
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_LOADSCREEN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_LOADSCREEN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_LOADSCREEN          PNG                     "USDLogoLrgWithAlpha.png"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// XML
+//
+
+IDR_XML_PROPDESC_ATVI   XML                     "UsdPropertyKeys_Atvi.propdesc"
+
+IDR_XML_PROPDESC_USD    XML                     "UsdPropertyKeys.propdesc"
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "1 TYPELIB ""UsdShellExtension.tlb""\r\n"
+    "\r\n"
+    "#define ATVI_VERSION_DESCRIPTION ""Activision USD Shell Extension""\r\n"
+    "#include ""atviversion.rc2""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_USD_DOCUMENTATION_LABEL "Documentation"
+    IDS_USD_DOCUMENTATION_INVITATIONTEXT "Add documentation"
+    IDS_USD_DOCUMENTATION_MNEMONICS "usddocumentation|usddocs|usddoc"
+    IDS_USD_PROPGROUP_USD_LABEL "Universal Scene Description"
+    IDS_USD_PROPGROUP_ACTIVISION_LABEL "Activision Metadata"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_USD_ATVISOURCEFILENAME_LABEL "Source filename"
+    IDS_USD_ATVISOURCEFILENAME_MNEMONICS "atvi.sourcefilename|atvi.sourcefile"
+    IDS_USD_ATVIEXPORTDATE_MNEMONICS "atvi.exportdate|atvi.exporttime"
+    IDS_USD_ATVIEXPORTFILENAME_MNEMONICS "atvi.exportfilename|atvi.exportfile"
+    IDS_USD_ATVIEXPORTAPPLICATION_MNEMONICS 
+                            "atvi.exportapplication|atvi.exportapp"
+    IDS_USD_ATVIEXPORTUSER_MNEMONICS "atvi.exportuser"
+    IDS_USD_ATVIEXPORTDATE_LABEL "Export date"
+    IDS_USD_ATVIEXPORTFILENAME_LABEL "Export filename"
+    IDS_USD_ATVIEXPORTAPPLICATION_LABEL "Export application"
+    IDS_USD_ATVIEXPORTUSER_LABEL "Export user"
+    IDS_FILE_USD            "Universal Scene Description"
+    IDS_FILE_USDA           "Universal Scene Description ASCII"
+    IDS_FILE_USDC           "Universal Scene Description Crate"
+    IDS_FILE_USDZ           "Universal Scene Description Package"
+    IDS_SHELL_VIEW          "&View"
+    IDS_SHELL_EDIT          "&Edit"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_SHELL_CRATE         "&Crate"
+    IDS_SHELL_UNCRATE       "&Uncrate"
+    IDS_SHELL_FLATTEN       "&Flatten"
+    IDS_SHELL_REFRESHTHUMBNAIL "&Refresh Thumbnail"
+    IDS_SHELL_STATS         "&Stats"
+END
+
+#endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "UsdShellExtension.tlb"
+
+#define ATVI_VERSION_DESCRIPTION "Activision USD Shell Extension"
+#include "atviversion.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

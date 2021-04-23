@@ -1,0 +1,12 @@
+HKCU
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'USDPreviewLocalServer'
+		'USDPreviewLocalServer.exe'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}
+

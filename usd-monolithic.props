@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- These paths should point to a monolithic build of the USD sdk to avoid additional DLL dependencies -->
+
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <USDBINPATH>D:\USD-21.02-monolithic-bare-debug\bin\</USDBINPATH>
+    <USDLIBPATH>D:\USD-21.02-monolithic-bare-debug\lib\</USDLIBPATH>
+    <USDINCLUDEPATH>D:\USD-21.02-monolithic-bare-debug\include\</USDINCLUDEPATH>
+	<PXR_PLUGINPATH_NAME>D:\USD-21.02-monolithic-bare-debug\lib\usd\</PXR_PLUGINPATH_NAME>
+  </PropertyGroup>	
+	
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <USDBINPATH>D:\USD-21.02-monolithic-bare\bin\</USDBINPATH>
+    <USDLIBPATH>D:\USD-21.02-monolithic-bare\lib\</USDLIBPATH>
+    <USDINCLUDEPATH>D:\USD-21.02-monolithic-bare\include\</USDINCLUDEPATH>
+	<PXR_PLUGINPATH_NAME>D:\USD-21.02-monolithic-bare\lib\usd\</PXR_PLUGINPATH_NAME>
+  </PropertyGroup>	
+
+	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(USDINCLUDEPATH);$(USDINCLUDEPATH)\boost-1_70;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>dbghelp.lib;Ws2_32.lib;boost_atomic-vc142-mt-gd-x64-1_70.lib;boost_program_options-vc142-mt-gd-x64-1_70.lib;boost_regex-vc142-mt-gd-x64-1_70.lib;tbbmalloc_debug.lib;tbbmalloc_proxy_debug.lib;tbbproxy.lib;tbb_debug.lib;tbb_preview_debug.lib;usd_ms.lib;zlibd.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(USDLIBPATH);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/WHOLEARCHIVE:"$(USDLIBPATH)usd_ms" %(AdditionalOptions)</AdditionalOptions>
+	</Link>
+    <PostBuildEvent>
+      <Command>
+		  xcopy "$(USDBINPATH)tbb_debug.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDBINPATH)tbb_debug.pdb" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDLIBPATH)usd_ms.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDLIBPATH)usd_ms.pdb" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(PXR_PLUGINPATH_NAME)" "$(TargetDir)\usd" /I /Y /F /R /S
+	  </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(USDINCLUDEPATH);$(USDINCLUDEPATH)\boost-1_70;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>dbghelp.lib;Ws2_32.lib;boost_atomic-vc142-mt-x64-1_70.lib;boost_program_options-vc142-mt-x64-1_70.lib;boost_regex-vc142-mt-x64-1_70.lib;tbb.lib;tbbmalloc.lib;tbbmalloc_proxy.lib;tbbproxy.lib;tbb_preview.lib;usd_ms.lib;zlib.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(USDLIBPATH);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/WHOLEARCHIVE:"$(USDLIBPATH)usd_ms" %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+		  xcopy "$(USDBINPATH)tbb.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDBINPATH)tbb.pdb" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDLIBPATH)usd_ms.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDLIBPATH)usd_ms.pdb" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(PXR_PLUGINPATH_NAME)" "$(TargetDir)\usd" /I /Y /F /R /S
+	  </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+</Project>
+

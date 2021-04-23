@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove %CLSID_USDSDKTOOLS% = s 'Activision USD SDK Tools Server'
+		{
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+		}
+	}
+}

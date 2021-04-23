@@ -1,0 +1,45 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(88D2DCD9-4E41-49B1-B49A-4BD2942FE737),
+	helpstring("UsdPythonTools Type Library"),
+	version(1.0),
+]
+library UsdPythonToolsLib
+{
+	[
+		uuid(A73B8191-52C6-416E-ADAF-B2D1572CB0FE)
+	] 
+	struct UsdVariantPair
+	{
+		BSTR key;
+		VARIANT value;
+	};
+
+	[
+		uuid(36B7B0A6-E4FC-4728-86C1-05AFD6CFCA52),
+		object,
+		nonextensible,
+		oleautomation,
+		helpstring("IUsdPythonTools interface"),
+		dual
+	]
+	interface IUsdPythonTools : IDispatch
+	{
+		[helpstring("Launches usdrecord to generate a thumbnail of a USD stage.")]
+		HRESULT Record( [in] BSTR usdStagePath, [in] int imageWidth, [in, optional] BSTR renderer, [out, retval] BSTR* outputImagePath );
+
+		[helpstring("Launches usdview for a given USD stage.")]
+		HRESULT View( [in] BSTR usdStagePath, [in, optional] BSTR renderer );
+	}
+
+	[
+		uuid(67F43831-59C3-450E-8956-AA76273F3E9F),
+		helpstring("UsdPythonTools Server implementation")
+	]
+	coclass UsdPythonTools
+	{
+		[default] interface IUsdPythonTools;
+	}
+};

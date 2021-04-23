@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsdPreviewHandlerPython", "UsdPreviewHandlerPython\UsdPreviewHandlerPython.vcxproj", "{248F687E-4028-4243-87B8-2312F57BE8A5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsdPreviewLocalServer", "UsdPreviewHandlerServer\UsdPreviewLocalServer.vcxproj", "{279AFA6D-6E35-4798-BA63-8A7E15D11185}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsdShellExtension", "UsdShellExtension\UsdShellExtension.vcxproj", "{9974380D-C9C6-4CF4-8AA2-7D564EB8C4E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{279AFA6D-6E35-4798-BA63-8A7E15D11185} = {279AFA6D-6E35-4798-BA63-8A7E15D11185}
+		{248F687E-4028-4243-87B8-2312F57BE8A5} = {248F687E-4028-4243-87B8-2312F57BE8A5}
+		{EA717BDA-3304-439B-BEC8-408D9CE9F3FB} = {EA717BDA-3304-439B-BEC8-408D9CE9F3FB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsdSdkToolsLocalServer", "UsdSdkToolsServer\UsdSdkToolsLocalServer.vcxproj", "{EA717BDA-3304-439B-BEC8-408D9CE9F3FB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsdPythonToolsLocalServer", "UsdPythonToolsServer\UsdPythonToolsLocalServer.vcxproj", "{6AD79C79-3A9D-4C39-B028-C45072541C28}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2EEFD0F-82FF-4404-94E5-CD2F3837BDA9}"
+	ProjectSection(SolutionItems) = preProject
+		atviversion.h = atviversion.h
+		boost.props = boost.props
+		python.props = python.props
+		README.md = README.md
+		usd-monolithic.props = usd-monolithic.props
+		usd.props = usd.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{248F687E-4028-4243-87B8-2312F57BE8A5}.Debug|x64.ActiveCfg = Debug|x64
+		{248F687E-4028-4243-87B8-2312F57BE8A5}.Debug|x64.Build.0 = Debug|x64
+		{248F687E-4028-4243-87B8-2312F57BE8A5}.Release|x64.ActiveCfg = Release|x64
+		{248F687E-4028-4243-87B8-2312F57BE8A5}.Release|x64.Build.0 = Release|x64
+		{279AFA6D-6E35-4798-BA63-8A7E15D11185}.Debug|x64.ActiveCfg = Debug|x64
+		{279AFA6D-6E35-4798-BA63-8A7E15D11185}.Debug|x64.Build.0 = Debug|x64
+		{279AFA6D-6E35-4798-BA63-8A7E15D11185}.Release|x64.ActiveCfg = Release|x64
+		{279AFA6D-6E35-4798-BA63-8A7E15D11185}.Release|x64.Build.0 = Release|x64
+		{9974380D-C9C6-4CF4-8AA2-7D564EB8C4E8}.Debug|x64.ActiveCfg = Debug|x64
+		{9974380D-C9C6-4CF4-8AA2-7D564EB8C4E8}.Debug|x64.Build.0 = Debug|x64
+		{9974380D-C9C6-4CF4-8AA2-7D564EB8C4E8}.Release|x64.ActiveCfg = Release|x64
+		{9974380D-C9C6-4CF4-8AA2-7D564EB8C4E8}.Release|x64.Build.0 = Release|x64
+		{EA717BDA-3304-439B-BEC8-408D9CE9F3FB}.Debug|x64.ActiveCfg = Debug|x64
+		{EA717BDA-3304-439B-BEC8-408D9CE9F3FB}.Debug|x64.Build.0 = Debug|x64
+		{EA717BDA-3304-439B-BEC8-408D9CE9F3FB}.Release|x64.ActiveCfg = Release|x64
+		{EA717BDA-3304-439B-BEC8-408D9CE9F3FB}.Release|x64.Build.0 = Release|x64
+		{6AD79C79-3A9D-4C39-B028-C45072541C28}.Debug|x64.ActiveCfg = Debug|x64
+		{6AD79C79-3A9D-4C39-B028-C45072541C28}.Debug|x64.Build.0 = Debug|x64
+		{6AD79C79-3A9D-4C39-B028-C45072541C28}.Release|x64.ActiveCfg = Release|x64
+		{6AD79C79-3A9D-4C39-B028-C45072541C28}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4AEC1C0-464E-4B29-B0FA-8841731E8735}
+	EndGlobalSection
+EndGlobal

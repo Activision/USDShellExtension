@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <BOOSTLIBPATH>D:\USD-21.02-monolithic-whole-debug\lib\</BOOSTLIBPATH>
+    <BOOSTINCLUDEPATH>D:\USD-21.02-monolithic-whole-debug\include\boost-1_70\</BOOSTINCLUDEPATH>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BOOSTLIBPATH>D:\USD-21.02-monolithic-whole\lib\</BOOSTLIBPATH>
+    <BOOSTINCLUDEPATH>D:\USD-21.02-monolithic-whole\include\boost-1_70\</BOOSTINCLUDEPATH>
+  </PropertyGroup>
+		
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(BOOSTINCLUDEPATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(BOOSTLIBPATH);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PostBuildEvent>
+      <Command>
+		  xcopy "$(BOOSTLIBPATH)boost_python37-vc142-mt-gd-x64-1_70.dll" "$(TargetDir)" /I /Y /F /R
+	  </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PostBuildEvent>
+      <Command>
+		  xcopy "$(BOOSTLIBPATH)boost_python37-vc142-mt-x64-1_70.dll" "$(TargetDir)" /I /Y /F /R
+	  </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+</Project>

@@ -1,0 +1,20 @@
+import "oaidl.idl";
+import "ocidl.idl";
+import "ShObjIdl_core.idl";
+
+[
+	uuid(68DF0FAC-996B-4933-B092-9733E77061BB),
+	helpstring("USDPreview Type Library"),
+	version(1.0),
+]
+library USDPreview
+{
+	[
+		uuid(07D4D38F-9C98-48F8-A057-26241405D5C8),
+		helpstring("USD IPreviewHandler Server implementation")
+	]
+	coclass USDPreviewHandler
+	{
+		[default] interface IPreviewHandler;
+	}
+};

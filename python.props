@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <PythonVersion>3.7</PythonVersion>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<PythonDLL>python37.dll</PythonDLL>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<PythonDLL>python37.dll</PythonDLL>
+	</PropertyGroup>
+	
+	<ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>PYTHONVERSION="$(PythonVersion)";PYTHONDLL="$(PythonDLL)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+	  <PostBuildEvent>
+		  <Command>
+			  xcopy "$(PYTHONHOME)$(PythonDLL)" "$(TargetDir)" /I /Y /F /R
+		  </Command>
+	  </PostBuildEvent>
+  </ItemDefinitionGroup>
+
+</Project>

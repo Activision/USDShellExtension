@@ -1,0 +1,12 @@
+HKCU
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'UsdSdkToolsLocalServer'
+		'UsdSdkToolsLocalServer.exe'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}
+

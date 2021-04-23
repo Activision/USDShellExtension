@@ -1,0 +1,62 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+typedef [uuid(B397354A-F5D9-4835-B584-9524749F7B63), helpstring("USD Format")] 
+enum eUsdFormat
+{
+	[helpstring("Same as input file")]
+	USD_FORMAT_INPUT,
+	[helpstring("ASCII")]
+	USD_FORMAT_USDA,
+	[helpstring("Crate")]
+	USD_FORMAT_USDC,
+} eUsdFormat;
+
+typedef [uuid(266D173D-4142-4CA1-BF25-EC9BC61FDE6A), helpstring("USDZ Package Type")] 
+enum eUsdPackageType
+{
+	[helpstring("Default USDZ package.")]
+	USD_PACKAGE_DEFAULT,
+	[helpstring("Apple ARKit USDZ package.")]
+	USD_FORMAT_APPLE_ARKIT
+} eUsdPackageType;
+
+[
+	uuid(F68344A7-0343-4064-8DA9-7A2ECF6C2D2A),
+	object,
+	nonextensible,
+	oleautomation,
+	helpstring("IUsdSdkTools interface"),
+	dual
+]
+interface IUsdSdkTools : IDispatch
+{
+	[helpstring("Converts between the various USD file formats.")]
+	HRESULT Cat( [in] BSTR usdStagePathInput, [in] BSTR usdStagePathOuput, [in, defaultvalue(USD_FORMAT_INPUT)] eUsdFormat formatOutput, [in, defaultvalue(0)] VARIANT_BOOL flatten);
+
+	[helpstring("Launches a text editor for a given USD stage.")]
+	HRESULT Edit( [in] BSTR usdStagePath, [in, defaultvalue(0)] VARIANT_BOOL forcewrite);
+
+	[helpstring("Converts a USD stage to a USD package.")]
+	HRESULT Package( [in] BSTR usdStagePathInput, [in] BSTR usdStagePathOuput, [in, defaultvalue(USD_PACKAGE_DEFAULT)] eUsdPackageType packageType, [in, defaultvalue(0)] VARIANT_BOOL verbose );
+
+	[helpstring("Displays stats about the USD stage.")]
+	HRESULT DisplayStageStats( [in] BSTR usdStagePath );
+}
+
+[
+	uuid(7704E595-537E-41A0-AF52-53EA2941A773),
+	helpstring("UsdSdkTools Type Library"),
+	version(1.0),
+]
+library UsdSdkToolsLib
+{
+	[
+		uuid(5F016739-AF12-4899-B710-3FB5C242A11D),
+		helpstring("UsdSdkTools Server implementation")
+	]
+	coclass UsdSdkTools
+	{
+		[default] interface IUsdSdkTools;
+	}
+};

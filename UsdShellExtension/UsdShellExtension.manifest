@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+	<file name="usd_ms.dll"/>
+	<file name="tbb.dll"/>
+	<file name="tbb_debug.dll"/>
+	<file name="tbbmalloc.dll"/>
+	<file name="tbbmalloc_debug.dll"/>
+
+</assembly>

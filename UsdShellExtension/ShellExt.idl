@@ -1,0 +1,46 @@
+import "oaidl.idl";
+import "ocidl.idl";
+import "ShObjIdl_core.idl";
+import "thumbcache.idl";
+
+[
+	uuid(B71120F9-A3EA-4153-8C32-C906CCE1F6F2),
+	version(1.0),
+]
+library UsdShellExtensionLib
+{
+	[
+		uuid(0BCB74E0-5B61-4F24-BAB3-96CC76FE3672)
+	]
+	coclass UsdContextMenu
+	{
+		[default] interface IContextMenu;
+	};
+
+	[
+		uuid(2DEB1AB8-DECA-42C2-B576-3116D9CA8FA8),
+		helpstring("USD IPreviewHandler implementation")
+	]
+	coclass ShellPreviewHandler
+	{
+		[default] interface IPreviewHandler;
+	}
+
+	[
+		uuid(2877CB72-1427-43B0-A2B4-9CB1B2BA8C53),
+		helpstring("USD IThumbnailProvider implementation")
+	]
+	coclass ShellThumbnailProvider
+	{
+		[default] interface IThumbnailProvider;
+	}
+
+	[
+		uuid(5CE761D0-72AA-4484-B2BF-2A0EBF3ACC0C),
+		helpstring("USD IPropertyStore implementation")
+	]
+	coclass ShellPropertyStore
+	{
+		[default] interface IPropertyStore;
+	}
+};

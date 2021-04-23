@@ -1,0 +1,106 @@
+HKCR
+{
+	NoRemove ATVI.USD
+	{
+		NoRemove shellex
+		{
+			ForceRemove {8895b1c6-b41f-4c1c-a562-0d564250836f} = s '%CLSID_SHELLPREVIEWHANDLER%'
+		}
+	}
+
+	NoRemove ATVI.USDA
+	{
+		NoRemove shellex
+		{
+			ForceRemove {8895b1c6-b41f-4c1c-a562-0d564250836f} = s '%CLSID_SHELLPREVIEWHANDLER%'
+		}
+	}
+
+	NoRemove ATVI.USDC
+	{
+		NoRemove shellex
+		{
+			ForceRemove {8895b1c6-b41f-4c1c-a562-0d564250836f} = s '%CLSID_SHELLPREVIEWHANDLER%'
+		}
+	}
+
+	NoRemove ATVI.USDZ
+	{
+		NoRemove shellex
+		{
+			ForceRemove {8895b1c6-b41f-4c1c-a562-0d564250836f} = s '%CLSID_SHELLPREVIEWHANDLER%'
+		}
+	}
+
+	NoRemove CLSID
+	{
+		ForceRemove %CLSID_SHELLPREVIEWHANDLER% = s 'Activision USD Preview Handler'
+		{
+			ForceRemove InProcServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val DisplayName = s 'Activision USD Preview Handler'
+			val AppID = s '{6d2b5079-2f0b-48dd-ab7f-97cec514d30b}'
+			val DisableProcessIsolation = d '1'
+			val DisableLowILProcessIsolation = d '1'
+			val Icon = s '%MODULE%,-113'
+		}
+	}
+}
+
+HKLM
+{
+	NoRemove Software
+	{
+		NoRemove Microsoft
+		{
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove PreviewHandlers
+					{
+						ForceRemove val %CLSID_SHELLPREVIEWHANDLER% = s 'Activision USD Preview Handler'
+					}
+
+					NoRemove 'Shell Extensions'
+					{
+						NoRemove Approved
+						{
+							ForceRemove val %CLSID_SHELLPREVIEWHANDLER% = s 'Activision USD Preview Handler'
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+HKCU
+{
+	NoRemove Software
+	{
+		NoRemove Microsoft
+		{
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove PreviewHandlers
+					{
+						ForceRemove val %CLSID_SHELLPREVIEWHANDLER% = s 'Activision USD Preview Handler'
+					}
+
+					NoRemove 'Shell Extensions'
+					{
+						NoRemove Approved
+						{
+							ForceRemove val %CLSID_SHELLPREVIEWHANDLER% = s 'Activision USD Preview Handler'
+						}
+					}
+				}
+			}
+		}
+	}
+}

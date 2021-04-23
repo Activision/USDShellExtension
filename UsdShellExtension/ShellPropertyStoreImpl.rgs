@@ -1,0 +1,70 @@
+HKCR
+{
+	NoRemove ATVI.USD
+	{
+		%PROPERTYDESCRIPTIONS%
+	}
+
+	NoRemove ATVI.USDA
+	{
+		%PROPERTYDESCRIPTIONS%
+	}
+
+	NoRemove ATVI.USDC
+	{
+		%PROPERTYDESCRIPTIONS%
+	}
+
+	NoRemove ATVI.USDZ
+	{
+		%PROPERTYDESCRIPTIONS%
+	}
+
+	NoRemove CLSID
+	{
+		ForceRemove %CLSID_SHELLPROPERTYSTORE% = s 'Activision USD Property Store'
+		{
+			ForceRemove InProcServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val DisplayName = s 'Activision USD Property Store'
+			val DisableProcessIsolation = d '1'
+		}
+	}
+}
+
+HKLM
+{
+	NoRemove Software
+	{
+		NoRemove Microsoft
+		{
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove PropertySystem
+					{
+						NoRemove PropertyHandlers
+						{
+							ForceRemove .usd = s '%CLSID_SHELLPROPERTYSTORE%'
+							ForceRemove .usda = s '%CLSID_SHELLPROPERTYSTORE%'
+							ForceRemove .usdc = s '%CLSID_SHELLPROPERTYSTORE%'
+							ForceRemove .usdz = s '%CLSID_SHELLPROPERTYSTORE%'
+						}
+					}
+
+					NoRemove 'Shell Extensions'
+					{
+						NoRemove Approved
+						{
+							ForceRemove val %CLSID_SHELLPROPERTYSTORE% = s 'Activision USD Property Store'
+						}
+					}
+				}
+			}
+		}
+	}
+}
+

@@ -1,0 +1,243 @@
+HKCR
+{
+	NoRemove ATVI.USD = s 'Activision Universal Scene Description'
+	{
+		ForceRemove val FriendlyTypeName = s '@%MODULE%,-%IDS_FILE_USD%'
+
+		NoRemove shell
+		{
+			ForceRemove open = s '@%MODULE%,-%IDS_SHELL_VIEW%'
+			{
+				command = s 'rundll32.exe "%MODULE%",OpenInUsdView "%%1"'
+			}
+
+			ForceRemove edit = s '@%MODULE%,-%IDS_SHELL_EDIT%'
+			{
+				command = s 'rundll32.exe "%MODULE%",EditInUsdEdit "%%1"'
+			}
+
+			ForceRemove compress = s '@%MODULE%,-%IDS_SHELL_CRATE%'
+			{
+				command = s 'rundll32.exe "%MODULE%",CrateWithUsdCat "%%1"'
+			}
+
+			ForceRemove uncompress = s '@%MODULE%,-%IDS_SHELL_UNCRATE%'
+			{
+				command = s 'rundll32.exe "%MODULE%",UncrateWithUsdCat "%%1"'
+			}
+
+			ForceRemove flatten = s '@%MODULE%,-%IDS_SHELL_FLATTEN%'
+			{
+				command = s 'rundll32.exe "%MODULE%",FlattenWithUsdCat "%%1"'
+			}
+
+			ForceRemove thumbnail = s '@%MODULE%,-%IDS_SHELL_REFRESHTHUMBNAIL%'
+			{
+				command = s 'rundll32.exe "%MODULE%",RefreshThumbnail "%%1"'
+			}
+
+			ForceRemove stats = s '@%MODULE%,-%IDS_SHELL_STATS%'
+			{
+				command = s 'rundll32.exe "%MODULE%",StageStats "%%1"'
+			}
+
+			ForceRemove package
+			{
+				ForceRemove val ExtendedSubCommandsKey = s 'ATVI.USD\shell\package'
+				ForceRemove val MUIVerb = s 'Package'
+
+				ForceRemove Shell
+				{
+					ForceRemove Default
+					{
+						ForceRemove val MUIVerb = s 'Default'
+						ForceRemove command = s 'rundll32.exe "%MODULE%",PackageDefault "%%1"'
+					}
+					ForceRemove ARKit
+					{
+						ForceRemove val MUIVerb = s 'Apple ARKit'
+						ForceRemove command = s 'rundll32.exe "%MODULE%",PackageARKit "%%1"'
+					}
+				}
+			}
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-%IDI_ICON_USD%'
+	}
+
+	NoRemove .usd
+	{
+		NoRemove OpenWithProgids
+		{
+			ForceRemove val ATVI.USD = s 'Activision Universal Scene Description'
+		}
+	}
+
+	NoRemove ATVI.USDA = s 'Activision Universal Scene Description ASCII'
+	{
+		ForceRemove val FriendlyTypeName = s '@%MODULE%,-%IDS_FILE_USDA%'
+
+		NoRemove shell
+		{
+			ForceRemove open = s '@%MODULE%,-%IDS_SHELL_VIEW%'
+			{
+				command = s 'rundll32.exe "%MODULE%",OpenInUsdView "%%1"'
+			}
+
+			ForceRemove edit = s '@%MODULE%,-%IDS_SHELL_EDIT%'
+			{
+				command = s 'rundll32.exe "%MODULE%",EditInUsdEdit "%%1"'
+			}
+
+			ForceRemove compress = s '@%MODULE%,-%IDS_SHELL_CRATE%'
+			{
+				command = s 'rundll32.exe "%MODULE%",CrateWithUsdCat "%%1"'
+			}
+
+			ForceRemove flatten = s '@%MODULE%,-%IDS_SHELL_FLATTEN%'
+			{
+				command = s 'rundll32.exe "%MODULE%",FlattenWithUsdCat "%%1"'
+			}
+
+			ForceRemove thumbnail = s '@%MODULE%,-%IDS_SHELL_REFRESHTHUMBNAIL%'
+			{
+				command = s 'rundll32.exe "%MODULE%",RefreshThumbnail "%%1"'
+			}
+
+			ForceRemove stats = s '@%MODULE%,-%IDS_SHELL_STATS%'
+			{
+				command = s 'rundll32.exe "%MODULE%",StageStats "%%1"'
+			}
+
+			ForceRemove package
+			{
+				ForceRemove val ExtendedSubCommandsKey = s 'ATVI.USDA\shell\package'
+				ForceRemove val MUIVerb = s 'Package'
+
+				ForceRemove Shell
+				{
+					ForceRemove Default
+					{
+						ForceRemove val MUIVerb = s 'Default'
+						ForceRemove command = s 'rundll32.exe "%MODULE%",PackageDefault "%%1"'
+					}
+					ForceRemove ARKit
+					{
+						ForceRemove val MUIVerb = s 'Apple ARKit'
+						ForceRemove command = s 'rundll32.exe "%MODULE%",PackageARKit "%%1"'
+					}
+				}
+			}
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-%IDI_ICON_USD%'
+	}
+
+	NoRemove .usda
+	{
+		NoRemove OpenWithProgids
+		{
+			ForceRemove val ATVI.USDA = s 'Activision Universal Scene Description ASCII'
+		}
+	}
+
+	NoRemove ATVI.USDC = s 'Activision Universal Scene Description Crate'
+	{
+		ForceRemove val FriendlyTypeName = s '@%MODULE%,-%IDS_FILE_USDC%'
+
+		NoRemove shell
+		{
+			ForceRemove open = s '@%MODULE%,-%IDS_SHELL_VIEW%'
+			{
+				command = s 'rundll32.exe "%MODULE%",OpenInUsdView "%%1"'
+			}
+
+			ForceRemove edit = s '@%MODULE%,-%IDS_SHELL_EDIT%'
+			{
+				command = s 'rundll32.exe "%MODULE%",EditInUsdEdit "%%1"'
+			}
+
+			ForceRemove uncompress = s '@%MODULE%,-%IDS_SHELL_UNCRATE%'
+			{
+				command = s 'rundll32.exe "%MODULE%",UncrateWithUsdCat "%%1"'
+			}
+
+			ForceRemove flatten = s '@%MODULE%,-%IDS_SHELL_FLATTEN%'
+			{
+				command = s 'rundll32.exe "%MODULE%",FlattenWithUsdCat "%%1"'
+			}
+
+			ForceRemove thumbnail = s '@%MODULE%,-%IDS_SHELL_REFRESHTHUMBNAIL%'
+			{
+				command = s 'rundll32.exe "%MODULE%",RefreshThumbnail "%%1"'
+			}
+
+			ForceRemove stats = s '@%MODULE%,-%IDS_SHELL_STATS%'
+			{
+				command = s 'rundll32.exe "%MODULE%",StageStats "%%1"'
+			}
+
+			ForceRemove package
+			{
+				ForceRemove val ExtendedSubCommandsKey = s 'ATVI.USDC\shell\package'
+				ForceRemove val MUIVerb = s 'Package'
+
+				ForceRemove Shell
+				{
+					ForceRemove Default
+					{
+						ForceRemove val MUIVerb = s 'Default'
+						ForceRemove command = s 'rundll32.exe "%MODULE%",PackageDefault "%%1"'
+					}
+					ForceRemove ARKit
+					{
+						ForceRemove val MUIVerb = s 'Apple ARKit'
+						ForceRemove command = s 'rundll32.exe "%MODULE%",PackageARKit "%%1"'
+					}
+				}
+			}
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-%IDI_ICON_USD%'
+	}
+
+	NoRemove .usdc
+	{
+		NoRemove OpenWithProgids
+		{
+			ForceRemove val ATVI.USDC = s 'Activision Universal Scene Description Crate'
+		}
+	}
+
+	NoRemove ATVI.USDZ = s 'Activision Universal Scene Description Package'
+	{
+		ForceRemove val FriendlyTypeName = s '@%MODULE%,-%IDS_FILE_USDZ%'
+
+		NoRemove shell
+		{
+			ForceRemove open = s '@%MODULE%,-%IDS_SHELL_VIEW%'
+			{
+				command = s 'rundll32.exe "%MODULE%",OpenInUsdView "%%1"'
+			}
+
+			ForceRemove thumbnail = s '@%MODULE%,-%IDS_SHELL_REFRESHTHUMBNAIL%'
+			{
+				command = s 'rundll32.exe "%MODULE%",RefreshThumbnail "%%1"'
+			}
+
+			ForceRemove stats = s '@%MODULE%,-%IDS_SHELL_STATS%'
+			{
+				command = s 'rundll32.exe "%MODULE%",StageStats "%%1"'
+			}
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-%IDI_ICON_USD%'
+	}
+
+	NoRemove .usdz
+	{
+		NoRemove OpenWithProgids
+		{
+			ForceRemove val ATVI.USDZ = s 'Activision Universal Scene Description Package'
+		}
+	}
+
+
+}
+

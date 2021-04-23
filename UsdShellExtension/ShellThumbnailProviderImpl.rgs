@@ -1,0 +1,98 @@
+HKCR
+{
+	NoRemove ATVI.USD
+	{
+		NoRemove shellex
+		{
+			ForceRemove {e357fccd-a995-4576-b01f-234630154e96} = s '%CLSID_SHELLTHUMBNAILPROVIDER%'
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-113'
+	}
+
+	NoRemove ATVI.USDA
+	{
+		NoRemove shellex
+		{
+			ForceRemove {e357fccd-a995-4576-b01f-234630154e96} = s '%CLSID_SHELLTHUMBNAILPROVIDER%'
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-113'
+	}
+
+	NoRemove ATVI.USDC
+	{
+		NoRemove shellex
+		{
+			ForceRemove {e357fccd-a995-4576-b01f-234630154e96} = s '%CLSID_SHELLTHUMBNAILPROVIDER%'
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-113'
+	}
+
+	NoRemove ATVI.USDZ
+	{
+		NoRemove shellex
+		{
+			ForceRemove {e357fccd-a995-4576-b01f-234630154e96} = s '%CLSID_SHELLTHUMBNAILPROVIDER%'
+		}
+		ForceRemove DefaultIcon = s '%MODULE%,-113'
+	}
+
+	NoRemove CLSID
+	{
+		ForceRemove %CLSID_SHELLTHUMBNAILPROVIDER% = s 'Activision USD Thumbnail Provider'
+		{
+			ForceRemove InProcServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val DisplayName = s 'Activision USD Thumbnail Provider'
+			val DisableProcessIsolation = d '1'
+			val DisableLowILProcessIsolation = d '1'
+		}
+	}
+}
+
+HKLM
+{
+	NoRemove Software
+	{
+		NoRemove Microsoft
+		{
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove 'Shell Extensions'
+					{
+						NoRemove Approved
+						{
+							ForceRemove val %CLSID_SHELLTHUMBNAILPROVIDER% = s 'Activision USD Thumbnail Provider'
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+HKCU
+{
+	NoRemove Software
+	{
+		NoRemove Microsoft
+		{
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove 'Shell Extensions'
+					{
+						NoRemove Approved
+						{
+							ForceRemove val %CLSID_SHELLTHUMBNAILPROVIDER% = s 'Activision USD Thumbnail Provider'
+						}
+					}
+				}
+			}
+		}
+	}
+}
