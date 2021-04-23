@@ -8,32 +8,32 @@
 #define EXPORT_USER pxr::TfToken( "atvi:exportUser" )
 #define EXPORT_SOURCE pxr::TfToken( "atvi:sourceFileName" )
 
-HRESULT ReadUsdMetadata_Atvi( const pxr::SdfLayerRefPtr &rootLayer, const pxr::VtDictionary& metaData, IPropertyStoreCache* pPropertyStoreCache )
+HRESULT ReadUsdMetadata_Atvi( const pxr::SdfLayerRefPtr &rootLayer, const pxr::VtDictionary& customLayerData, IPropertyStoreCache* pPropertyStoreCache )
 {
 	UNREFERENCED_PARAMETER( rootLayer );
 
 	HRESULT hr;
 	const pxr::VtValue* pValue = nullptr;
 
-	pValue = metaData.GetValueAtPath( EXPORT_SOURCE );
+	pValue = customLayerData.GetValueAtPath( EXPORT_SOURCE );
 	if( pValue )
 	{
 		hr = StoreStringValue( pPropertyStoreCache, PKEY_USD_ATVI_SOURCEFILENAME, pValue->Get<std::string>().c_str() );
 	}
 
-	pValue = metaData.GetValueAtPath( EXPORT_APPLICATION );
+	pValue = customLayerData.GetValueAtPath( EXPORT_APPLICATION );
 	if( pValue )
 	{
 		hr = StoreStringValue( pPropertyStoreCache, PKEY_USD_ATVI_EXPORTAPPLICATION, pValue->Get<std::string>().c_str() );
 	}
 
-	pValue = metaData.GetValueAtPath( EXPORT_FILENAME );
+	pValue = customLayerData.GetValueAtPath( EXPORT_FILENAME );
 	if( pValue )
 	{
 		hr = StoreStringValue( pPropertyStoreCache, PKEY_USD_ATVI_EXPORTFILENAME, pValue->Get<std::string>().c_str() );
 	}
 
-	pValue = metaData.GetValueAtPath( EXPORT_TIME );
+	pValue = customLayerData.GetValueAtPath( EXPORT_TIME );
 	if( pValue )
 	{
 		std::istringstream ivalue( pValue->Get<std::string>() );
@@ -54,7 +54,7 @@ HRESULT ReadUsdMetadata_Atvi( const pxr::SdfLayerRefPtr &rootLayer, const pxr::V
 		hr = StoreDateValue( pPropertyStoreCache, PKEY_USD_ATVI_EXPORTDATE, &timeFileTime );
 	}
 
-	pValue = metaData.GetValueAtPath( EXPORT_USER );
+	pValue = customLayerData.GetValueAtPath( EXPORT_USER );
 	if ( pValue )
 	{
 		hr = StoreStringValue( pPropertyStoreCache, PKEY_USD_ATVI_EXPORTUSER, pValue->Get<std::string>().c_str() );
@@ -63,10 +63,10 @@ HRESULT ReadUsdMetadata_Atvi( const pxr::SdfLayerRefPtr &rootLayer, const pxr::V
 	return S_OK;
 }
 
-HRESULT WriteUsdMetadata_Atvi( pxr::SdfLayerRefPtr &rootLayer, pxr::VtDictionary& metaData, IPropertyStoreCache *pPropertyStoreCache, bool &bIsDirty )
+HRESULT WriteUsdMetadata_Atvi( pxr::SdfLayerRefPtr &rootLayer, pxr::VtDictionary& customLayerData, IPropertyStoreCache *pPropertyStoreCache, bool &bIsDirty )
 {
 	UNREFERENCED_PARAMETER( rootLayer );
-	UNREFERENCED_PARAMETER( metaData );
+	UNREFERENCED_PARAMETER( customLayerData );
 	UNREFERENCED_PARAMETER( pPropertyStoreCache );
 	UNREFERENCED_PARAMETER( bIsDirty );
 

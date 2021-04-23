@@ -17,6 +17,15 @@
 			</displayInfo>
 		</propertyDescription>
 
+		<propertyDescription name="USD.CustomLayerData" formatID="{89379215-052D-429D-9A74-6D220E41C86D}" propID="4">
+			<labelInfo label="@%LANGMODULE%,-%IDS_USD_CUSTOMLAYERDATA_LABEL%" hideLabel="false"/>
+			<searchInfo inInvertedIndex="true" isColumn="true" columnIndexType="OnDisk" maxSize="16384" mnemonics="@%LANGMODULE%,-%IDS_USD_CUSTOMLAYERDATA_MNEMONICS%"/>
+			<typeInfo type="String" multipleValues="false" isViewable="true" isInnate="true"/>
+			<displayInfo displayType="String">
+				<drawControl control="MultiLineText"/>
+				<editControl control="MultiLineText"/>
+			</displayInfo>
+		</propertyDescription>
 
-    </propertyDescriptionList>
+	</propertyDescriptionList>
 </schema>

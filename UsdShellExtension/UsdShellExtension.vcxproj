@@ -18,7 +18,6 @@
     <ClInclude Include="UsdPropertyKeys_Atvi.h" />
     <ClInclude Include="UsdPropertyKeys.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ShellContextMenu.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ShellExt_h.h" />
     <ClInclude Include="ShellPreviewHandlerImpl.h" />
@@ -35,7 +34,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/Zc:inline- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="ShellContextMenu.cpp" />
     <ClCompile Include="Module.cpp" />
     <ClCompile Include="ShellExecute.cpp" />
     <ClCompile Include="ShellExt_i.c">
@@ -57,6 +55,9 @@
     <ClCompile Include="UWPProgressBar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="plugInfo.json" />
+    <None Include="register.bat" />
+    <None Include="unregister.bat" />
     <None Include="UsdPropertyKeys_Atvi.propdesc" />
     <None Include="UsdPropertyKeys.propdesc" />
     <None Include="ShellExt.def" />
@@ -64,6 +65,7 @@
     <None Include="ShellPreviewHandlerImpl.rgs" />
     <None Include="ShellPropertyStoreImpl.rgs" />
     <None Include="ShellThumbnailProviderImpl.rgs" />
+    <None Include="UsdShellExtension.cfg" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="ShellExt.idl" />
@@ -146,14 +148,13 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;USDSHELLEXTENSION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(PythonHome)include;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,6 +171,14 @@
     <Midl>
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
     </Midl>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)plugInfo.json" "$(TargetDir)" /I /Y /F /R
+xcopy "$(ProjectDir)register.bat" "$(TargetDir)" /I /Y /F /R
+xcopy "$(ProjectDir)unregister.bat" "$(TargetDir)" /I /Y /F /R
+xcopy "$(ProjectDir)UsdShellExtension.cfg" "$(TargetDir)" /I /Y /D /R
+
+%(Command)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -199,6 +208,14 @@
     <Midl>
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
     </Midl>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)plugInfo.json" "$(TargetDir)" /I /Y /F /R
+xcopy "$(ProjectDir)register.bat" "$(TargetDir)" /I /Y /F /R
+xcopy "$(ProjectDir)unregister.bat" "$(TargetDir)" /I /Y /F /R
+xcopy "$(ProjectDir)UsdShellExtension.cfg" "$(TargetDir)" /I /Y /D /R
+
+%(Command)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

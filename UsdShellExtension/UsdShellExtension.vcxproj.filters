@@ -13,12 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Files">
+      <UniqueIdentifier>{d9bfe0ff-29ed-458b-8cd8-ec1eae4c9c07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShellContextMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
@@ -62,9 +62,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ShellContextMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Module.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -123,6 +120,18 @@
     </None>
     <None Include="UsdPropertyKeys.propdesc">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="plugInfo.json">
+      <Filter>Files</Filter>
+    </None>
+    <None Include="register.bat">
+      <Filter>Files</Filter>
+    </None>
+    <None Include="unregister.bat">
+      <Filter>Files</Filter>
+    </None>
+    <None Include="UsdShellExtension.cfg">
+      <Filter>Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

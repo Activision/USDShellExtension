@@ -37,6 +37,8 @@
 #define IDS_SHELL_FLATTEN               146
 #define IDS_SHELL_REFRESHTHUMBNAIL      147
 #define IDS_SHELL_STATS                 148
+#define IDS_USD_CUSTOMLAYERDATA_LABEL   149
+#define IDS_USD_CUSTOMLAYERDATA_MNEMONICS 150
 
 // Next default values for new objects
 // 

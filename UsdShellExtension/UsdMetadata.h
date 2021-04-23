@@ -1,7 +1,7 @@
 #pragma once
 
-HRESULT ReadUsdMetadata( const pxr::SdfLayerRefPtr &rootLayer, const pxr::VtDictionary &metaData, IPropertyStoreCache *pPropertyStoreCache );
-HRESULT WriteUsdMetadata( pxr::SdfLayerRefPtr &rootLayer, pxr::VtDictionary &metaData, IPropertyStoreCache *pPropertyStoreCache, bool &bIsDirty );
+HRESULT ReadUsdMetadata( const pxr::SdfLayerRefPtr &rootLayer, const pxr::VtDictionary &customLayerData, IPropertyStoreCache *pPropertyStoreCache );
+HRESULT WriteUsdMetadata( pxr::SdfLayerRefPtr &rootLayer, pxr::VtDictionary &customLayerData, IPropertyStoreCache *pPropertyStoreCache, bool &bIsDirty );
 HRESULT IsMetadataPropertyWritable( REFPROPERTYKEY key );
 
 inline HRESULT StoreStringValue( IPropertyStoreCache *pPropertyStoreCache, REFPROPERTYKEY key, LPCWSTR sValue )

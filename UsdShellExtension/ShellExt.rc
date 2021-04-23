@@ -172,6 +172,8 @@ BEGIN
     IDS_SHELL_FLATTEN       "&Flatten"
     IDS_SHELL_REFRESHTHUMBNAIL "&Refresh Thumbnail"
     IDS_SHELL_STATS         "&Stats"
+    IDS_USD_CUSTOMLAYERDATA_LABEL "Custom Layer Data"
+    IDS_USD_CUSTOMLAYERDATA_MNEMONICS "usdcustomlayerdata|usdlayerdata"
 END
 
 #endif    // Neutral (Default) resources

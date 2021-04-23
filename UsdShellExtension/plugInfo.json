@@ -1,0 +1,16 @@
+{
+    "Plugins": [
+        {
+            "Info": {
+                "Types": {
+                    "ArResolverShellExtension" : {
+                        "bases": ["ArResolver"]
+                    }
+                }
+            },
+            "LibraryPath": "UsdShellExtension.dll",
+            "Name": "ArResolverShellExtension",
+            "Type": "library"
+        }
+    ]
+}

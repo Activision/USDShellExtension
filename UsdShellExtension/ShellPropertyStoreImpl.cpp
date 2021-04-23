@@ -86,9 +86,9 @@ STDMETHODIMP CShellPropertyStoreImpl::Initialize(__RPC__in_string LPCWSTR pszFil
 
 	m_bIsPackage = rootLayer->GetFileFormat()->IsPackage();
 
-	pxr::VtDictionary metaData = rootLayer->GetCustomLayerData();
+	pxr::VtDictionary customLayerData = rootLayer->GetCustomLayerData();
 
-	hr = ReadUsdMetadata( rootLayer, metaData, m_pPropertyStoreCache );
+	hr = ReadUsdMetadata( rootLayer, customLayerData, m_pPropertyStoreCache );
 	if ( FAILED( hr ) )
 	{
 		return hr;
@@ -117,8 +117,8 @@ STDMETHODIMP CShellPropertyStoreImpl::Commit()
 
 	// save the file back out
 	bool bIsDirty = false;
-	pxr::VtDictionary metaData = rootLayer->GetCustomLayerData();
-	hr = WriteUsdMetadata( rootLayer, metaData, m_pPropertyStoreCache, bIsDirty );
+	pxr::VtDictionary customLayerData = rootLayer->GetCustomLayerData();
+	hr = WriteUsdMetadata( rootLayer, customLayerData, m_pPropertyStoreCache, bIsDirty );
 	if ( FAILED( hr ) )
 		return hr;
 
@@ -127,7 +127,7 @@ STDMETHODIMP CShellPropertyStoreImpl::Commit()
 		return S_OK;
 
 	// save our updated metadata
-	rootLayer->SetCustomLayerData( metaData );
+	rootLayer->SetCustomLayerData( customLayerData );
 
 	CStringW usdTempStagePath = m_usdStagePath;
 	usdTempStagePath += L".tmp";
@@ -204,7 +204,7 @@ HRESULT WINAPI CShellPropertyStoreImpl::UpdateRegistry(_In_ BOOL bRegister) thro
 {
 	const wchar_t pPropertyDescription[] = 
 		L"val InfoTip = s 'prop:System.ItemType;System.Size;System.DateModified'\n"
-		L"val FullDetails = s 'prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;System.Size;System.ItemDate;System.DateCreated;System.DateModified;System.DateAccessed;System.FileAttributes;USD.PropGroup.USD;System.Comment;USD.Documentation;USD.PropGroup.Activision;USD.ATVISourceFileName;USD.ATVIExportFileName;USD.ATVIExportApplication;USD.ATVIExportUser;USD.ATVIExportDate'\n"
+		L"val FullDetails = s 'prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;System.Size;System.ItemDate;System.DateCreated;System.DateModified;System.DateAccessed;System.FileAttributes;USD.PropGroup.USD;System.Comment;USD.Documentation;USD.CustomLayerData;USD.PropGroup.Activision;USD.ATVISourceFileName;USD.ATVIExportFileName;USD.ATVIExportApplication;USD.ATVIExportUser;USD.ATVIExportDate'\n"
 		L"val PreviewDetails = s 'prop:USD.PropGroup.USD;System.Comment;USD.Documentation;USD.PropGroup.Activision;USD.ATVISourceFileName;USD.ATVIExportFileName;USD.ATVIExportApplication;USD.ATVIExportUser;USD.ATVIExportDate;'\n"
 		L"val PreviewTitle = s 'prop:System.FileName;System.ItemType'\n";
 
