@@ -1,0 +1,9 @@
+.vs/
+bin/
+build/
+*.aps
+*.user
+*_h.h
+*_i.c
+*_p.c
+dlldata.c
