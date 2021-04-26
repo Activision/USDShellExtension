@@ -3,6 +3,6 @@
 <!-- These paths should point to a static build of the USD sdk to avoid additional DLL dependencies -->
 
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(SolutionDir)\usd-monolithic.props" />
+  <Import Project="$(SolutionDir)\usd-monolithic-bare.props" />
 </Project>
 

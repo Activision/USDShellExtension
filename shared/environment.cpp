@@ -172,8 +172,4 @@ void SetupPythonEnvironment()
 	SetupPythonPathEnvironmentVariable( sUSD_PythonPath, sPython_PythonPath );
 	SetupUsdEditorEnvironmentVariable( sUSD_EditorPath );
 	SetupUsdPluginPathEnvironmentVariable( sUSD_PluginPath );
-
-#if defined(PYTHONDLL)
-	LoadLibrary( _T(PYTHONDLL) );
-#endif
 }

@@ -12,10 +12,10 @@ AR_DEFINE_RESOLVER(ArResolverShellExtension, ArResolver)
 
 std::shared_ptr<ArAsset> ArResolverShellExtension::OpenAsset(const std::string& resolvedPath)
 {
-	// Allow shared reads.
+	// Deny writes.
 	// The shell extension is used by many processes and threads at the same time. 
-	// fopen on Windows will lock a file down for exclusive read.
-	FILE* f = _wfsopen( ATL::CA2W( resolvedPath.c_str(), CP_UTF8 ), L"rb", _SH_DENYWR );
+	// fopen on Windows will allow writes with reads
+	FILE* f = _wfsopen( ATL::CA2W( resolvedPath.c_str(), CP_UTF8 ), L"rb", _SH_SECURE );
 	if (!f) {
 		return nullptr;
 	}

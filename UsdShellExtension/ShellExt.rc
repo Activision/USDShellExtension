@@ -90,6 +90,8 @@ END
 
 IDB_LOADSCREEN          PNG                     "USDLogoLrgWithAlpha.png"
 
+IDB_LOGO                PNG                     "logo.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -7,6 +7,31 @@
 
 static constexpr UINT s_TimerIdProgress = 100;
 
+static Gdiplus::Image *LoadImageFromResourcePNG( UINT nId )
+{
+	HRSRC hrscPng = ::FindResource( g_hInstance, MAKEINTRESOURCE( nId ), _T( "PNG" ) );
+	if ( hrscPng != nullptr )
+	{
+		HGLOBAL hPng = ::LoadResource( g_hInstance, hrscPng );
+		if ( hPng != nullptr )
+		{
+			void *pImageData = ::LockResource( hPng );
+			if ( pImageData != nullptr )
+			{
+				DWORD nSize = ::SizeofResource( g_hInstance, hrscPng );
+
+				CComPtr<IStream> pImageStream;
+				pImageStream.p = ::SHCreateMemStream( reinterpret_cast<BYTE *>(pImageData), nSize );
+
+				Gdiplus::Image *img = Gdiplus::Image::FromStream( pImageStream );
+				return img;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 LRESULT CUsdLoadScreenDlg::OnInitDialog( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled )
 {
 	UNREFERENCED_PARAMETER( uMsg );
@@ -19,24 +44,8 @@ LRESULT CUsdLoadScreenDlg::OnInitDialog( UINT uMsg, WPARAM wParam, LPARAM lParam
 	Gdiplus::GdiplusStartupInputEx gdiplusStartupInput;
 	Gdiplus::GdiplusStartup( &m_gdiplusToken, &gdiplusStartupInput, nullptr );
 
-	HRSRC hrscPng = ::FindResource( g_hInstance, MAKEINTRESOURCE( IDB_LOADSCREEN ), _T("PNG") );
-	if ( hrscPng != nullptr )
-	{
-		HGLOBAL hPng = ::LoadResource( g_hInstance, hrscPng );
-		if ( hPng != nullptr )
-		{
-			void *pImageData = ::LockResource( hPng );
-			if ( pImageData != nullptr )
-			{
-				DWORD nSize = ::SizeofResource( g_hInstance, hrscPng );
-
-				CComPtr<IStream> pImageStream;
-				pImageStream.p = ::SHCreateMemStream( reinterpret_cast<BYTE*>(pImageData), nSize );
-
-				m_pImgLoadScreen = Gdiplus::Image::FromStream( pImageStream );
-			}
-		}
-	}
+	m_pImgLoadScreen = LoadImageFromResourcePNG( IDB_LOADSCREEN );
+	m_pImgLogo = LoadImageFromResourcePNG( IDB_LOGO );
 
 	RECT rcClient;
 	GetClientRect( &rcClient );
@@ -47,7 +56,6 @@ LRESULT CUsdLoadScreenDlg::OnInitDialog( UINT uMsg, WPARAM wParam, LPARAM lParam
 	if ( m_pGfx )
 		Draw( *m_pGfx );
 
-	// 60 fps
 	SetTimer( s_TimerIdProgress, 1, nullptr );
 
 	return 0;
@@ -69,7 +77,7 @@ LRESULT CUsdLoadScreenDlg::OnPaint( UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 		m_imgBackBuffer.BitBlt( hDCFrontBuffer, ps.rcPaint, ptSrc, SRCCOPY );
 	}
 
-	EndPaint(&ps);
+	EndPaint( &ps );
 
 	return 0;
 }
@@ -81,7 +89,7 @@ LRESULT CUsdLoadScreenDlg::OnEraseBkgnd( UINT uMsg, WPARAM wParam, LPARAM lParam
 	UNREFERENCED_PARAMETER( lParam );
 	UNREFERENCED_PARAMETER( bHandled );
 
-	return (LRESULT)::GetStockObject(NULL_BRUSH);
+	return (LRESULT)::GetStockObject( NULL_BRUSH );
 }
 
 LRESULT CUsdLoadScreenDlg::OnSize( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled )
@@ -94,8 +102,8 @@ LRESULT CUsdLoadScreenDlg::OnSize( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	UINT height = HIWORD( lParam );
 
 	CreateBackBuffer( width, height );
-	if (m_pGfx)
-		Draw(*m_pGfx);
+	if ( m_pGfx )
+		Draw( *m_pGfx );
 	Invalidate( FALSE );
 
 	return 0;
@@ -108,7 +116,7 @@ LRESULT CUsdLoadScreenDlg::OnCtlColorDlg( UINT uMsg, WPARAM wParam, LPARAM lPara
 	UNREFERENCED_PARAMETER( lParam );
 	UNREFERENCED_PARAMETER( bHandled );
 
-	return (LRESULT)::GetStockObject(NULL_BRUSH);
+	return (LRESULT)::GetStockObject( NULL_BRUSH );
 }
 
 LRESULT CUsdLoadScreenDlg::OnTimer( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled )
@@ -140,7 +148,7 @@ void CUsdLoadScreenDlg::SetBackgroundColor( COLORREF color )
 		m_hBackground = nullptr;
 	}
 
-	bool bWindowsExplorerUsingLightTheme = true;
+	m_bWindowsExplorerUsingLightTheme = true;
 
 	CRegKey regDarkMode;
 	LRESULT lr = regDarkMode.Open( HKEY_CURRENT_USER, _T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" ), KEY_READ );
@@ -150,17 +158,19 @@ void CUsdLoadScreenDlg::SetBackgroundColor( COLORREF color )
 		lr = regDarkMode.QueryDWORDValue( _T( "SystemUsesLightTheme" ), nSystemUsesLightTheme );
 		if ( lr == ERROR_SUCCESS )
 		{
-			bWindowsExplorerUsingLightTheme = (nSystemUsesLightTheme != 0);
+			m_bWindowsExplorerUsingLightTheme = (nSystemUsesLightTheme != 0);
 		}
 	}
 
 	// Colors hard-coded to Windows 10 2003 Explorer
-	if (bWindowsExplorerUsingLightTheme == false)
+	if ( m_bWindowsExplorerUsingLightTheme == false )
 		color = RGB( 32, 32, 32 );
 
 	m_Background.SetFromCOLORREF( color );
 
 	m_hBackground = ::CreateSolidBrush( color );
+
+	m_ProgressBar.SetBackgroundColor( color, m_bWindowsExplorerUsingLightTheme );
 
 	if ( m_pGfx )
 	{
@@ -169,7 +179,7 @@ void CUsdLoadScreenDlg::SetBackgroundColor( COLORREF color )
 	}
 }
 
-void CUsdLoadScreenDlg::OnFinalMessage(_In_ HWND hWnd)
+void CUsdLoadScreenDlg::OnFinalMessage( _In_ HWND hWnd )
 {
 	UNREFERENCED_PARAMETER( hWnd );
 
@@ -194,10 +204,10 @@ void CUsdLoadScreenDlg::OnFinalMessage(_In_ HWND hWnd)
 	}
 	m_imgBackBuffer.Destroy();
 
-	Gdiplus::GdiplusShutdown(m_gdiplusToken);
+	Gdiplus::GdiplusShutdown( m_gdiplusToken );
 }
 
-void CUsdLoadScreenDlg::CreateBackBuffer(UINT width, UINT height)
+void CUsdLoadScreenDlg::CreateBackBuffer( UINT width, UINT height )
 {
 	if ( m_pGfx )
 	{
@@ -224,7 +234,7 @@ void CUsdLoadScreenDlg::CreateBackBuffer(UINT width, UINT height)
 	m_pGfx->SetSmoothingMode( Gdiplus::SmoothingModeAntiAlias );
 }
 
-void CUsdLoadScreenDlg::Draw(Gdiplus::Graphics& gfx)
+void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 {
 	if ( m_imgBackBuffer.IsNull() )
 		return;
@@ -234,66 +244,123 @@ void CUsdLoadScreenDlg::Draw(Gdiplus::Graphics& gfx)
 
 	if ( m_pImgLoadScreen != nullptr )
 	{
-		SIZE margins;
-		margins.cx = 50;
-		margins.cy = 50;
+		Gdiplus::SizeF margins;
+		margins.Width = 50.0f;
+		margins.Height = 50.0f;
 
-		SIZE sizeWindow;
-		sizeWindow.cx = std::max<LONG>( 0, m_imgBackBuffer.GetWidth() - (margins.cx * 2) );
-		sizeWindow.cy = std::max<LONG>( 0, m_imgBackBuffer.GetHeight() - (margins.cy * 2) );
+		Gdiplus::SizeF sizeWindow;
+		sizeWindow.Width = std::max<Gdiplus::REAL>( 0.0f, m_imgBackBuffer.GetWidth() - (margins.Width * 2) );
+		sizeWindow.Height = std::max<Gdiplus::REAL>( 0.0f, m_imgBackBuffer.GetHeight() - (margins.Height * 2) );
 
 		// initialize the size of the image we draw to the ideal size
-		SIZE sizeImage;
-		sizeImage.cx = m_pImgLoadScreen->GetWidth();
-		sizeImage.cy = m_pImgLoadScreen->GetHeight();
+		Gdiplus::SizeF sizeImageOriginal;
+		sizeImageOriginal.Width = static_cast<Gdiplus::REAL>(m_pImgLoadScreen->GetWidth());
+		sizeImageOriginal.Height = static_cast<Gdiplus::REAL>(m_pImgLoadScreen->GetHeight());
 
-		if ( static_cast<INT>(m_pImgLoadScreen->GetWidth()) > sizeWindow.cx )
+		Gdiplus::SizeF sizeImageResized = sizeImageOriginal;
+
+		if ( sizeImageOriginal.Width > sizeWindow.Width )
 		{
-			float fAspectRatio = (float)m_pImgLoadScreen->GetHeight() / (float)m_pImgLoadScreen->GetWidth();
-			SIZE sizeNew;
-			sizeNew.cx = sizeWindow.cx;
-			sizeNew.cy = (LONG)((float)sizeWindow.cx * fAspectRatio);
+			float fAspectRatio = sizeImageOriginal.Height / sizeImageOriginal.Width;
+			Gdiplus::SizeF sizeNew;
+			sizeNew.Width = sizeWindow.Width;
+			sizeNew.Height = sizeWindow.Height * fAspectRatio;
 
-			if ( sizeNew.cx < sizeImage.cx || sizeNew.cy < sizeImage.cy )
-				sizeImage = sizeNew;
+			if ( sizeNew.Width < sizeImageResized.Width || sizeNew.Height < sizeImageResized.Height )
+				sizeImageResized = sizeNew;
 		}
 
-		if ( static_cast<INT>(m_pImgLoadScreen->GetHeight()) > sizeWindow.cy )
+		if ( sizeImageOriginal.Height > sizeWindow.Height )
 		{
-			float fAspectRatio = (float)m_pImgLoadScreen->GetWidth() / (float)m_pImgLoadScreen->GetHeight();
-			SIZE sizeNew;
-			sizeNew.cy = sizeWindow.cy;
-			sizeNew.cx = (LONG)((float)sizeWindow.cy * fAspectRatio);
+			float fAspectRatio = sizeImageOriginal.Width / sizeImageOriginal.Height;
+			Gdiplus::SizeF sizeNew;
+			sizeNew.Height = sizeWindow.Height;
+			sizeNew.Width = sizeWindow.Height * fAspectRatio;
 
-			if ( sizeNew.cx < sizeImage.cx || sizeNew.cy < sizeImage.cy )
-				sizeImage = sizeNew;
+			if ( sizeNew.Width < sizeImageResized.Width || sizeNew.Height < sizeImageResized.Height )
+				sizeImageResized = sizeNew;
 		}
 
 
 		Gdiplus::RectF rcSrc(
 			0, 0,
-			static_cast<Gdiplus::REAL>(m_pImgLoadScreen->GetWidth()),
-			static_cast<Gdiplus::REAL>(m_pImgLoadScreen->GetHeight()) );
+			sizeImageOriginal.Width,
+			sizeImageOriginal.Height );
 
 		Gdiplus::RectF rcDst(
-			static_cast<Gdiplus::REAL>(((sizeWindow.cx - sizeImage.cx) / 2) + margins.cx),
-			static_cast<Gdiplus::REAL>(((sizeWindow.cy - sizeImage.cy) / 2) + margins.cy),
-			static_cast<Gdiplus::REAL>(sizeImage.cx),
-			static_cast<Gdiplus::REAL>(sizeImage.cy) );
+			((sizeWindow.Width - sizeImageResized.Width) / 2.0f) + margins.Width,
+			((sizeWindow.Height - sizeImageResized.Height) / 2.0f) + margins.Height,
+			sizeImageResized.Width,
+			sizeImageResized.Height );
 
 		gfx.DrawImage( m_pImgLoadScreen, rcDst, rcSrc, Gdiplus::UnitPixel );
 
 		m_rcProgressArea = Gdiplus::RectF(
-			2,
+			2.0f,
 			rcDst.GetBottom(),
 			static_cast<Gdiplus::REAL>(m_imgBackBuffer.GetWidth() - 4),
-			static_cast<Gdiplus::REAL>(margins.cy)
+			margins.Height
 		);
 		m_ProgressBar.DrawProgressBar( gfx, m_rcProgressArea, m_Background );
 	}
+
+	if ( m_pImgLogo != nullptr )
+	{
+		Gdiplus::SizeF margins;
+		margins.Width = 10.0f;
+		margins.Height = 10.0f;
+
+		Gdiplus::SizeF sizeWindow;
+		sizeWindow.Width = std::max<Gdiplus::REAL>( 0.0f, m_imgBackBuffer.GetWidth() - (margins.Width * 2) );
+		sizeWindow.Height = std::max<Gdiplus::REAL>( 0.0f, m_imgBackBuffer.GetHeight() - (margins.Height * 2) );
+
+		// initialize the size of the image we draw to the ideal size
+		Gdiplus::SizeF sizeImageOriginal;
+		sizeImageOriginal.Width = static_cast<Gdiplus::REAL>(m_pImgLogo->GetWidth());
+		sizeImageOriginal.Height = static_cast<Gdiplus::REAL>(m_pImgLogo->GetHeight());
+
+		Gdiplus::SizeF sizeImageResized = sizeImageOriginal;
+		sizeImageResized.Width /= 4.0f;
+		sizeImageResized.Height /= 4.0f;
+
+		Gdiplus::RectF rcSrc(
+			0, 0,
+			sizeImageOriginal.Width,
+			sizeImageOriginal.Height );
+
+		Gdiplus::RectF rcDst(
+			sizeWindow.Width - sizeImageResized.Width,
+			sizeWindow.Height - sizeImageResized.Height,
+			sizeImageResized.Width,
+			sizeImageResized.Height );
+
+		// invert colors for the light theme
+		const float alpha = 0.25f;
+		Gdiplus::ColorMatrix matrixLightTheme =
+		{
+			-1, 0, 0, 0, 0,
+			0, -1, 0, 0, 0,
+			0, 0, -1, 0, 0,
+			0, 0, 0, alpha, 0,
+			0, 0, 0, 0, 1
+		};
+		Gdiplus::ColorMatrix matrixDarkTheme =
+		{
+			1, 0, 0, 0, 0,
+			0, 1, 0, 0, 0,
+			0, 0, 1, 0, 0,
+			0, 0, 0, alpha, 0,
+			0, 0, 0, 0, 1
+		};
+
+		Gdiplus::ImageAttributes attrib;
+		attrib.SetColorMatrix( m_bWindowsExplorerUsingLightTheme ? &matrixLightTheme : &matrixDarkTheme );
+
+		gfx.DrawImage( m_pImgLogo, rcDst, rcSrc, Gdiplus::UnitPixel, &attrib );
+	}
 }
 
-void CUsdLoadScreenDlg::InvalidateProgressBar( Gdiplus::RectF& rcArea )
+void CUsdLoadScreenDlg::InvalidateProgressBar( Gdiplus::RectF &rcArea )
 {
 	RECT rc;
 	rc.left = static_cast<LONG>(rcArea.GetLeft());

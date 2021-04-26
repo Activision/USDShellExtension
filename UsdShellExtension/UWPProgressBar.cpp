@@ -59,7 +59,7 @@ void CUWPProgressBar::UpdateProgressBar()
 	}
 }
 
-void CUWPProgressBar::DrawProgressBar(Gdiplus::Graphics& gfx, Gdiplus::RectF& rcArea, Gdiplus::Color& backgroundColor)
+void CUWPProgressBar::DrawProgressBar( Gdiplus::Graphics &gfx, Gdiplus::RectF &rcArea, Gdiplus::Color &backgroundColor )
 {
 	Gdiplus::SolidBrush brush( backgroundColor );
 	gfx.FillRectangle( &brush, rcArea );
@@ -76,7 +76,7 @@ void CUWPProgressBar::DrawProgressBar(Gdiplus::Graphics& gfx, Gdiplus::RectF& rc
 		// pt.X [-30.0f, 30.0f]
 		float scaledX = (((pt.X + 30.0f) * fScaledWidth) / 60.0f);
 		scaledX += ((float)rcArea.Width - fScaledWidth) / 2.0f;
-		if (scaledX < 0 || (scaledX + dot.Width) >= rcArea.Width )
+		if ( scaledX < 0 || (scaledX + dot.Width) >= rcArea.Width )
 			continue;
 
 		Gdiplus::RectF rcDot(
@@ -87,9 +87,17 @@ void CUWPProgressBar::DrawProgressBar(Gdiplus::Graphics& gfx, Gdiplus::RectF& rc
 
 		Gdiplus::Color clrDot;
 		BYTE bAlpha = (BYTE)(((100.0f - fabsf( pt.X )) / 100.0f) * 255.0f);
-		clrDot.SetValue( Gdiplus::Color::MakeARGB(bAlpha, 52, 198, 243) );
-		Gdiplus::SolidBrush brushDot(clrDot);
+		//clrDot.SetValue( Gdiplus::Color::MakeARGB(bAlpha, 52, 198, 243) );
+		clrDot.SetValue( Gdiplus::Color::MakeARGB( bAlpha, 200, 200, 200 ) );
+		Gdiplus::SolidBrush brushDot( clrDot );
 
 		gfx.FillEllipse( &brushDot, rcDot );
 	}
+}
+
+void CUWPProgressBar::SetBackgroundColor( COLORREF color, bool bWindowsExplorerUsingLightTheme )
+{
+	UNREFERENCED_PARAMETER( color );
+
+	m_bWindowsExplorerUsingLightTheme = bWindowsExplorerUsingLightTheme;
 }
