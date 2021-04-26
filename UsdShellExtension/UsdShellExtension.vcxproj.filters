@@ -156,6 +156,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="UsdShellExtension.manifest" />
+    <Manifest Include="UsdShellExtension-monolithic.manifest" />
+    <Manifest Include="UsdShellExtension-shared.manifest" />
   </ItemGroup>
 </Project>

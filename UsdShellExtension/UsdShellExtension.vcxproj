@@ -79,7 +79,8 @@
     <Image Include="USDLogoLrgWithAlpha.png" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="UsdShellExtension.manifest" />
+    <Manifest Condition="'$(USDBUILD)'=='monolithic'" Include="UsdShellExtension-monolithic.manifest" />
+    <Manifest Condition="'$(USDBUILD)'=='shared'" Include="UsdShellExtension-shared.manifest" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

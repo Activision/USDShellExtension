@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+	<file name="ar.dll"/>
+	<file name="arch.dll"/>
+	<file name="plug.dll"/>
+	<file name="sdf.dll"/>
+	<file name="tf.dll"/>
+	<file name="usd.dll"/>
+	<file name="usdUtils.dll"/>
+	<file name="vt.dll"/>
+	<file name="tbb.dll"/>
+	<file name="tbb_debug.dll"/>
+	<file name="tbbmalloc.dll"/>
+	<file name="tbbmalloc_debug.dll"/>
+
+</assembly>

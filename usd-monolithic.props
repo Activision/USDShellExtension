@@ -8,6 +8,7 @@
     <USDLIBPATH>d:\USD-monolithic-bare-debug\lib\</USDLIBPATH>
     <USDINCLUDEPATH>d:\USD-monolithic-bare-debug\include\</USDINCLUDEPATH>
 	<PXR_PLUGINPATH_NAME>d:\USD-monolithic-bare-debug\lib\usd\</PXR_PLUGINPATH_NAME>
+    <USDBUILD>monolithic</USDBUILD>
   </PropertyGroup>	
 	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

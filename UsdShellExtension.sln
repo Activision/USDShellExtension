@@ -25,7 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		BUILDING.md = BUILDING.md
 		python.props = python.props
 		README.md = README.md
-		usd-monolithic-bare.props = usd-monolithic-bare.props
+		usd-monolithic.props = usd-monolithic.props
+		usd-shared.props = usd-shared.props
 		usd.props = usd.props
 	EndProjectSection
 EndProject

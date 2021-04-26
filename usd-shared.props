@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <USDBINPATH>D:\USD-21.02-debug\bin\</USDBINPATH>
+    <USDLIBPATH>D:\USD-21.02-debug\lib\</USDLIBPATH>
+    <USDINCLUDEPATH>D:\USD-21.02-debug\include\</USDINCLUDEPATH>
+	<PXR_PLUGINPATH_NAME>D:\USD-21.02-debug\lib\usd\</PXR_PLUGINPATH_NAME>
+    <USDBUILD>shared</USDBUILD>
+  </PropertyGroup>	
+	
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <USDBINPATH>D:\USD-21.02\bin\</USDBINPATH>
+    <USDLIBPATH>D:\USD-21.02\lib\</USDLIBPATH>
+    <USDINCLUDEPATH>D:\USD-21.02\include\</USDINCLUDEPATH>
+	<PXR_PLUGINPATH_NAME>D:\USD-21.02\lib\usd\</PXR_PLUGINPATH_NAME>
+  </PropertyGroup>	
+
+	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(USDINCLUDEPATH);$(USDINCLUDEPATH)\boost-1_70;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>dbghelp.lib;Ws2_32.lib;ar.lib;arch.lib;plug.lib;sdf.lib;tf.lib;usd.lib;usdUtils.lib;vt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(USDLIBPATH);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/WHOLEARCHIVE:"$(USDLIBPATH)usd" %(AdditionalOptions)</AdditionalOptions>
+	</Link>
+    <PostBuildEvent>
+      <Command>
+        xcopy "$(USDLIBPATH)ar.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)ar.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)arch.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)arch.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)plug.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)plug.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)sdf.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)sdf.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)tf.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)tf.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usd.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usd.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usdUtils.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usdUtils.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)vt.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)vt.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDBINPATH)tbb.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDBINPATH)tbb.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(PXR_PLUGINPATH_NAME)" "$(TargetDir)\usd" /I /Y /F /R /S
+
+        %(Command)
+	  </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(USDINCLUDEPATH);$(USDINCLUDEPATH)\boost-1_70;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>dbghelp.lib;Ws2_32.lib;ar.lib;arch.lib;plug.lib;sdf.lib;tf.lib;usd.lib;usdUtils.lib;vt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(USDLIBPATH);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/WHOLEARCHIVE:"$(USDLIBPATH)usd" %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+        xcopy "$(USDLIBPATH)ar.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)ar.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)arch.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)arch.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)plug.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)plug.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)sdf.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)sdf.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)tf.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)tf.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usd.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usd.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usdUtils.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)usdUtils.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)vt.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDLIBPATH)vt.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDBINPATH)tbb.dll" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(USDBINPATH)tbb.pdb" "$(TargetDir)" /I /Y /F /R
+        xcopy "$(PXR_PLUGINPATH_NAME)" "$(TargetDir)\usd" /I /Y /F /R /S
+        
+        %(Command)
+	  </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+</Project>
+
