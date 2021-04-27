@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <USDBUILD>shared</USDBUILD>
+  </PropertyGroup>
+	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <USDBINPATH>D:\USD-21.02-debug\bin\</USDBINPATH>
     <USDLIBPATH>D:\USD-21.02-debug\lib\</USDLIBPATH>
     <USDINCLUDEPATH>D:\USD-21.02-debug\include\</USDINCLUDEPATH>
 	<PXR_PLUGINPATH_NAME>D:\USD-21.02-debug\lib\usd\</PXR_PLUGINPATH_NAME>
-    <USDBUILD>shared</USDBUILD>
   </PropertyGroup>	
 	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

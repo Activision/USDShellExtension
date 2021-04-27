@@ -3,12 +3,15 @@
 <!-- These paths should point to a monolithic build of the USD sdk to avoid additional DLL dependencies -->
 
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <USDBUILD>monolithic</USDBUILD>
+  </PropertyGroup>
+	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <USDBINPATH>d:\USD-monolithic-bare-debug\bin\</USDBINPATH>
     <USDLIBPATH>d:\USD-monolithic-bare-debug\lib\</USDLIBPATH>
     <USDINCLUDEPATH>d:\USD-monolithic-bare-debug\include\</USDINCLUDEPATH>
 	<PXR_PLUGINPATH_NAME>d:\USD-monolithic-bare-debug\lib\usd\</PXR_PLUGINPATH_NAME>
-    <USDBUILD>monolithic</USDBUILD>
   </PropertyGroup>	
 	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
