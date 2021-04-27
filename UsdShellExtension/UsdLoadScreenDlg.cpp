@@ -264,7 +264,7 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 			float fAspectRatio = sizeImageOriginal.Height / sizeImageOriginal.Width;
 			Gdiplus::SizeF sizeNew;
 			sizeNew.Width = sizeWindow.Width;
-			sizeNew.Height = sizeWindow.Height * fAspectRatio;
+			sizeNew.Height = sizeWindow.Width * fAspectRatio;
 
 			if ( sizeNew.Width < sizeImageResized.Width || sizeNew.Height < sizeImageResized.Height )
 				sizeImageResized = sizeNew;
