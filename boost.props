@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- $(PlatformToolsetVersion) is only valid on C++ items, we need it to be valid on all items -->
+    <BOOSTPLATFORMTOOLSET>142</BOOSTPLATFORMTOOLSET>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <BOOSTLIBPATH>D:\USD-shared-full-debug\lib\</BOOSTLIBPATH>
     <BOOSTINCLUDEPATH>D:\USD-shared-full-debug\include\boost-1_70\</BOOSTINCLUDEPATH>
+    <BOOSTDLL>boost_$(PythonFileName)-vc$(BOOSTPLATFORMTOOLSET)-mt-gd-x64-1_70.dll</BOOSTDLL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <BOOSTLIBPATH>D:\USD-shared-full\lib\</BOOSTLIBPATH>
     <BOOSTINCLUDEPATH>D:\USD-shared-full\include\boost-1_70\</BOOSTINCLUDEPATH>
+    <BOOSTDLL>boost_$(PythonFileName)-vc$(BOOSTPLATFORMTOOLSET)-mt-x64-1_70.dll</BOOSTDLL>
   </PropertyGroup>
 		
   <ItemDefinitionGroup>
@@ -20,7 +26,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PostBuildEvent>
       <Command>
-		  xcopy "$(BOOSTLIBPATH)boost_$(PythonFileName)-vc$(PlatformToolsetVersion)-mt-gd-x64-1_70.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(BOOSTLIBPATH)$(BOOSTDLL)" "$(TargetDir)" /I /Y /F /R
 
 		  %(Command)
 	  </Command>
@@ -29,7 +35,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PostBuildEvent>
       <Command>
-		  xcopy "$(BOOSTLIBPATH)boost_$(PythonFileName)-vc$(PlatformToolsetVersion)-mt-x64-1_70.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(BOOSTLIBPATH)$(BOOSTDLL)" "$(TargetDir)" /I /Y /F /R
 
 		  %(Command)
 	  </Command>

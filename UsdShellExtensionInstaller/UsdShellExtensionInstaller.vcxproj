@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
-  <Import Project="$(SolutionDir)\atviversion.props" />
   <Import Project="$(SolutionDir)\python.props" />
+  <Import Project="$(SolutionDir)\boost.props" />
+  <Import Project="$(SolutionDir)\usd.props" />
+  <Import Project="$(SolutionDir)\nsis.props" />
+  <Import Project="$(SolutionDir)\atviversion.props" />
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{248f687e-4028-4243-87b8-2312f57be8a5}</ProjectGuid>
-    <RootNamespace>UsdPreviewHandlerPython</RootNamespace>
-    <ProjectName>UsdPreviewHandlerPython</ProjectName>
+    <ProjectGuid>{1390252A-71E2-4C4E-B874-301909F40CBA}</ProjectGuid>
+    <RootNamespace>UsdShellExtensionInstaller</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Utility</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup Label="PythonConfiguration">
     <RegistryView>RegistryView.Registry32</RegistryView>
     <RegistryView Condition="$(Platform) == 'x64'">RegistryView.Registry64</RegistryView>
@@ -54,105 +58,58 @@
     <PythonDExe Condition="$(PythonExe) != '' and $(PythonDExe) == ''">$([System.IO.Path]::GetDirectoryName($(PythonExe)))\python$(PythonDebugSuffix).exe</PythonDExe>
     <PythonDExe Condition="!Exists($(PythonDExe))">$(PythonExe)</PythonDExe>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(SolutionDir)\boost.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="Shared">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformToolset)\$(PythonTag)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(PlatformToolset)\$(PythonTag)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetExt>.pyd</TargetExt>
-    <TargetName>UsdPreviewHandler</TargetName>
+    <TargetName>UsdShellExtension-setup.exe</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformToolset)\$(PythonTag)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(PlatformToolset)\$(PythonTag)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetExt>.pyd</TargetExt>
-    <TargetName>UsdPreviewHandler</TargetName>
+    <TargetName>UsdShellExtension-setup.exe</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;USDPREVIEW_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(PythonHome)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Disabled</Optimization>
-      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(PythonHome)libs;C:\usd-20.08\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <PostBuildEvent />
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(OutDir);$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>@echo off
+REM Do nothing</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>@echo off
+REM Do nothing</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;USDPREVIEW_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(PythonHome)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>false</EnableCOMDATFolding>
-      <OptimizeReferences>false</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(PythonHome)libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <PostBuildEvent />
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(OutDir);$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>@echo off
+REM Do nothing</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>@echo off
+REM Do nothing</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Module.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="StageViewWnd.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="UsdPreviewHandlerEvent.h" />
-    <ClInclude Include="UsdPreviewHandlerMgr.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Module.cpp" />
-    <ClCompile Include="StageViewWnd.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="pyUsdPreviewHandler.cpp" />
-    <ClCompile Include="UsdPreviewHandlerMgr.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="UsdPreviewHandlerPython.rc" />
+    <CustomBuild Include="UsdShellExtensionInstaller.nsi">
+      <FileType>Document</FileType>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Installer</Message>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Installer</Message>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">@echo off
+cd /D "$(OutputPath)"
+"$(MAKENSIS)" /NOCD /DOUT_FILE="$(TargetName)" /DPYTHONDLL="$(PythonDLL)" /DBOOSTDLL="$(BOOSTDLL)" /DVER_MAJOR="$(ATVI_VERSION_MAJOR)" /DVER_MINOR="$(ATVI_VERSION_MINOR)" /DVER_REVISION="$(ATVI_VERSION_REVISION)" /DVER_BUILD="$(ATVI_VERSION_BUILD)" /DUSD_VERSION="$(USDVERSION)" /DPYTHON_VERSION="$(PythonVersion)" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">@echo off
+cd /D "$(OutputPath)"
+"$(MAKENSIS)" /NOCD /DOUT_FILE="$(TargetName)" /DPYTHONDLL="$(PythonDLL)" /DBOOSTDLL="$(BOOSTDLL)" /DVER_MAJOR="$(ATVI_VERSION_MAJOR)" /DVER_MINOR="$(ATVI_VERSION_MINOR)" /DVER_REVISION="$(ATVI_VERSION_REVISION)" /DVER_BUILD="$(ATVI_VERSION_BUILD)" /DUSD_VERSION="$(USDVERSION)" /DPYTHON_VERSION="$(PythonVersion)" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutputPath)$(TargetName);AlwaysBuildMe.exe%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutputPath)$(TargetName);AlwaysBuildMe.exe%(Outputs)</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

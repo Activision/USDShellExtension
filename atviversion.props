@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	
+  <PropertyGroup>
+    <ATVI_VERSION_MAJOR>1</ATVI_VERSION_MAJOR>
+    <ATVI_VERSION_MINOR>0</ATVI_VERSION_MINOR>
+    <ATVI_VERSION_REVISION>0</ATVI_VERSION_REVISION>
+    <ATVI_VERSION_BUILD>0</ATVI_VERSION_BUILD>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>ATVI_VERSION_MAJOR="$(ATVI_VERSION_MAJOR)";ATVI_VERSION_MINOR="$(ATVI_VERSION_MINOR)";ATVI_VERSION_REVISION="$(ATVI_VERSION_REVISION)";ATVI_VERSION_BUILD="$(ATVI_VERSION_BUILD)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>ATVI_VERSION_MAJOR="$(ATVI_VERSION_MAJOR)";ATVI_VERSION_MINOR="$(ATVI_VERSION_MINOR)";ATVI_VERSION_REVISION="$(ATVI_VERSION_REVISION)";ATVI_VERSION_BUILD="$(ATVI_VERSION_BUILD)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+
+</Project>

@@ -11,7 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <Import Project="$(SolutionDir)\python.props" />
+  <Import Project="$(SolutionDir)\boost.props" />
   <Import Project="$(SolutionDir)\usd.props" />
+  <Import Project="$(SolutionDir)\nsis.props" />
+  <Import Project="$(SolutionDir)\atviversion.props" />
   <ItemGroup>
     <ClInclude Include="ArResolverShellExtension.h" />
     <ClInclude Include="UsdMetadata_Atvi.h" />

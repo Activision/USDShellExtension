@@ -5,6 +5,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <USDBUILD>monolithic</USDBUILD>
+    <USDVERSION>21.02</USDVERSION>
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -35,6 +36,8 @@
       <Command>
 		  xcopy "$(USDBINPATH)tbb_debug.dll" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(USDBINPATH)tbb_debug.pdb" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDBINPATH)tbbmalloc_debug.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDBINPATH)tbbmalloc_debug.pdb" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(USDLIBPATH)usd_ms.dll" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(USDLIBPATH)usd_ms.pdb" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(PXR_PLUGINPATH_NAME)" "$(TargetDir)\usd" /I /Y /F /R /S
@@ -57,6 +60,8 @@
       <Command>
 		  xcopy "$(USDBINPATH)tbb.dll" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(USDBINPATH)tbb.pdb" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDBINPATH)tbbmalloc.dll" "$(TargetDir)" /I /Y /F /R
+		  xcopy "$(USDBINPATH)tbbmalloc.pdb" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(USDLIBPATH)usd_ms.dll" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(USDLIBPATH)usd_ms.pdb" "$(TargetDir)" /I /Y /F /R
 		  xcopy "$(PXR_PLUGINPATH_NAME)" "$(TargetDir)\usd" /I /Y /F /R /S

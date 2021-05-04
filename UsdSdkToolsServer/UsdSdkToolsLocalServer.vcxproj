@@ -10,6 +10,7 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <Import Project="$(SolutionDir)\atviversion.props" />
   <Import Project="$(SolutionDir)\python.props" />
   <Import Project="$(SolutionDir)\usd.props" />
   <PropertyGroup Label="Globals">
