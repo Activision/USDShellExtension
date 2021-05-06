@@ -2,6 +2,8 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <PythonVersion>3.7</PythonVersion>
+	  <!-- PY_VERSION_HEX encoding -->
+    <PythonVersionHex>0x03070000</PythonVersionHex> 
     <PythonFileName>python37</PythonFileName>
   </PropertyGroup>
 
@@ -14,9 +16,9 @@
 	
 	<ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>PYTHONVERSION="$(PythonVersion)";PYTHONDLL="$(PythonDLL)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PYTHONVERSION=$(PythonVersion);PYTHONDLL="$(PythonDLL)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-	  <PostBuildEvent>
+	  <PostBuildEvent Condition="$(PythonVersionHex) >= 0x03000000">
 		  <Command>
 			  xcopy "$(PYTHONHOME)$(PythonDLL)" "$(TargetDir)" /I /Y /F /R
 

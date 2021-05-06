@@ -10,11 +10,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <Import Project="$(SolutionDir)\python.props" />
-  <Import Project="$(SolutionDir)\boost.props" />
-  <Import Project="$(SolutionDir)\usd.props" />
-  <Import Project="$(SolutionDir)\nsis.props" />
-  <Import Project="$(SolutionDir)\atviversion.props" />
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -38,6 +33,11 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(SolutionDir)\python.props" />
+  <Import Project="$(SolutionDir)\boost.props" />
+  <Import Project="$(SolutionDir)\usd.props" />
+  <Import Project="$(SolutionDir)\nsis.props" />
+  <Import Project="$(SolutionDir)\atviversion.props" />
   <PropertyGroup Label="PythonConfiguration">
     <RegistryView>RegistryView.Registry32</RegistryView>
     <RegistryView Condition="$(Platform) == 'x64'">RegistryView.Registry64</RegistryView>
@@ -67,12 +67,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(PlatformToolset)\$(PythonTag)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(PlatformToolset)\$(PythonTag)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetName>UsdShellExtension-setup.exe</TargetName>
+    <TargetName>UsdShellExtension-v$(ATVI_VERSION_MAJOR).$(ATVI_VERSION_MINOR)-u$(USDVERSION)-p$(PythonVersion)-setup.exe</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(PlatformToolset)\$(PythonTag)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(PlatformToolset)\$(PythonTag)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetName>UsdShellExtension-setup.exe</TargetName>
+    <TargetName>UsdShellExtension-v$(ATVI_VERSION_MAJOR).$(ATVI_VERSION_MINOR)-u$(USDVERSION)-p$(PythonVersion)-setup.exe</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PostBuildEvent>

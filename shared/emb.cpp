@@ -91,17 +91,25 @@ namespace emb
 		0,                    /* tp_new */
 	};
 
+#if PY_MAJOR_VERSION >= 3
 	PyModuleDef embmodule =
 	{
 		PyModuleDef_HEAD_INIT,
 		"emb", 0, -1, 0,
 	};
+#endif
 
 	// Internal state
 	PyObject *g_stdout;
 	PyObject *g_stdout_saved;
 	PyObject *g_stderr;
 	PyObject *g_stderr_saved;
+
+#if PY_MAJOR_VERSION >= 3
+	#define NULL_MODULE nullptr
+#else
+	#define NULL_MODULE
+#endif
 
 	PyMODINIT_FUNC PyInit_emb( void )
 	{
@@ -112,34 +120,41 @@ namespace emb
 
 		StdoutType.tp_new = PyType_GenericNew;
 		if ( PyType_Ready( &StdoutType ) < 0 )
-			return 0;
+			return NULL_MODULE;
 
+#if PY_MAJOR_VERSION >= 3
 		PyObject *m = PyModule_Create( &embmodule );
+#else
+		PyObject *m = Py_InitModule( "emb", Stdout_methods );
+#endif
 		if ( m )
 		{
 			Py_INCREF( &StdoutType );
 			PyModule_AddObject( m, "Stdout", reinterpret_cast<PyObject *>(&StdoutType) );
 		}
+
+#if PY_MAJOR_VERSION >= 3
 		return m;
+#endif
 	}
 
 	void set_stdout( stdout_write_type write )
 	{
 		if ( !g_stdout )
 		{
-			g_stdout_saved = PySys_GetObject( "stdout" ); // borrowed
+			g_stdout_saved = PySys_GetObject( const_cast<char*>("stdout") ); // borrowed
 			g_stdout = StdoutType.tp_new( &StdoutType, 0, 0 );
 		}
 
 		Stdout *impl = reinterpret_cast<Stdout *>(g_stdout);
 		impl->write = write;
-		PySys_SetObject( "stdout", g_stdout );
+		PySys_SetObject( const_cast<char*>("stdout"), g_stdout );
 	}
 
 	void reset_stdout()
 	{
 		if ( g_stdout_saved )
-			PySys_SetObject( "stdout", g_stdout_saved );
+			PySys_SetObject( const_cast<char*>("stdout"), g_stdout_saved );
 
 		Py_XDECREF( g_stdout );
 		g_stdout = 0;
@@ -149,19 +164,19 @@ namespace emb
 	{
 		if ( !g_stderr )
 		{
-			g_stderr_saved = PySys_GetObject( "stderr" ); // borrowed
+			g_stderr_saved = PySys_GetObject( const_cast<char*>("stderr") ); // borrowed
 			g_stderr = StdoutType.tp_new( &StdoutType, 0, 0 );
 		}
 
 		Stdout *impl = reinterpret_cast<Stdout *>(g_stderr);
 		impl->write = write;
-		PySys_SetObject( "stderr", g_stderr );
+		PySys_SetObject( const_cast<char*>("stderr"), g_stderr );
 	}
 
 	void reset_stderr()
 	{
 		if ( g_stderr_saved )
-			PySys_SetObject( "stderr", g_stderr_saved );
+			PySys_SetObject( const_cast<char*>("stderr"), g_stderr_saved );
 
 		Py_XDECREF( g_stderr );
 		g_stderr = 0;

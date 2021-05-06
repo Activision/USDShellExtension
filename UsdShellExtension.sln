@@ -21,18 +21,22 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2EEFD0F-82FF-4404-94E5-CD2F3837BDA9}"
 	ProjectSection(SolutionItems) = preProject
 		atviversion.h = atviversion.h
+		BUILDING.md = BUILDING.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsdShellExtensionInstaller", "UsdShellExtensionInstaller\UsdShellExtensionInstaller.vcxproj", "{1390252A-71E2-4C4E-B874-301909F40CBA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Property Sheets", "Property Sheets", "{8889FDB0-64A4-4AB7-A539-D3328F0846E9}"
+	ProjectSection(SolutionItems) = preProject
 		atviversion.props = atviversion.props
 		boost.props = boost.props
-		BUILDING.md = BUILDING.md
 		nsis.props = nsis.props
 		python.props = python.props
-		README.md = README.md
 		usd-monolithic.props = usd-monolithic.props
 		usd-shared.props = usd-shared.props
 		usd.props = usd.props
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsdShellExtensionInstaller", "UsdShellExtensionInstaller\UsdShellExtensionInstaller.vcxproj", "{1390252A-71E2-4C4E-B874-301909F40CBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

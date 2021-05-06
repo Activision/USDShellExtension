@@ -38,7 +38,7 @@ The shell extension is injected into Windows Explorer which is also the process 
 the Windows Desktop. We want to keep as much out of that process as we can.
 
 ```
-build_scripts\build_usd.py d:\USD-monolithic-bare --build-monolithic --no-tests --no-examples --no-tutorials --no-tools --no-docs --no-python --no-imaging --no-ptex --no-openvdb --no-usdview --no-embree --no-prman --no-openimageio --no-opencolorio --no-alembic --no-hdf5 --no-draco --no-materialx
+python.exe build_scripts\build_usd.py d:\USD-monolithic-bare --build-monolithic --no-tests --no-examples --no-tutorials --no-tools --no-docs --no-python --no-imaging --no-ptex --no-openvdb --no-usdview --no-embree --no-prman --no-openimageio --no-opencolorio --no-alembic --no-hdf5 --no-draco --no-materialx
 ```
 
 #### Windows 10 SDK
@@ -66,13 +66,13 @@ everything else.
 Bare-Bones USD SDK
 
 ```
-build_scripts\build_usd.py d:\USD-monolithic-bare --build-monolithic --no-tests --no-examples --no-tutorials --no-tools --no-docs --no-python --no-imaging --no-ptex --no-openvdb --no-usdview --no-embree --no-prman --no-openimageio --no-opencolorio --no-alembic --no-hdf5 --no-draco --no-materialx
+python.exe build_scripts\build_usd.py d:\USD-monolithic-bare --build-monolithic --no-tests --no-examples --no-tutorials --no-tools --no-docs --no-python --no-imaging --no-ptex --no-openvdb --no-usdview --no-embree --no-prman --no-openimageio --no-opencolorio --no-alembic --no-hdf5 --no-draco --no-materialx
 ```
 
 Full USD SDK
 
 ```
-build_scripts\build_usd.py d:\USD-shared-full [--embree] [--materialx]
+python.exe build_scripts\build_usd.py d:\USD-shared-full [--embree] [--materialx]
 ```
 
 Then update the property sheets to point to these builds.

@@ -89,8 +89,13 @@ DWORD WINAPI CUSDPreviewThread::ThreadProc( _In_ LPVOID lpParameter )
 {
 	CUSDPreviewThread *pThis = reinterpret_cast<CUSDPreviewThread *>(lpParameter);
 
-	wchar_t sPathToHostExe[MAX_PATH];
-	::GetModuleFileName(nullptr, sPathToHostExe, ARRAYSIZE(sPathToHostExe));
+	TPyChar sPathToHostExe[MAX_PATH];
+#if PY_MAJOR_VERSION >= 3
+	::GetModuleFileNameW(nullptr, sPathToHostExe, ARRAYSIZE(sPathToHostExe));
+#else
+	::GetModuleFileNameA(nullptr, sPathToHostExe, ARRAYSIZE(sPathToHostExe));
+#endif
+
 	Py_SetProgramName(sPathToHostExe);
 
     PyImport_AppendInittab("emb", emb::PyInit_emb);
@@ -109,17 +114,22 @@ DWORD WINAPI CUSDPreviewThread::ThreadProc( _In_ LPVOID lpParameter )
 	// UsdStageView initializes the renderer from this environment variable
 	_tputenv_s( _T("HD_DEFAULT_RENDERER"), sRenderer );
 
-	const wchar_t* argv[] =
-	{
-		sPathToHostExe,
-		L"--hwnd",
-		shWndParent.GetString(),
-		L"--usdviewqDir",
-		sUsdViewqFolder.GetString(),
-		pThis->m_sPathToUsdStage.GetString(),
-	};
+	std::vector<const TPyChar *> ArgV;
+	ArgV.push_back( sPathToHostExe );
+	ArgV.push_back( _Tpy( "--hwnd" ) );
+	CW2Py pyhWndParent( shWndParent );
+	ArgV.push_back( pyhWndParent );
+	ArgV.push_back( _Tpy( "--usdviewqDir" ) );
+	CW2Py pyUsdViewqFolder( sUsdViewqFolder );
+	ArgV.push_back( pyUsdViewqFolder );
+	CW2Py pyPathToUsdStage( pThis->m_sPathToUsdStage );
+	ArgV.push_back( pyPathToUsdStage );
 
-	PySys_SetArgvEx( ARRAYSIZE(argv), const_cast<wchar_t**>(argv), 0 );
+	PyAppendSysPath( GetUsdPythonPathList() );
+	PySetEnvironmentVariable( L"PATH", GetUsdPath() );
+	PySetEnvironmentVariable( L"PYTHONPATH", GetUsdPythonPath() );
+
+	PySys_SetArgvEx( static_cast<int>(ArgV.size()), const_cast<TPyChar**>(&ArgV[0]), 1 );
 
 	HRSRC hrscPy = ::FindResource( g_hInstance, MAKEINTRESOURCE( IDR_PYTHON_PREVIEWHANLDER ), _T("PYTHON") );
 	if ( hrscPy == nullptr )

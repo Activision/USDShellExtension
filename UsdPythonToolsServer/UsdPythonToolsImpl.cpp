@@ -45,14 +45,14 @@ static FILE *OpenRelativeFile(LPCWSTR sToolFileName, std::wstring& sOutFilePath)
 {
 	sOutFilePath = FindRelativeFile( sToolFileName );
 
-	FILE *fp = _wfsopen( sOutFilePath.c_str(), L"rt", _SH_DENYWR );
+	FILE *fp = _wfsopen( sOutFilePath.c_str(), L"rb", _SH_SECURE );
 	if ( fp == nullptr )
 		return nullptr;
 
 	return fp;
 }
 
-static HRESULT RunUsdFile( LPCWSTR sToolFileName, std::vector<const wchar_t *> &ArgV, std::string &sStdOut, int& exitCode )
+static HRESULT RunDiskPythonScript( LPCWSTR sToolFileName, std::vector<const TPyChar *> &ArgV, std::string &sStdOut, int& exitCode )
 {
 	exitCode = 0;
 
@@ -60,6 +60,18 @@ static HRESULT RunUsdFile( LPCWSTR sToolFileName, std::vector<const wchar_t *> &
 	FILE *fp = OpenRelativeFile( sToolFileName, sFilePath );
 	if (fp == nullptr)
 		return E_FAIL;
+
+	fseek( fp, 0, SEEK_END );
+	int sizeOfFile = ftell( fp );
+	fseek( fp, 0, SEEK_SET );
+
+	CStringA pyScript;
+	LPSTR pScriptData = pyScript.GetBufferSetLength( sizeOfFile );
+	fread( pScriptData, 1, sizeOfFile, fp );
+	pyScript.ReleaseBuffer( sizeOfFile );
+
+	fclose( fp );
+	fp = nullptr;
 
     PyImport_AppendInittab("emb", emb::PyInit_emb);
 	CPyInterpreter pyInterpreter;
@@ -70,15 +82,16 @@ static HRESULT RunUsdFile( LPCWSTR sToolFileName, std::vector<const wchar_t *> &
     emb::stdout_write_type writeStdErr = [&sStdOut] (std::string s) { sStdOut += s; };
     emb::set_stderr(writeStdErr);
 
-	PySys_SetArgvEx( static_cast<int>(ArgV.size()), const_cast<wchar_t**>(&ArgV[0]), 0 );
+	PyAppendSysPath( GetUsdPythonPathList() );
+	PySetEnvironmentVariable( L"PATH", GetUsdPath() );
+	PySetEnvironmentVariable( L"PYTHONPATH", GetUsdPythonPath() );
+
+	PySys_SetArgvEx( static_cast<int>(ArgV.size()), const_cast<TPyChar**>(&ArgV[0]), 1 );
 
 	PyObject* pMainModule = PyImport_AddModule("__main__");
     PyObject* pGlobalDict = PyModule_GetDict(pMainModule);
 
-	CPyObject result = CPyObject( PyRun_File( fp, (LPCSTR)ATL::CW2A(sFilePath.c_str(), CP_UTF8), Py_file_input, pGlobalDict, pGlobalDict ) );
-
-	fclose( fp );
-	fp = nullptr;
+	CPyObject result = CPyObject( PyRun_String( pyScript.GetString(), Py_file_input, pGlobalDict, pGlobalDict ) );
 
 	HRESULT hr = S_OK;
 	if ( PyErr_Occurred() )
@@ -87,6 +100,9 @@ static HRESULT RunUsdFile( LPCWSTR sToolFileName, std::vector<const wchar_t *> &
         if ( !e.IsExceptionSystemExit() )
         {
 			CString sErrorMsg = e.tracebackW();
+			if ( sErrorMsg.IsEmpty() )
+				sErrorMsg.Format( _T( "[Error]\n%hs" ), e.what() );
+
 			if ( !sStdOut.empty() )
 				sErrorMsg.AppendFormat( _T( "\n\n[STDOUT]\n%hs" ), sStdOut.c_str() );
 
@@ -121,7 +137,7 @@ static HRESULT RunUsdFile( LPCWSTR sToolFileName, std::vector<const wchar_t *> &
 	return hr;
 }
 
-static HRESULT RunUsdResource( UINT nResourceId, std::vector<const wchar_t *> &ArgV, std::string &sStdOut, int& exitCode )
+static HRESULT RunResourcePythonScript( UINT nResourceId, std::vector<const TPyChar *> &ArgV, std::string &sStdOut, int& exitCode )
 {
 	exitCode = 0;
 
@@ -151,7 +167,11 @@ static HRESULT RunUsdResource( UINT nResourceId, std::vector<const wchar_t *> &A
     emb::stdout_write_type writeStdErr = [&sStdOut] (std::string s) { sStdOut += s; };
     emb::set_stderr(writeStdErr);
 
-	PySys_SetArgvEx( static_cast<int>(ArgV.size()), const_cast<wchar_t**>(&ArgV[0]), 0 );
+	PyAppendSysPath( GetUsdPythonPathList() );
+	PySetEnvironmentVariable( L"PATH", GetUsdPath() );
+	PySetEnvironmentVariable( L"PYTHONPATH", GetUsdPythonPath() );
+
+	PySys_SetArgvEx( static_cast<int>(ArgV.size()), const_cast<TPyChar**>(&ArgV[0]), 1 );
 
 	PyObject* pMainModule = PyImport_AddModule("__main__");
     PyObject* pGlobalDict = PyModule_GetDict(pMainModule);
@@ -165,6 +185,9 @@ static HRESULT RunUsdResource( UINT nResourceId, std::vector<const wchar_t *> &A
         if ( !e.IsExceptionSystemExit() )
         {
 			CString sErrorMsg = e.tracebackW();
+			if ( sErrorMsg.IsEmpty() )
+				sErrorMsg.Format( _T( "[Error]\n%hs" ), e.what() );
+
 			if ( !sStdOut.empty() )
 				sErrorMsg.AppendFormat( _T( "\n\n[STDOUT]\n%hs" ), sStdOut.c_str() );
 
@@ -205,8 +228,12 @@ STDMETHODIMP CUsdPythonToolsImpl::Record( IN BSTR usdStagePath, IN int imageWidt
 
 	HRESULT hr;
 
-	wchar_t sPathToHostExe[MAX_PATH];
-	::GetModuleFileName( nullptr, sPathToHostExe, ARRAYSIZE( sPathToHostExe ) );
+	TPyChar sPathToHostExe[MAX_PATH];
+#if PY_MAJOR_VERSION >= 3
+	::GetModuleFileNameW( nullptr, sPathToHostExe, ARRAYSIZE( sPathToHostExe ) );
+#else
+	::GetModuleFileNameA( nullptr, sPathToHostExe, ARRAYSIZE( sPathToHostExe ) );
+#endif
 	Py_SetProgramName( sPathToHostExe );
 
 	wchar_t sTempPath[MAX_PATH];
@@ -241,24 +268,29 @@ STDMETHODIMP CUsdPythonToolsImpl::Record( IN BSTR usdStagePath, IN int imageWidt
 		return E_FAIL;
 	}
 
-	std::vector<const wchar_t *> ArgV;
+	std::vector<const TPyChar *> ArgV;
 	// Set the first argument as the absolute path to the usdrecord python script
 	// We will use argv[0] to load it using importlib
-	ArgV.push_back( sUsdRecordAbsolutePath.c_str() );
-	ArgV.push_back( L"--imageWidth" );
-	ArgV.push_back( sImageWidth );
+	CW2Py pyUsdRecordAbsolutePath( sUsdRecordAbsolutePath.c_str() );
+	ArgV.push_back( pyUsdRecordAbsolutePath );
+	ArgV.push_back( _Tpy("--imageWidth") );
+	CW2Py pyImageWidth( sImageWidth );
+	ArgV.push_back( pyImageWidth );
 
+	CW2Py pyRenderer(renderer);
 	if ( renderer != nullptr && renderer[0] != '\0' )
 	{
-		ArgV.push_back( L"--renderer" );
-		ArgV.push_back( renderer );
+		ArgV.push_back( _Tpy("--renderer") );
+		ArgV.push_back( pyRenderer );
 	}
 
-	ArgV.push_back( usdStagePath );
-	ArgV.push_back( sTempFileName );
+	CW2Py pyUsdStagePath(usdStagePath);
+	ArgV.push_back( pyUsdStagePath );
+	CW2Py pyTempFileName(sTempFileName);
+	ArgV.push_back( pyTempFileName );
 
 	int exitCode = 0;
-	hr = RunUsdResource( IDR_PYTHON_THUMBNAIL, ArgV, sStdOut, exitCode );
+	hr = RunResourcePythonScript( IDR_PYTHON_THUMBNAIL, ArgV, sStdOut, exitCode );
 	if ( FAILED( hr ) )
 		return hr;
 
@@ -284,25 +316,31 @@ STDMETHODIMP CUsdPythonToolsImpl::View( IN BSTR usdStagePath, IN BSTR renderer )
 
 	HRESULT hr;
 
-	wchar_t sPathToHostExe[MAX_PATH];
-	::GetModuleFileName( nullptr, sPathToHostExe, ARRAYSIZE( sPathToHostExe ) );
+	TPyChar sPathToHostExe[MAX_PATH];
+#if PY_MAJOR_VERSION >= 3
+	::GetModuleFileNameW( nullptr, sPathToHostExe, ARRAYSIZE( sPathToHostExe ) );
+#else
+	::GetModuleFileNameA( nullptr, sPathToHostExe, ARRAYSIZE( sPathToHostExe ) );
+#endif
 	Py_SetProgramName( sPathToHostExe );
 
     std::string sStdOut;
 
-	std::vector<const wchar_t *> ArgV;
+	std::vector<const TPyChar *> ArgV;
 	ArgV.push_back( sPathToHostExe );
 
+	CW2Py pyRenderer(renderer);
 	if ( renderer != nullptr && renderer[0] != '\0' )
 	{
-		ArgV.push_back( L"--renderer" );
-		ArgV.push_back( renderer );
+		ArgV.push_back( _Tpy("--renderer") );
+		ArgV.push_back( pyRenderer );
 	}
 
-	ArgV.push_back( usdStagePath );
+	CW2Py pyUsdStagePath(usdStagePath);
+	ArgV.push_back( pyUsdStagePath );
 
 	int exitCode = 0;
-	hr = RunUsdFile( L"usdview", ArgV, sStdOut, exitCode );
+	hr = RunDiskPythonScript( L"usdview.py", ArgV, sStdOut, exitCode );
 	if ( FAILED( hr ) )
 		return hr;
 

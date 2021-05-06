@@ -10,11 +10,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <Import Project="$(SolutionDir)\python.props" />
-  <Import Project="$(SolutionDir)\boost.props" />
-  <Import Project="$(SolutionDir)\usd.props" />
-  <Import Project="$(SolutionDir)\nsis.props" />
-  <Import Project="$(SolutionDir)\atviversion.props" />
   <ItemGroup>
     <ClInclude Include="ArResolverShellExtension.h" />
     <ClInclude Include="UsdMetadata_Atvi.h" />
@@ -108,6 +103,11 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(SolutionDir)\python.props" />
+  <Import Project="$(SolutionDir)\boost.props" />
+  <Import Project="$(SolutionDir)\usd.props" />
+  <Import Project="$(SolutionDir)\nsis.props" />
+  <Import Project="$(SolutionDir)\atviversion.props" />
   <PropertyGroup Label="PythonConfiguration">
     <RegistryView>RegistryView.Registry32</RegistryView>
     <RegistryView Condition="$(Platform) == 'x64'">RegistryView.Registry64</RegistryView>
@@ -160,6 +160,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

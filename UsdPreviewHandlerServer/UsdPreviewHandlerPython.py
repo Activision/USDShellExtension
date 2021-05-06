@@ -5,10 +5,15 @@ import argparse
 from pxr import Usd, UsdUtils, Sdf, UsdAppUtils
 from pxr.Usdviewq.stageView import StageView
 from pxr.UsdAppUtils.complexityArgs import RefinementComplexities
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
 import UsdPreviewHandler
+
+try:
+    from PySide2.QtCore import *
+    from PySide2.QtGui import *
+    from PySide2.QtWidgets import *
+except ImportError:
+    from PySide.QtCore import *
+    from PySide.QtGui import *
 
 class Widget(QWidget):
     def __init__(self, stage=None, app=None, previewApp=None):
@@ -298,9 +303,15 @@ def main():
     window.show()
 
     # poll for events every so often
-    window.startTimer(250)
+    window.startTimer( 250 )
 
-    previewApp.SetParent(args.hwnd, window.effectiveWinId(), window.view.effectiveWinId())
+    try:
+        import ctypes
+        ctypes.pythonapi.PyCObject_AsVoidPtr.restype = ctypes.c_void_p
+        ctypes.pythonapi.PyCObject_AsVoidPtr.argtypes = [ctypes.py_object]
+        previewApp.SetParent( args.hwnd, ctypes.pythonapi.PyCObject_AsVoidPtr(window.effectiveWinId()), ctypes.pythonapi.PyCObject_AsVoidPtr(window.view.effectiveWinId()) )
+    except:
+        previewApp.SetParent( args.hwnd, window.effectiveWinId(), window.view.effectiveWinId() )
 
     window.setAttribute( Qt.WA_DontShowOnScreen, False )
 

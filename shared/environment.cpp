@@ -1,33 +1,48 @@
 #include "stdafx.h"
 #include "environment.h"
 
-std::vector<CString> g_UsdPaths;
-std::vector<CString> g_UsdPythonPaths;
+#include <Python.h>
 
-const std::vector<CString> &GetUsdPathList()
+std::vector<CStringW> g_UsdPathList;
+std::vector<CStringW> g_UsdPythonPathList;
+
+CStringW g_UsdPath;
+CStringW g_UsdPythonPath;
+
+const std::vector<CStringW> &GetUsdPathList()
 {
-	return g_UsdPaths;
+	return g_UsdPathList;
 }
 
-const std::vector<CString> &GetUsdPythonPathList()
+const std::vector<CStringW> &GetUsdPythonPathList()
 {
-	return g_UsdPythonPaths;
+	return g_UsdPythonPathList;
 }
 
-static std::vector<CString> TranslatePathsToList(LPCTSTR paths)
+const CStringW &GetUsdPath()
 {
-	std::vector<CString> pathList;
-	CString sPaths(paths);
+	return g_UsdPath;
+}
 
-	CString sToken;
+const CStringW &GetUsdPythonPath()
+{
+	return g_UsdPythonPath;
+}
+
+static std::vector<CStringW> TranslatePathsToList(LPCWSTR paths)
+{
+	std::vector<CStringW> pathList;
+	CStringW sPaths(paths);
+
+	CStringW sToken;
 	int pos = 0;
-	sToken = sPaths.Tokenize(_T(";"), pos);
+	sToken = sPaths.Tokenize(L";", pos);
 	if ( !sToken.IsEmpty() )
 	{
 		while ( !sToken.IsEmpty() )
 		{
 			pathList.push_back( sToken );
-			sToken = sPaths.Tokenize( _T( ";" ), pos );
+			sToken = sPaths.Tokenize( L";", pos );
 		}
 	}
 	else
@@ -38,18 +53,39 @@ static std::vector<CString> TranslatePathsToList(LPCTSTR paths)
 	return pathList;
 }
 
-static void SetupPathEnvironmentVariable(LPCTSTR sUSD_Path, LPCTSTR sPython_Path)
+static CStringW AppendEnvironmentVariable( LPCWSTR sEnvironmentVariable, LPCWSTR sValue )
 {
-	TCHAR sGetEnvironment[8196];
-	TCHAR sSetEnvironment[8196];
+	// CRT environment variables
+	size_t sizeRequired = 0;
+	CStringW sGetBuffer;
+	if ( _wgetenv_s( &sizeRequired, nullptr, 0, sEnvironmentVariable ) == 0 )
+	{
+		if ( sizeRequired > 0 )
+		{
+			LPWSTR pGetBuffer = sGetBuffer.GetBuffer( static_cast<int>(sizeRequired) );
+			_wgetenv_s( &sizeRequired, pGetBuffer, sizeRequired, sEnvironmentVariable );
+			sGetBuffer.ReleaseBufferSetLength( static_cast<int>(sizeRequired) );
+		}
+	}
 
-	_tcscpy_s( sSetEnvironment, sUSD_Path );
+	CStringW sSetBuffer = sValue;
+	sSetBuffer += L";";
+	sSetBuffer += sGetBuffer;
+	_wputenv_s( sEnvironmentVariable, sSetBuffer );
+
+	return sSetBuffer;
+}
+
+static void SetupPathEnvironmentVariable(LPCWSTR sUSD_Path, LPCWSTR sPython_Path)
+{
+	CStringW sSetBuffer;
 
 	if ( sPython_Path[0] == '\0' )
 	{
-#if defined(PYTHONVERSION)
-		CString sPythonRegKeyInstallPath;
-		sPythonRegKeyInstallPath.Format( _T( "SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath" ), PYTHONVERSION );
+#if PY_MAJOR_VERSION >= 3
+	#if defined(PYTHONVERSION)
+		CStringW sPythonRegKeyInstallPath;
+		sPythonRegKeyInstallPath.Format( L"SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath", _CRT_STRINGIZE(PYTHONVERSION) );
 
 		LSTATUS ls;
 		CRegKey regPythonInstallPath;
@@ -58,115 +94,101 @@ static void SetupPathEnvironmentVariable(LPCTSTR sUSD_Path, LPCTSTR sPython_Path
 		{
 			TCHAR sValue[512];
 			ULONG nChars = ARRAYSIZE( sValue );
-			ls = regPythonInstallPath.QueryStringValue( _T( "" ), sValue, &nChars );
+			ls = regPythonInstallPath.QueryStringValue( L"", sValue, &nChars );
 			if ( ls == ERROR_SUCCESS )
 			{
-				if ( sSetEnvironment[0] != '\0' )
-					_tcscat_s( sSetEnvironment, _T( ";" ) );
-				_tcscat_s( sSetEnvironment, sValue );
+				if ( !sSetBuffer.IsEmpty() )
+					sSetBuffer += L";";
+				sSetBuffer += sValue;
 			}
+		}
+	#endif
+#elif PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 7
+		static constexpr wchar_t python27InstallPath[] = L"C:\\Python27\\";
+		DWORD nAttrib = ::GetFileAttributesW( python27InstallPath );
+		if ( (nAttrib != INVALID_FILE_ATTRIBUTES) && (nAttrib & FILE_ATTRIBUTE_DIRECTORY) )
+		{
+			if ( !sSetBuffer.IsEmpty() )
+				sSetBuffer += L";";
+			sSetBuffer += python27InstallPath;
 		}
 #endif
 	}
 	else
 	{
-		if ( sSetEnvironment[0] != '\0' )
-			_tcscat_s( sSetEnvironment, _T( ";" ) );
-		_tcscat_s( sSetEnvironment, sPython_Path );
+		if ( !sSetBuffer.IsEmpty() )
+			sSetBuffer += L";";
+		sSetBuffer += sPython_Path;
 	}
 
-	size_t sizeRequired = 0;
-	sGetEnvironment[0] = '\0';
-	if (_tgetenv_s(&sizeRequired, sGetEnvironment, _T("PATH")) == 0)
-	{
-		_tcscat_s(sSetEnvironment, _T(";"));
-		_tcscat_s(sSetEnvironment, sGetEnvironment);
-	}
-	_tputenv_s(_T("PATH"), sSetEnvironment);
+	if ( !sSetBuffer.IsEmpty() )
+		sSetBuffer += L";";
+	sSetBuffer += sUSD_Path;
+
+	g_UsdPath = AppendEnvironmentVariable( L"PATH", sSetBuffer );
 }
 
-static void SetupPythonPathEnvironmentVariable(LPCTSTR sUSD_PythonPath, LPCTSTR sPython_PythonPath)
+static void SetupPythonPathEnvironmentVariable(LPCWSTR sUSD_PythonPath, LPCWSTR sPython_PythonPath)
 {
-	TCHAR sGetEnvironment[8196];
-	TCHAR sSetEnvironment[8196];
+	CStringW sSetBuffer = sUSD_PythonPath;
+	if ( !sSetBuffer.IsEmpty() )
+		sSetBuffer += L";";
+	sSetBuffer += sPython_PythonPath;
 
-	_tcscpy_s( sSetEnvironment, sUSD_PythonPath );
-	if ( sSetEnvironment[0] != '\0' )
-		_tcscat_s( sSetEnvironment, _T( ";" ) );
-	_tcscat_s( sSetEnvironment, sPython_PythonPath );
-
-	size_t sizeRequired = 0;
-	sGetEnvironment[0] = '\0';
-	if (_tgetenv_s(&sizeRequired, sGetEnvironment, _T("PYTHONPATH")) == 0)
-	{
-		_tcscat_s(sSetEnvironment, _T(";"));
-		_tcscat_s(sSetEnvironment, sGetEnvironment);
-	}
-
-	_tputenv_s(_T("PYTHONPATH"), sSetEnvironment);
+	g_UsdPythonPath = AppendEnvironmentVariable( L"PYTHONPATH", sSetBuffer );
 }
 
-static void SetupUsdEditorEnvironmentVariable(LPCTSTR sUSD_EditorPath)
+static void SetupUsdEditorEnvironmentVariable(LPCWSTR sUSD_EditorPath)
 {
-	if ( sUSD_EditorPath[0] != '\0' )
+	if ( sUSD_EditorPath && sUSD_EditorPath[0] != '\0' )
 	{
-		_tputenv_s( _T( "USD_EDITOR" ), sUSD_EditorPath );
+		AppendEnvironmentVariable( L"USD_EDITOR", sUSD_EditorPath );
 	}
 }
 
-static void SetupUsdPluginPathEnvironmentVariable(LPCTSTR sUSD_PluginPath)
+static void SetupUsdPluginPathEnvironmentVariable(LPCWSTR sUSD_PluginPath)
 {
-	TCHAR sGetEnvironment[8196];
-	TCHAR sSetEnvironment[8196];
-
-	_tcscpy_s( sSetEnvironment, sUSD_PluginPath );
-
-	size_t sizeRequired = 0;
-	sGetEnvironment[0] = '\0';
-	if (_tgetenv_s(&sizeRequired, sGetEnvironment, _T("PXR_PLUGINPATH_NAME")) == 0)
+	if ( sUSD_PluginPath && sUSD_PluginPath[0] != '\0' )
 	{
-		_tcscat_s(sSetEnvironment, _T(";"));
-		_tcscat_s(sSetEnvironment, sGetEnvironment);
+		AppendEnvironmentVariable( L"PXR_PLUGINPATH_NAME", sUSD_PluginPath );
 	}
-
-	_tputenv_s(_T("PXR_PLUGINPATH_NAME"), sSetEnvironment);
 }
 
-static void GetPrivateProfileStringAndExpandEnvironmentStrings( LPCTSTR lpAppName, LPCTSTR lpKeyName, LPCTSTR lpDefault, LPTSTR lpReturnedString, DWORD nSize, LPCTSTR lpFileName )
+static void GetPrivateProfileStringAndExpandEnvironmentStrings( LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault, LPWSTR lpReturnedString, DWORD nSize, LPCWSTR lpFileName )
 {
-	TCHAR sBuffer[8196];
+	wchar_t sBuffer[8196];
 	sBuffer[0] = '\0';
-	GetPrivateProfileString( lpAppName, lpKeyName, lpDefault, sBuffer, ARRAYSIZE(sBuffer), lpFileName );
-	ExpandEnvironmentStrings( sBuffer, lpReturnedString, nSize );
+	::GetPrivateProfileStringW( lpAppName, lpKeyName, lpDefault, sBuffer, ARRAYSIZE(sBuffer), lpFileName );
+	::ExpandEnvironmentStringsW( sBuffer, lpReturnedString, nSize );
 }
 
 void SetupPythonEnvironment()
 {
-	TCHAR sModulePath[MAX_PATH];
-	GetModuleFileName( nullptr, sModulePath, ARRAYSIZE( sModulePath ) );
-	PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
-	PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), _T( "UsdShellExtension.cfg" ) );
+	wchar_t sModulePath[MAX_PATH];
+	::GetModuleFileNameW( nullptr, sModulePath, ARRAYSIZE( sModulePath ) );
+	::PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
+	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), L"UsdShellExtension.cfg" );
 
-	TCHAR sUSD_Path[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( _T( "USD" ), _T( "PATH" ), _T( "" ), sUSD_Path, ARRAYSIZE( sUSD_Path ), sModulePath );
+	wchar_t sUSD_Path[2048];
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PATH", L"", sUSD_Path, ARRAYSIZE( sUSD_Path ), sModulePath );
 
-	TCHAR sUSD_PythonPath[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( _T( "USD" ), _T( "PYTHONPATH" ), _T( "" ), sUSD_PythonPath, ARRAYSIZE( sUSD_PythonPath ), sModulePath );
+	wchar_t sUSD_PythonPath[2048];
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PYTHONPATH", L"", sUSD_PythonPath, ARRAYSIZE( sUSD_PythonPath ), sModulePath );
 
-	TCHAR sUSD_EditorPath[MAX_PATH];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( _T( "USD" ), _T( "EDITOR" ), _T( "" ), sUSD_EditorPath, ARRAYSIZE( sUSD_EditorPath ), sModulePath );
+	wchar_t sUSD_EditorPath[MAX_PATH];
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"EDITOR", L"", sUSD_EditorPath, ARRAYSIZE( sUSD_EditorPath ), sModulePath );
 
-	TCHAR sUSD_PluginPath[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( _T( "USD" ), _T( "PXR_PLUGINPATH_NAME" ), _T( "" ), sUSD_PluginPath, ARRAYSIZE( sUSD_PluginPath ), sModulePath );
+	wchar_t sUSD_PluginPath[2048];
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PXR_PLUGINPATH_NAME", L"", sUSD_PluginPath, ARRAYSIZE( sUSD_PluginPath ), sModulePath );
 
-	TCHAR sPython_Path[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( _T( "PYTHON" ), _T( "PATH" ), _T( "" ), sPython_Path, ARRAYSIZE( sPython_Path ), sModulePath );
+	wchar_t sPython_Path[2048];
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PATH", L"", sPython_Path, ARRAYSIZE( sPython_Path ), sModulePath );
 
-	TCHAR sPython_PythonPath[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( _T( "PYTHON" ), _T( "PYTHONPATH" ), _T( "" ), sPython_PythonPath, ARRAYSIZE( sPython_PythonPath ), sModulePath );
+	wchar_t sPython_PythonPath[2048];
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PYTHONPATH", L"", sPython_PythonPath, ARRAYSIZE( sPython_PythonPath ), sModulePath );
 
-	g_UsdPaths = TranslatePathsToList(sUSD_Path);
-	g_UsdPythonPaths = TranslatePathsToList(sUSD_PythonPath);
+	g_UsdPathList = TranslatePathsToList(sUSD_Path);
+	g_UsdPythonPathList = TranslatePathsToList(sUSD_PythonPath);
 
 	SetupPathEnvironmentVariable( sUSD_Path, sPython_Path );
 	SetupPythonPathEnvironmentVariable( sUSD_PythonPath, sPython_PythonPath );

@@ -1,6 +1,9 @@
 import sys
-from importlib.util import spec_from_loader, module_from_spec
-from importlib.machinery import SourceFileLoader 
+try:
+    from importlib.util import spec_from_loader, module_from_spec
+    from importlib.machinery import SourceFileLoader 
+except ImportError:
+    import imp
 
 def _SetupOpenGLContextFix(width=100, height=100):
     try:
@@ -29,9 +32,12 @@ def _SetupOpenGLContextFix(width=100, height=100):
     return glWidget
 
 def main():
-    spec = spec_from_loader("usdrecord", SourceFileLoader("usdrecord", sys.argv[0]))
-    usdrecord = module_from_spec(spec)
-    spec.loader.exec_module(usdrecord)
+    try:
+        spec = spec_from_loader("usdrecord", SourceFileLoader("usdrecord", sys.argv[0]))
+        usdrecord = module_from_spec(spec)
+        spec.loader.exec_module(usdrecord)
+    except:
+        usdrecord = imp.load_source('usdrecord', sys.argv[0])
 
     usdrecord._SetupOpenGLContext = _SetupOpenGLContextFix
     return usdrecord.main()

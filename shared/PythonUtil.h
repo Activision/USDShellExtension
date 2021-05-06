@@ -2,6 +2,18 @@
 
 #include <exception>
 
+#if PY_MAJOR_VERSION >= 3
+	using TPyChar = wchar_t;
+	using CW2Py = ATL::CW2CW;
+	#define __Tpy(x)      L ## x
+#else
+	using TPyChar = char;
+	using CW2Py = ATL::CW2A;
+	#define __Tpy(x)      x
+#endif
+
+#define _Tpy(x)       __Tpy(x)
+
 class CPyInterpreter
 {
 public:
@@ -109,6 +121,54 @@ public:
 
     PyObject *p = nullptr;
 };
+
+#if PY_MAJOR_VERSION < 3
+inline const char *PyUnicode_AsUTF8( PyObject *unicode )
+{
+    if ( PyUnicode_Check( unicode ) )
+    {
+        CPyObject bytes( PyUnicode_AsEncodedString( unicode, "UTF-8", "strict" ) );
+        if ( bytes == nullptr )
+            return nullptr;
+
+        const char *s = PyBytes_AS_STRING( bytes.get() );
+        return s;
+    }
+    else if ( PyBytes_Check( unicode ) )
+    {
+        const char *s = PyBytes_AS_STRING( unicode );
+        return s;
+    }
+
+    return nullptr;
+}
+
+inline wchar_t *PyUnicode_AsWideCharString( PyObject *unicode, Py_ssize_t *size )
+{
+    const char *utf8 = PyUnicode_AsUTF8( unicode );
+    if ( utf8 == nullptr )
+        return nullptr;
+
+    int nCharactersNeededWithNullTerminator = ::MultiByteToWideChar( CP_UTF8, 0, utf8, -1, nullptr, 0 );
+    if ( nCharactersNeededWithNullTerminator <= 1 )
+        return nullptr;
+
+    wchar_t* utf16 = reinterpret_cast<wchar_t*>(PyMem_Malloc( sizeof( wchar_t ) * nCharactersNeededWithNullTerminator ));
+    if ( utf16 == nullptr )
+        return nullptr;
+
+    if ( ::MultiByteToWideChar( CP_UTF8, 0, utf8, -1, utf16, nCharactersNeededWithNullTerminator ) <= 0 )
+    {
+        PyMem_Free( utf16 );
+        return nullptr;
+    }
+
+    if ( size )
+        *size = nCharactersNeededWithNullTerminator - 1;
+
+    return utf16;
+}
+#endif
 
 class CPyString : public CPyObject
 {
@@ -471,3 +531,70 @@ public:
 };
 
 
+inline void PySetEnvironmentVariable( LPCWSTR sEnvironmentVariable, LPCWSTR sValue )
+{
+    if ( sEnvironmentVariable == nullptr || sEnvironmentVariable[0] == '\0' )
+        return;
+
+    CPyObject os = PyImport_ImportModule( "os" );
+    if ( os == nullptr )
+        return;
+    CPyObject environClass = PyObject_GetAttrString( os.get(), "environ" );
+    if ( environClass == nullptr )
+        return;
+    CPyObject environSetItem = PyObject_GetAttrString( environClass.get(), "__setitem__" );
+    if ( environSetItem == nullptr )
+        return;
+    CPyObject pyEnvironmentVariable = PyUnicode_FromString( static_cast<LPCSTR>(ATL::CW2A( sEnvironmentVariable, CP_UTF8 )) );
+    if ( pyEnvironmentVariable == nullptr )
+        return;
+    CPyObject pyValue = PyUnicode_FromString( static_cast<LPCSTR>(ATL::CW2A( sValue ? sValue : L"", CP_UTF8 )) );
+    if ( pyValue == nullptr )
+        return;
+    CPyObject args = Py_BuildValue( "OO", pyEnvironmentVariable.get(), pyValue.get() );
+    if ( args == nullptr )
+        return;
+
+    CPyObject ret = PyObject_CallObject( environSetItem.get(), args.get() );
+}
+
+inline void PyAppendSysPath(LPCWSTR sPath)
+{
+    if ( sPath == nullptr )
+        return;
+
+    CPyObject sys = PyImport_ImportModule( "sys" );
+    if ( sys == nullptr )
+        return;
+    CPyObject path = PyObject_GetAttrString( sys.get(), "path" );
+    if ( path == nullptr )
+        return;
+	
+#if PY_MAJOR_VERSION < 3
+    PyList_Append(path.get(), PyString_FromString(static_cast<LPCSTR>(ATL::CW2A( sPath, CP_UTF8 ))));
+#else
+    PyList_Append(path.get(), PyUnicode_FromString(static_cast<LPCSTR>(ATL::CW2A( sPath, CP_UTF8 ))));
+#endif
+}
+
+inline void PyAppendSysPath(const std::vector<CStringW>& pathList)
+{
+    if ( pathList.empty() )
+        return;
+
+    CPyObject sys = PyImport_ImportModule( "sys" );
+    if ( sys == nullptr )
+        return;
+    CPyObject path = PyObject_GetAttrString( sys.get(), "path" );
+    if ( path == nullptr )
+        return;
+	
+    for ( const CStringW &sPath : pathList )
+    {
+#if PY_MAJOR_VERSION < 3
+        PyList_Append(path.get(), PyString_FromString(static_cast<LPCSTR>(ATL::CW2A( sPath, CP_UTF8 ))));
+#else
+        PyList_Append(path.get(), PyUnicode_FromString(static_cast<LPCSTR>(ATL::CW2A( sPath, CP_UTF8 ))));
+#endif
+    }
+}

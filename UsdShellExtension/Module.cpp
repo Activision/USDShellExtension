@@ -4,6 +4,8 @@
 
 #include <fstream>
 
+#include <Python.h>
+
 HMODULE g_hInstance;
 CShellExtModule g_AtlModule;
 
@@ -60,8 +62,9 @@ static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars 
 
 	if ( sBuffer[0] == '\0' )
 	{
+#if PY_MAJOR_VERSION >= 3
 		CString sPythonRegKeyInstallPath;
-		sPythonRegKeyInstallPath.Format( _T( "SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath" ), PYTHONVERSION );
+		sPythonRegKeyInstallPath.Format( _T( "SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath" ), _CRT_STRINGIZE(PYTHONVERSION) );
 
 		LSTATUS ls;
 
@@ -74,6 +77,9 @@ static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars 
 		ls = regPythonInstallPath.QueryStringValue( _T(""), sBuffer, &nChars );
 		if ( ls != ERROR_SUCCESS )
 			return false;
+#elif (PY_MAJOR_VERSION == 2) && (PY_MINOR_VERSION == 7)
+		_tcscpy_s(sBuffer, nBufferSizeInChars, _T("C:\\Python27\\"));
+#endif
 	}
 	else
 	{
@@ -90,10 +96,15 @@ static bool VerifyPythonInstallation()
 	TCHAR sPython_Path[2048];
 	GetPythonInstallationPath( sPython_Path, ARRAYSIZE( sPython_Path ) );
 	
+#if PY_MAJOR_VERSION >= 3
 	::PathCchAppend( sPython_Path, ARRAYSIZE(sPython_Path), _T( PYTHONDLL ) );
-
 	if ( ::GetFileAttributesW( sPython_Path ) == INVALID_FILE_ATTRIBUTES )
 		return false;
+#else
+	DWORD nAttrib = ::GetFileAttributesW( sPython_Path );
+	if ( nAttrib == INVALID_FILE_ATTRIBUTES || (nAttrib & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+		return false;
+#endif
 
 	return true;
 }
@@ -106,6 +117,21 @@ static bool VerifyPyOpenGLInstallation()
 	::PathCchAppend( sPython_Path, ARRAYSIZE(sPython_Path), L"Lib" );
 	::PathCchAppend( sPython_Path, ARRAYSIZE(sPython_Path), L"site-packages" );
 	::PathCchAppend( sPython_Path, ARRAYSIZE(sPython_Path), L"OpenGL" );
+
+	if ( ::GetFileAttributesW( sPython_Path ) == INVALID_FILE_ATTRIBUTES )
+		return false;
+
+	return true;
+}
+
+static bool VerifyPySideInstallation()
+{
+	TCHAR sPython_Path[2048];
+	GetPythonInstallationPath( sPython_Path, ARRAYSIZE( sPython_Path ) );
+
+	::PathCchAppend( sPython_Path, ARRAYSIZE(sPython_Path), L"Lib" );
+	::PathCchAppend( sPython_Path, ARRAYSIZE(sPython_Path), L"site-packages" );
+	::PathCchAppend( sPython_Path, ARRAYSIZE(sPython_Path), L"PySide" );
 
 	if ( ::GetFileAttributesW( sPython_Path ) == INVALID_FILE_ATTRIBUTES )
 		return false;
@@ -210,9 +236,9 @@ STDAPI DllRegisterServer()
 			if ( s_bSilent == false )
 			{
 				::MessageBox( nullptr, 
-					_T( "Python " ) _T( PYTHONVERSION ) _T( " is not installed on this system. It is required to run this shell extension.\n\n" )
-					_T( "Download and install Python " ) _T( PYTHONVERSION ) _T( " from python.org" ), 
-					_T( "Python " ) _T( PYTHONVERSION ) _T( " Not Installed" ), 
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " is not installed on this system. It is required to run this shell extension.\n\n" )
+					_T( "Download and install Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " from python.org" ), 
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " Not Installed" ), 
 					MB_ICONERROR );
 			}
 
@@ -224,30 +250,47 @@ STDAPI DllRegisterServer()
 			if ( s_bSilent == false )
 			{
 				::MessageBox( nullptr, 
-					_T( "Python " ) _T( PYTHONVERSION ) _T( " pyOpenGL is not installed on this system. It is required to run this shell extension.\n\n" )
-					_T( "Run the following command from a Python " ) _T( PYTHONVERSION ) _T( " command prompt.\n\n" )
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " pyOpenGL is not installed on this system. It is required to run this shell extension.\n\n" )
+					_T( "Run the following command from a Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " command prompt.\n\n" )
 					_T( "pip install pyOpenGL" ), 
-					_T( "Python " ) _T( PYTHONVERSION ) _T( " pyOpenGL Not Installed" ), 
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " pyOpenGL Not Installed" ), 
 					MB_ICONERROR );
 			}
 
 			return E_PYOPENGL_NOT_INSTALLED;
 		}
 
+#if PY_MAJOR_VERSION >= 3
 		if ( !VerifyPySide2Installation() )
 		{
 			if ( s_bSilent == false )
 			{
 				::MessageBox( nullptr, 
-					_T( "Python " ) _T( PYTHONVERSION ) _T( " pySide2 is not installed on this system. It is required to run this shell extension.\n\n" )
-					_T( "Run the following command from a Python " ) _T( PYTHONVERSION ) _T( " command prompt.\n\n" )
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " pySide2 is not installed on this system. It is required to run this shell extension.\n\n" )
+					_T( "Run the following command from a Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " command prompt.\n\n" )
 					_T( "pip install pySide2" ), 
-					_T( "Python " ) _T( PYTHONVERSION ) _T( " pySide2 Not Installed" ), 
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " pySide2 Not Installed" ), 
 					MB_ICONERROR );
 			}
 
 			return E_PYSIDE2_NOT_INSTALLED;
 		}
+#else
+		if ( !VerifyPySideInstallation() )
+		{
+			if ( s_bSilent == false )
+			{
+				::MessageBox( nullptr, 
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " pySide is not installed on this system. It is required to run this shell extension.\n\n" )
+					_T( "Run the following command from a Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " command prompt.\n\n" )
+					_T( "pip install pySide" ), 
+					_T( "Python " ) _T( _CRT_STRINGIZE(PYTHONVERSION) ) _T( " pySide Not Installed" ), 
+					MB_ICONERROR );
+			}
+
+			return E_PYSIDE2_NOT_INSTALLED;
+		}
+#endif
 	}
 
 	hr = RegisterPropDescFile(_T("UsdPropertyKeys.propdesc"), IDR_XML_PROPDESC_USD);
