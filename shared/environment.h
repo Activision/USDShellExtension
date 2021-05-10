@@ -7,3 +7,4 @@ const std::vector<CStringW> &GetUsdPathList();
 const std::vector<CStringW> &GetUsdPythonPathList();
 const CStringW &GetUsdPath();
 const CStringW &GetUsdPythonPath();
+const CStringW &GetUsdEditor();

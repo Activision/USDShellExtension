@@ -106,7 +106,7 @@ STDMETHODIMP CUsdSdkToolsImpl::Edit( IN BSTR usdStagePath, IN VARIANT_BOOL force
 
 	CStringW usdStagePathOuputW;
 	usdStagePathOuputW = usdStagePath;
-	usdStagePathOuputW += L".edit.tmp";
+	usdStagePathOuputW += L"-edit.usda";
 
 	std::string exportString;
 	if ( !rootLayer->ExportToString( &exportString ) )
@@ -127,8 +127,12 @@ STDMETHODIMP CUsdSdkToolsImpl::Edit( IN BSTR usdStagePath, IN VARIANT_BOOL force
 	// hide the file we're editing
 	::SetFileAttributes( usdStagePathOuputW, wfadBefore.dwFileAttributes | FILE_ATTRIBUTE_HIDDEN );
 
+	CStringW sEditor = GetUsdEditor();
+	if ( sEditor.IsEmpty() )
+		sEditor = L"notepad.exe";
+
 	CStringW sCommandLine;
-	sCommandLine.Format( L"notepad.exe \"%s\"", usdStagePathOuputW.GetString() );
+	sCommandLine.Format( L"%s \"%s\"", sEditor.GetString(), usdStagePathOuputW.GetString() );
 
 	STARTUPINFO si = {};
 	si.cb = sizeof( si );

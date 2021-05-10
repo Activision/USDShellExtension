@@ -8,6 +8,7 @@ std::vector<CStringW> g_UsdPythonPathList;
 
 CStringW g_UsdPath;
 CStringW g_UsdPythonPath;
+CStringW g_UsdEditor;
 
 const std::vector<CStringW> &GetUsdPathList()
 {
@@ -27,6 +28,11 @@ const CStringW &GetUsdPath()
 const CStringW &GetUsdPythonPath()
 {
 	return g_UsdPythonPath;
+}
+
+const CStringW &GetUsdEditor()
+{
+	return g_UsdEditor;
 }
 
 static std::vector<CStringW> TranslatePathsToList(LPCWSTR paths)
@@ -143,6 +149,7 @@ static void SetupUsdEditorEnvironmentVariable(LPCWSTR sUSD_EditorPath)
 	if ( sUSD_EditorPath && sUSD_EditorPath[0] != '\0' )
 	{
 		AppendEnvironmentVariable( L"USD_EDITOR", sUSD_EditorPath );
+		g_UsdEditor = sUSD_EditorPath;
 	}
 }
 
