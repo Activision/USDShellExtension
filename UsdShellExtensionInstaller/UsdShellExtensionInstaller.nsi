@@ -11,9 +11,9 @@
 !define NAME_LONG "Activision USD Shell Extension"
 
 !define /ifndef VER_MAJOR 0
-!define /ifndef VER_MINOR 0
-!define /ifndef VER_REVISION 0
-!define /ifndef VER_BUILD 0
+!define /ifndef VER_MINOR 00
+!define /ifndef VER_REVISION 00
+!define /ifndef VER_BUILD 00
 
 !define /ifndef VERSION "${VER_MAJOR}.${VER_MINOR}"
 !define /ifndef USD_VERSION "Unknown Version"
@@ -53,15 +53,24 @@ InstallDirRegKey HKLM "Software\Activision\UsdShellExtension" "Install_Dir"
 !define MUI_WELCOMEPAGE_TEXT "Setup will guide you through the installation of $(^NameDA).$\r$\n$\r$\nUSD Version: ${USD_VERSION}$\r$\nPython Version: ${PYTHON_VERSION}$\r$\n$\r$\nIt is recommended that you close all other applications before starting Setup. This will make it possible to update relevant system files without having to reboot your computer.$\r$\n$\r$\n$_CLICK"
 
 ;--------------------------------
+;Utilities
+!include "${__FILEDIR__}\UsdConfigUtils.nsh"
+!include "${__FILEDIR__}\RestartManager.nsh"
+
+;--------------------------------
 ;Interface Settings
 
 !define MUI_ABORTWARNING
 
 ;--------------------------------
 ;Pages
+!include "${__FILEDIR__}\UsdPathPage.nsh"
+!include "${__FILEDIR__}\UsdConfigPage.nsh"
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_INSTFILES
+Page custom USDPathPage USDPathPageLeave
+Page custom USDConfigPage USDConfigPageLeave
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_WELCOME
@@ -85,198 +94,6 @@ VIAddVersionKey "LegalCopyright" ""
 
 SetPluginUnload  alwaysoff
 
-!define MAX_PATH 260
-!define CCH_RM_SESSION_KEY 33
-!define RmForceShutdown 0x1
-!define RmShutdownOnlyRegistered 0x10
-
-;--------------------------------
-Var RmExplorerSession
-Var RmApplicationSession
-Var RmWindowsSearchSession
-
-;--------------------------------
-!macro ShutdownExplorer UN
-Function ${UN}ShutdownExplorer
-
-SetDetailsPrint textonly
-DetailPrint "Shutting down Windows Explorer..."
-SetDetailsPrint listonly
-
-System::StrAlloc ${CCH_RM_SESSION_KEY}
-Pop $0
-System::Call 'Rstrtmgr::RmStartSession(*i .R1, i 0, p $0) i.R0'
-System::Free $0
-
-StrCpy $RmExplorerSession $R1
-
-DetailPrint "Shutting down Windows Explorer"
-
-StrCpy $0 "$WINDIR\explorer.exe"
-System::Call '*(w r0)p.R1 ?2'
-System::Call 'Rstrtmgr::RmRegisterResources(i $RmExplorerSession, i 1, p R1, i 0, p n, i 0, p n) i.R0'
-
-System::Call 'Rstrtmgr::RmShutdown(i $RmExplorerSession, i 0, p n) i.R0'
-
-FunctionEnd
-!macroend
-!insertmacro ShutdownExplorer "" 
-!insertmacro ShutdownExplorer "un."
-
-
-;--------------------------------
-!macro RestartExplorer UN 
-Function ${UN}RestartExplorer
-
-SetDetailsPrint textonly
-DetailPrint "Restarting Windows Explorer..."
-SetDetailsPrint listonly
-
-DetailPrint "Restarting Windows Explorer"
-
-System::Call 'Rstrtmgr::RmRestart(i $RmExplorerSession, i 0, p n) i.R0'
-
-System::Call 'Rstrtmgr::RmEndSession(i $RmExplorerSession) i.R0'
-
-FunctionEnd
-!macroend
-!insertmacro RestartExplorer "" 
-!insertmacro RestartExplorer "un."
-
-
-;--------------------------------
-!macro ShutdownWindowsSearch UN 
-Function ${UN}ShutdownWindowsSearch 
-
-SetDetailsPrint textonly
-DetailPrint "Shutting down Windows Search..."
-SetDetailsPrint listonly
-
-System::StrAlloc ${CCH_RM_SESSION_KEY}
-Pop $0
-System::Call 'Rstrtmgr::RmStartSession(*i .R1, i 0, p $0) i.R0'
-System::Free $0
-
-StrCpy $RmWindowsSearchSession $R1
-
-DetailPrint "Shutting down Windows Search"
-
-StrCpy $0 "wsearch"
-System::Call '*(w r0)p.R1 ?2'
-System::Call 'Rstrtmgr::RmRegisterResources(i $RmWindowsSearchSession, i 0, p n, i 0, p n, i 1, p R1) i.R0'
-
-System::Call 'Rstrtmgr::RmShutdown(i $RmWindowsSearchSession, i 0, p n) i.R0'
-
-FunctionEnd
-!macroend
-!insertmacro ShutdownWindowsSearch "" 
-!insertmacro ShutdownWindowsSearch "un."
-
-;--------------------------------
-!macro RestartWindowsSearch UN 
-Function ${UN}RestartWindowsSearch 
-
-SetDetailsPrint textonly
-DetailPrint "Restarting Windows Search..."
-SetDetailsPrint listonly
-
-DetailPrint "Restarting Windows Search"
-
-System::Call 'Rstrtmgr::RmRestart(i $RmWindowsSearchSession, i 0, p n) i.R0'
-
-System::Call 'Rstrtmgr::RmEndSession(i $RmWindowsSearchSession) i.R0'
-
-FunctionEnd
-!macroend
-!insertmacro RestartWindowsSearch "" 
-!insertmacro RestartWindowsSearch "un."
-
-
-;--------------------------------
-!macro ShutdownApplications UN 
-Function ${UN}ShutdownApplications 
-
-SetDetailsPrint textonly
-DetailPrint "Shutting down applications..."
-SetDetailsPrint listonly
-
-System::StrAlloc ${CCH_RM_SESSION_KEY}
-Pop $0
-System::Call 'Rstrtmgr::RmStartSession(*i .R1, i 0, p $0) i.R0'
-System::Free $0
-
-StrCpy $RmApplicationSession $R1
-
-StrCpy $0 "$INSTDIR\UsdShellExtension.dll"
-StrCpy $1 "$INSTDIR\tbb.dll"
-StrCpy $2 "$INSTDIR\tbbmalloc.dll"
-StrCpy $3 "$INSTDIR\${BOOSTDLL}"
-StrCpy $4 "$INSTDIR\${PYTHONDLL}"
-StrCpy $5 "$INSTDIR\usd_ms.dll"
-StrCpy $6 "$INSTDIR\UsdPreviewHandler.pyd"
-System::Call '*(w r0, w r1, w r2, w r3, w r4, w r5, w r6)p.R1 ?2'
-System::Call 'Rstrtmgr::RmRegisterResources(i $RmApplicationSession, i 6, p R1, i 0, p n, i 1, p R2) i.R0'
-
-DetailPrint "Shutting down applications using the USD Shell Extension"
-
-; only shutdown applications that can restart
-System::Call 'Rstrtmgr::RmShutdown(i $RmApplicationSession, i ${RmShutdownOnlyRegistered}, p n) i.R0'
-
-FunctionEnd
-!macroend
-!insertmacro ShutdownApplications "" 
-!insertmacro ShutdownApplications "un."
-
-;--------------------------------
-!macro RestartApplications UN 
-Function ${UN}RestartApplications 
-
-SetDetailsPrint textonly
-DetailPrint "Restarting Applications..."
-SetDetailsPrint listonly
-
-DetailPrint "Restarting applications that were using the Shell Extension"
-
-System::Call 'Rstrtmgr::RmRestart(i $RmApplicationSession, i 0, p n) i.R0'
-
-System::Call 'Rstrtmgr::RmEndSession(i $RmApplicationSession) i.R0'
-
-FunctionEnd
-!macroend
-!insertmacro RestartApplications "" 
-!insertmacro RestartApplications "un."
-
-
-;--------------------------------
-!macro ShutdownCOMServers UN 
-Function ${UN}ShutdownCOMServers 
-
-SetDetailsPrint textonly
-DetailPrint "Shutting down COM servers..."
-SetDetailsPrint listonly
-
-System::StrAlloc ${CCH_RM_SESSION_KEY}
-Pop $0
-System::Call 'Rstrtmgr::RmStartSession(*i .R9, i 0, p $0) i.R0'
-System::Free $0
-
-StrCpy $0 "$INSTDIR\UsdPreviewLocalServer.exe"
-StrCpy $1 "$INSTDIR\UsdPythonToolsLocalServer.exe"
-StrCpy $2 "$INSTDIR\UsdSdkToolsLocalServer.exe"
-
-System::Call '*(w r0, w r1, w r2)p.R1 ?2'
-System::Call 'Rstrtmgr::RmRegisterResources(i R9, i 3, p R1, i 0, p n, i 0, p n) i.R0'
-
-System::Call 'Rstrtmgr::RmShutdown(i R9, i ${RmForceShutdown}, p n) i.R0'
-
-System::Call 'Rstrtmgr::RmEndSession(i R9) i.R0'
-
-FunctionEnd
-!macroend
-!insertmacro ShutdownCOMServers "" 
-!insertmacro ShutdownCOMServers "un."
-
-
 ;--------------------------------
 Section "-ShutdownProcesses" 
 
@@ -284,6 +101,32 @@ Call ShutdownExplorer
 Call ShutdownWindowsSearch
 Call ShutdownApplications
 Call ShutdownCOMServers
+
+SectionEnd
+
+;--------------------------------
+Section "-UninstallPrevious" 
+
+ReadRegStr $R0 HKLM \
+"Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" \
+"UninstallString"
+StrCmp $R0 "" done
+
+SetDetailsPrint textonly
+DetailPrint "Uninstalling previous installation..."
+SetDetailsPrint listonly
+DetailPrint "Uninstalling previous installation"
+
+ClearErrors
+ExecWait '$R0 /S _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
+IfErrors no_remove_uninstaller done
+;You can either use Delete /REBOOTOK in the uninstaller or add some code
+;here to remove the uninstaller. Use a registry key to check
+;whether the user has chosen to uninstall. If you are using an uninstaller
+;components page, make sure all sections are uninstalled.
+no_remove_uninstaller:
+
+done:
 
 SectionEnd
 
@@ -341,6 +184,34 @@ Section "-RestartProcesses"
 Call RestartExplorer
 Call RestartWindowsSearch
 Call RestartApplications
+
+SectionEnd
+
+;--------------------------------
+Section "-UpdateConfigFile" 
+
+; In order to support updates to the config file and allow for us 
+; to support going back to older versions of the shell extension, 
+; we will "patch" the existing config file using GetPrivateProfileStringW 
+; to determine if a value is already set and SetPrivateProfileStringW 
+; to enter a blank / default value if no value was set.
+
+SetDetailsPrint textonly
+DetailPrint "Updating config file..."
+SetDetailsPrint listonly
+
+
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PATH" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PYTHONPATH" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PXR_PLUGINPATH_NAME" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "EDITOR" ""
+
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "RENDERER" "PREVIEW" "GL"
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "RENDERER" "THUMBNAIL" "GL"
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "RENDERER" "VIEW" "GL"
+
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "PYTHON" "PATH" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "PYTHON" "PYTHONPATH" ""
 
 SectionEnd
 
