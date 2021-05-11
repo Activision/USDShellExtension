@@ -6,7 +6,7 @@ Var hWndUsdPathEditPath
 Var hWndUsdPathEditPythonPath
 Var hWndUsdPathEditPxrPluginPath
 Var hWndUsdPathButtonBuild
-
+;Var hWndUsdPathConfigPath
 
 Function USDPathPage
     !insertmacro MUI_HEADER_TEXT "USD Libraries and Tools" "Please set the following USD environment variables."
@@ -30,8 +30,8 @@ Function USDPathPage
     ${NSD_CreateText} 0 38u 100% 12u $R0
     Pop $hWndUsdPathEditPythonPath
 
-    ${NSD_CreateLabel} 0 56u 100% 10u "PXR_PLUGIN_PATH"
-    !insertmacro ReadConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PXR_PLUGIN_PATH" ""
+    ${NSD_CreateLabel} 0 56u 100% 10u "PXR_PLUGINPATH_NAME"
+    !insertmacro ReadConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PXR_PLUGINPATH_NAME" ""
     Pop $R0
     ${NSD_CreateText} 0 66u 100% 12u $R0
     Pop $hWndUsdPathEditPxrPluginPath
@@ -40,8 +40,8 @@ Function USDPathPage
     Pop $hWndUsdPathButtonBuild
     ${NSD_OnClick} $hWndUsdPathButtonBuild USDPathPageBuildClick
 
-    ;${NSD_CreateLabel} 0 -26u 100% 10u "Configuration file:"
-    ;${NSD_CreateText} 0 -14u 100% 12u "$INSTDIR\UsdShellExtension.cfg"
+    ;${NSD_CreateLabel} 0 -30u 100% 10u "Configuration File"
+    ;${NSD_CreateText} 0 -18u 100% 12u "$INSTDIR\UsdShellExtension.cfg"
     ;Pop $hWndUsdPathConfigPath
     ;${NSD_Edit_SetReadOnly} $hWndUsdPathConfigPath 1
 
@@ -57,7 +57,7 @@ Function USDPathPageLeave
 	!insertmacro WriteConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PYTHONPATH" $0
 
 	${NSD_GetText} $hWndUsdPathEditPxrPluginPath $0
-	!insertmacro WriteConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PXR_PLUGIN_PATH" $0
+	!insertmacro WriteConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PXR_PLUGINPATH_NAME" $0
 
 FunctionEnd
 
