@@ -340,7 +340,7 @@ STDMETHODIMP CUsdPythonToolsImpl::View( IN BSTR usdStagePath, IN BSTR renderer )
 	ArgV.push_back( pyUsdStagePath );
 
 	int exitCode = 0;
-	hr = RunDiskPythonScript( L"usdview.py", ArgV, sStdOut, exitCode );
+	hr = RunDiskPythonScript( L"usdview", ArgV, sStdOut, exitCode );
 	if ( FAILED( hr ) )
 		return hr;
 
