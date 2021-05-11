@@ -191,6 +191,7 @@
   <ItemGroup>
     <ClInclude Include="..\shared\environment.h" />
     <ClInclude Include="..\shared\EventViewerLog.h" />
+    <ClInclude Include="..\shared\EventViewerMessages.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Module.h" />

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Module.h"
 #include "resource.h"
+#include "shared/EventViewerMessages.h"
+#include "shared/EventViewerLog.h"
 
 #include <fstream>
 
@@ -51,14 +53,14 @@ static std::vector<CString> TranslatePathsToList(LPCTSTR paths)
 static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars )
 {
 	TCHAR sModulePath[MAX_PATH];
-	GetModuleFileName( g_hInstance, sModulePath, ARRAYSIZE( sModulePath ) );
-	PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
-	PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), _T( "UsdShellExtension.cfg" ) );
+	::GetModuleFileName( g_hInstance, sModulePath, ARRAYSIZE( sModulePath ) );
+	::PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
+	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), _T( "UsdShellExtension.cfg" ) );
 
 	TCHAR sTempBuffer[2048];
 	sTempBuffer[0] = '\0';
-	GetPrivateProfileString( _T( "PYTHON" ), _T( "PATH" ), _T( "" ), sTempBuffer, ARRAYSIZE( sTempBuffer ), sModulePath );
-	ExpandEnvironmentStrings( sTempBuffer, sBuffer, nBufferSizeInChars );
+	::GetPrivateProfileString( _T( "PYTHON" ), _T( "PATH" ), _T( "" ), sTempBuffer, ARRAYSIZE( sTempBuffer ), sModulePath );
+	::ExpandEnvironmentStrings( sTempBuffer, sBuffer, nBufferSizeInChars );
 
 	if ( sBuffer[0] == '\0' )
 	{
@@ -215,12 +217,57 @@ static HRESULT RegisterPropDescFile( LPCTSTR sFileName, UINT nResourceId )
 	return hr;
 }
 
-static HRESULT UnregisterPropDescFile( LPCTSTR sFilePath )
+static HRESULT UnregisterPropDescFile( LPCTSTR sFileName )
 {
+	TCHAR sPath[MAX_PATH];
+	::GetModuleFileName( g_hInstance, sPath, ARRAYSIZE( sPath ) );
+	::PathCchRemoveFileSpec( sPath, ARRAYSIZE( sPath ) );
+	::PathCchAppend( sPath, ARRAYSIZE( sPath ), sFileName );
+
 	HRESULT hr;
-	hr = PSUnregisterPropertySchema( sFilePath );
+	hr = PSUnregisterPropertySchema( sPath );
 
 	return hr;
+}
+
+static HRESULT InstallEventSource()
+{
+	TCHAR sPath[MAX_PATH];
+	::GetModuleFileName( g_hInstance, sPath, ARRAYSIZE( sPath ) );
+
+	LSTATUS ls;
+	CRegKey regEventLog;
+	ls = regEventLog.Create( HKEY_LOCAL_MACHINE, _T( "System\\CurrentControlSet\\Services\\Eventlog\\Application\\" ) _T( EVENTLOG_SOURCE ) );
+	if ( ls != ERROR_SUCCESS )
+		return E_FAIL;
+
+	DWORD TypesSupported = 
+		EVENTLOG_SUCCESS |
+		EVENTLOG_ERROR_TYPE | 
+		EVENTLOG_WARNING_TYPE | 
+		EVENTLOG_INFORMATION_TYPE;
+
+	regEventLog.SetDWORDValue( _T( "TypesSupported" ), TypesSupported );
+	regEventLog.SetStringValue( _T( "EventMessageFile" ), sPath );
+	regEventLog.SetStringValue( _T( "CategoryMessageFile" ), sPath );
+	regEventLog.SetDWORDValue( _T( "CategoryCount" ), CATEGORY_COUNT );
+
+	return S_OK;
+}
+
+static HRESULT UninstallEventSource()
+{
+	LSTATUS ls;
+	CRegKey regEventLog;
+	ls = regEventLog.Open( HKEY_LOCAL_MACHINE, _T( "System\\CurrentControlSet\\Services\\Eventlog\\Application" ) );
+	if ( ls != ERROR_SUCCESS )
+		return E_FAIL;
+
+	ls = regEventLog.RecurseDeleteKey( _T( EVENTLOG_SOURCE ) );
+	if ( ls != ERROR_SUCCESS )
+		return E_FAIL;
+
+	return S_OK;
 }
 
 // Called to register/install this shell extension.
@@ -331,6 +378,12 @@ STDAPI DllRegisterServer()
 		return hr;
 	}
 
+	hr = InstallEventSource();
+	if ( FAILED( hr ) )
+	{
+		return hr;
+	}
+
 	hr = g_AtlModule.DllRegisterServer( FALSE );
 	if ( FAILED( hr ) )
 	{
@@ -355,6 +408,11 @@ STDAPI DllUnregisterServer()
 {
 	g_AtlModule.DllUnregisterServer( FALSE );
 	g_AtlModule.UpdateRegistry( FALSE );
+
+	UnregisterPropDescFile( _T( "UsdPropertyKeys.propdesc" ) );
+	UnregisterPropDescFile( _T( "UsdPropertyKeys_Atvi.propdesc" ) );
+
+	UninstallEventSource();
 
 	// notify the shell that we have updated handlers
 	SHChangeNotify( SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL );

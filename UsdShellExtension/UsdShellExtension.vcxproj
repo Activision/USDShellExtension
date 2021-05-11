@@ -53,6 +53,17 @@
     <ClCompile Include="UWPProgressBar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="..\shared\EventViewerMessages.mc">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">echo mc -h %(RelativeDir) %(FullPath)
+mc -h %(RelativeDir) %(FullPath)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling Messages...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).rc;%(RelativeDir)%(Filename).h;MSG00409.bin</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">echo mc -h %(RelativeDir) %(FullPath)
+mc -h %(RelativeDir) %(FullPath)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling Messages...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).rc;%(RelativeDir)%(Filename).h;MSG00409.bin</Outputs>
+    </CustomBuild>
     <None Include="plugInfo.json" />
     <None Include="register.bat" />
     <None Include="unregister.bat" />

@@ -177,7 +177,7 @@ DWORD WINAPI CUSDPreviewThread::ThreadProc( _In_ LPVOID lpParameter )
 				sErrorMsg = e.typeW();
 			}
 
-			LogEventMessage( s_ApplicationName, sErrorMsg.GetString(), LogEventType::Error );
+			LogEventMessage( PREVIEWHANDLER_CATEGORY, sErrorMsg.GetString(), LogEventType::Error );
 
             return static_cast<DWORD>(-1);
         }
@@ -195,7 +195,7 @@ DWORD WINAPI CUSDPreviewThread::ThreadProc( _In_ LPVOID lpParameter )
 					// unexpected
 					buffer += e.what();
 					exitCode = -1;
-					LogEventMessage( s_ApplicationName, e.whatW(), LogEventType::Error );
+					LogEventMessage( PREVIEWHANDLER_CATEGORY, e.whatW(), LogEventType::Error );
 				}
 			}
 		}

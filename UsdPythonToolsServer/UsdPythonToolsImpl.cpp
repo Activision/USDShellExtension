@@ -106,7 +106,7 @@ static HRESULT RunDiskPythonScript( LPCWSTR sToolFileName, std::vector<const TPy
 			if ( !sStdOut.empty() )
 				sErrorMsg.AppendFormat( _T( "\n\n[STDOUT]\n%hs" ), sStdOut.c_str() );
 
-			LogEventMessage( s_ApplicationName, sErrorMsg.GetString(), LogEventType::Error );
+			LogEventMessage( PYTHONTOOLS_CATEGORY, sErrorMsg.GetString(), LogEventType::Error );
 
             hr = E_FAIL;
         }
@@ -124,7 +124,7 @@ static HRESULT RunDiskPythonScript( LPCWSTR sToolFileName, std::vector<const TPy
 					// unexpected
 					sStdOut += e.what();
 					exitCode = -1;
-					LogEventMessage( s_ApplicationName, e.whatW(), LogEventType::Error );
+					LogEventMessage( PYTHONTOOLS_CATEGORY, e.whatW(), LogEventType::Error );
 					hr = E_FAIL;
 				}
 			}
@@ -191,7 +191,7 @@ static HRESULT RunResourcePythonScript( UINT nResourceId, std::vector<const TPyC
 			if ( !sStdOut.empty() )
 				sErrorMsg.AppendFormat( _T( "\n\n[STDOUT]\n%hs" ), sStdOut.c_str() );
 
-			LogEventMessage( s_ApplicationName, sErrorMsg.GetString(), LogEventType::Error );
+			LogEventMessage( PYTHONTOOLS_CATEGORY, sErrorMsg.GetString(), LogEventType::Error );
 
             hr = E_FAIL;
         }
@@ -209,7 +209,7 @@ static HRESULT RunResourcePythonScript( UINT nResourceId, std::vector<const TPyC
 					// unexpected
 					sStdOut += e.what();
 					exitCode = -1;
-					LogEventMessage( s_ApplicationName, e.whatW(), LogEventType::Error );
+					LogEventMessage( PYTHONTOOLS_CATEGORY, e.whatW(), LogEventType::Error );
 					hr = E_FAIL;
 				}
 			}
@@ -264,7 +264,7 @@ STDMETHODIMP CUsdPythonToolsImpl::Record( IN BSTR usdStagePath, IN int imageWidt
 	std::wstring sUsdRecordAbsolutePath = FindRelativeFile( L"usdrecord" );
 	if ( sUsdRecordAbsolutePath.empty() )
 	{
-		LogEventMessage( s_ApplicationName, L"Failed to locate usdrecord", LogEventType::Error );
+		LogEventMessage( PYTHONTOOLS_CATEGORY, L"Failed to locate usdrecord", LogEventType::Error );
 		return E_FAIL;
 	}
 
@@ -299,7 +299,7 @@ STDMETHODIMP CUsdPythonToolsImpl::Record( IN BSTR usdStagePath, IN int imageWidt
 		CString sErrorMsg;
 		sErrorMsg.Format( _T( "Error generating thumbnail for %ls\n\n%hs\n\nExit Code: %d" ), usdStagePath, sStdOut.c_str(), exitCode );
 
-		LogEventMessage( s_ApplicationName, sErrorMsg.GetString(), LogEventType::Error );
+		LogEventMessage( PYTHONTOOLS_CATEGORY, sErrorMsg.GetString(), LogEventType::Error );
 
 		return E_FAIL;
 	}
@@ -349,7 +349,7 @@ STDMETHODIMP CUsdPythonToolsImpl::View( IN BSTR usdStagePath, IN BSTR renderer )
 		CString sErrorMsg;
 		sErrorMsg.Format( _T( "Error launching usdview for %ls\n\n%hs\n\nExit Code: %d" ), usdStagePath, sStdOut.c_str(), exitCode );
 
-		LogEventMessage( s_ApplicationName, sErrorMsg.GetString(), LogEventType::Error );
+		LogEventMessage( PYTHONTOOLS_CATEGORY, sErrorMsg.GetString(), LogEventType::Error );
 
 		return E_FAIL;
 	}

@@ -19,6 +19,8 @@
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 #pragma code_page(1252)
 
+#include "EventViewerMessages.rc"
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // REGISTRY

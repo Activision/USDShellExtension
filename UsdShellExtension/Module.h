@@ -3,8 +3,6 @@
 #include "ShellExt_h.h"
 #include "resource.h"
 
-static constexpr wchar_t s_ApplicationName[] = L"Activision USD Shell Extension";
-
 // Using an ATL module here because it removes a lot of the 
 // boiler-plate COM work that we would have to implement ourselves.
 

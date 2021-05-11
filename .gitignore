@@ -7,3 +7,6 @@ build/
 *_i.c
 *_p.c
 dlldata.c
+EventViewerMessages.h
+EventViewerMessages.rc
+MSG00409.bin

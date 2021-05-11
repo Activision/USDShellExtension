@@ -158,4 +158,9 @@
   <ItemGroup>
     <Manifest Include="UsdShellExtension-monolithic.manifest" />
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\shared\EventViewerMessages.mc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
 </Project>
