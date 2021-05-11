@@ -103,10 +103,10 @@ REM Do nothing</Command>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">@echo off
 cd /D "$(OutputPath)"
-"$(MAKENSIS)" /NOCD /DOUT_FILE="$(TargetName)" /DPYTHONDLL="$(PythonDLL)" /DBOOSTDLL="$(BOOSTDLL)" /DVER_MAJOR="$(ATVI_VERSION_MAJOR)" /DVER_MINOR="$(ATVI_VERSION_MINOR)" /DVER_REVISION="$(ATVI_VERSION_REVISION)" /DVER_BUILD="$(ATVI_VERSION_BUILD)" /DUSD_VERSION="$(USDVERSION)" /DPYTHON_VERSION="$(PythonVersion)" "%(FullPath)"</Command>
+"$(MAKENSIS)" /NOCD /DOUT_FILE="$(TargetName)" /DPYTHONDLL="$(PythonDLL)" /DBOOSTDLL="$(BOOSTDLL)" /DVER_PRODUCTNAME="$(ATVI_VERSION_PRODUCTNAME)" /DVER_COMPANYNAME="$(ATVI_VERSION_COMPANYNAME)" /DVER_COPYRIGHT="$(ATVI_VERSION_COPYRIGHT)" /DVER_MAJOR="$(ATVI_VERSION_MAJOR)" /DVER_MINOR="$(ATVI_VERSION_MINOR)" /DVER_REVISION="$(ATVI_VERSION_REVISION)" /DVER_BUILD="$(ATVI_VERSION_BUILD)" /DUSD_VERSION="$(USDVERSION)" /DPYTHON_VERSION="$(PythonVersion)" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">@echo off
 cd /D "$(OutputPath)"
-"$(MAKENSIS)" /NOCD /DOUT_FILE="$(TargetName)" /DPYTHONDLL="$(PythonDLL)" /DBOOSTDLL="$(BOOSTDLL)" /DVER_MAJOR="$(ATVI_VERSION_MAJOR)" /DVER_MINOR="$(ATVI_VERSION_MINOR)" /DVER_REVISION="$(ATVI_VERSION_REVISION)" /DVER_BUILD="$(ATVI_VERSION_BUILD)" /DUSD_VERSION="$(USDVERSION)" /DPYTHON_VERSION="$(PythonVersion)" "%(FullPath)"</Command>
+"$(MAKENSIS)" /NOCD /DOUT_FILE="$(TargetName)" /DPYTHONDLL="$(PythonDLL)" /DBOOSTDLL="$(BOOSTDLL)" /DVER_PRODUCTNAME="$(ATVI_VERSION_PRODUCTNAME)" /DVER_COMPANYNAME="$(ATVI_VERSION_COMPANYNAME)" /DVER_COPYRIGHT="$(ATVI_VERSION_COPYRIGHT)" /DVER_MAJOR="$(ATVI_VERSION_MAJOR)" /DVER_MINOR="$(ATVI_VERSION_MINOR)" /DVER_REVISION="$(ATVI_VERSION_REVISION)" /DVER_BUILD="$(ATVI_VERSION_BUILD)" /DUSD_VERSION="$(USDVERSION)" /DPYTHON_VERSION="$(PythonVersion)" "%(FullPath)"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutputPath)$(TargetName);AlwaysBuildMe.exe%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutputPath)$(TargetName);AlwaysBuildMe.exe%(Outputs)</Outputs>
     </CustomBuild>

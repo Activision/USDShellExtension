@@ -22,7 +22,7 @@ BEGIN
             VALUE "FileDescription", ATVI_VERSION_DESCRIPTION
             VALUE "FileVersion", ATVI_VERSION_PRODUCT_STRING
             VALUE "LegalCopyright", ATVI_VERSION_COPYRIGHT
-            VALUE "ProductName", ATVI_VERSION_DESCRIPTION
+            VALUE "ProductName", ATVI_VERSION_PRODUCTNAME
             VALUE "ProductVersion", ATVI_VERSION_PRODUCT_STRING
         END
     END

@@ -7,20 +7,22 @@
 
 !define LIBRARY_X64
 
-!define /ifndef OUT_FILE "UsdShellExtension-setup.exe"
-!define NAME_LONG "Activision USD Shell Extension"
+!define /ifndef OUT_FILE "setup.exe"
 
 !define /ifndef VER_MAJOR 0
 !define /ifndef VER_MINOR 00
 !define /ifndef VER_REVISION 00
 !define /ifndef VER_BUILD 00
+!define /ifndef VER_PRODUCTNAME ""
+!define /ifndef VER_COMPANYNAME ""
+!define /ifndef VER_COPYRIGHT ""
 
 !define /ifndef VERSION "${VER_MAJOR}.${VER_MINOR}"
 !define /ifndef USD_VERSION "Unknown Version"
 !define /ifndef PYTHON_VERSION "Unknown Version"
 
 ; The name of the installer
-Name "${NAME_LONG}"
+Name "${VER_PRODUCTNAME}"
 
 ; The file to write
 OutFile "${OUT_FILE}"
@@ -49,7 +51,7 @@ InstallDirRegKey HKLM "Software\Activision\UsdShellExtension" "Install_Dir"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\..\..\..\shared\installerWelcome.bmp"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP_STRETCH "NoStretchNoCropNoAlign"
 
-!define MUI_WELCOMEPAGE_TITLE "${NAME_LONG}$\r$\nVersion ${VERSION}"
+!define MUI_WELCOMEPAGE_TITLE "${VER_PRODUCTNAME}$\r$\nVersion ${VERSION}"
 !define MUI_WELCOMEPAGE_TEXT "Setup will guide you through the installation of $(^NameDA).$\r$\n$\r$\nUSD Version: ${USD_VERSION}$\r$\nPython Version: ${PYTHON_VERSION}$\r$\n$\r$\nIt is recommended that you close all other applications before starting Setup. This will make it possible to update relevant system files without having to reboot your computer.$\r$\n$\r$\n$_CLICK"
 
 ;--------------------------------
@@ -88,8 +90,11 @@ Page custom USDConfigPage USDConfigPageLeave
 !ifdef VER_MAJOR & VER_MINOR & VER_REVISION & VER_BUILD
 VIProductVersion ${VER_MAJOR}.${VER_MINOR}.${VER_REVISION}.${VER_BUILD}
 VIAddVersionKey "FileVersion" "${VERSION}"
-VIAddVersionKey "FileDescription" "${NAME_LONG} Setup"
-VIAddVersionKey "LegalCopyright" ""
+VIAddVersionKey "ProductVersion" "${VERSION}"
+VIAddVersionKey "FileDescription" "${VER_PRODUCTNAME} Setup"
+VIAddVersionKey "ProductName" "${VER_PRODUCTNAME}"
+VIAddVersionKey "LegalCopyright" "${VER_COPYRIGHT}"
+VIAddVersionKey "CompanyName" "${VER_COMPANYNAME}"
 !endif
 
 SetPluginUnload  alwaysoff
