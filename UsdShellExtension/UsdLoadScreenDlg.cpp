@@ -306,6 +306,9 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 
 	if ( m_pImgLogo != nullptr )
 	{
+		float fDpiWindow = static_cast<float>(::GetDpiForWindow( m_hWnd ));
+		float fDpiScale = fDpiWindow / USER_DEFAULT_SCREEN_DPI;
+
 		Gdiplus::SizeF margins;
 		margins.Width = 10.0f;
 		margins.Height = 10.0f;
@@ -320,8 +323,12 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 		sizeImageOriginal.Height = static_cast<Gdiplus::REAL>(m_pImgLogo->GetHeight());
 
 		Gdiplus::SizeF sizeImageResized = sizeImageOriginal;
-		sizeImageResized.Width /= 4.0f;
-		sizeImageResized.Height /= 4.0f;
+		sizeImageResized.Width /= 6.0f;
+		sizeImageResized.Height /= 6.0f;
+
+		// DPI adjust
+		sizeImageResized.Width *= fDpiScale;
+		sizeImageResized.Height *= fDpiScale;
 
 		Gdiplus::RectF rcSrc(
 			0, 0,
@@ -334,29 +341,33 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 			sizeImageResized.Width,
 			sizeImageResized.Height );
 
-		// invert colors for the light theme
-		const float alpha = 0.25f;
-		Gdiplus::ColorMatrix matrixLightTheme =
+		// do not draw if there is no room
+		if ( m_rcProgressArea.GetBottom() < rcDst.GetTop() )
 		{
-			-1, 0, 0, 0, 0,
-			0, -1, 0, 0, 0,
-			0, 0, -1, 0, 0,
-			0, 0, 0, alpha, 0,
-			0, 0, 0, 0, 1
-		};
-		Gdiplus::ColorMatrix matrixDarkTheme =
-		{
-			1, 0, 0, 0, 0,
-			0, 1, 0, 0, 0,
-			0, 0, 1, 0, 0,
-			0, 0, 0, alpha, 0,
-			0, 0, 0, 0, 1
-		};
+			// invert colors for the light theme
+			const float alpha = 0.25f;
+			Gdiplus::ColorMatrix matrixLightTheme =
+			{
+				-1, 0, 0, 0, 0,
+				0, -1, 0, 0, 0,
+				0, 0, -1, 0, 0,
+				0, 0, 0, alpha, 0,
+				0, 0, 0, 0, 1
+			};
+			Gdiplus::ColorMatrix matrixDarkTheme =
+			{
+				1, 0, 0, 0, 0,
+				0, 1, 0, 0, 0,
+				0, 0, 1, 0, 0,
+				0, 0, 0, alpha, 0,
+				0, 0, 0, 0, 1
+			};
 
-		Gdiplus::ImageAttributes attrib;
-		attrib.SetColorMatrix( m_bWindowsExplorerUsingLightTheme ? &matrixLightTheme : &matrixDarkTheme );
+			Gdiplus::ImageAttributes attrib;
+			attrib.SetColorMatrix( m_bWindowsExplorerUsingLightTheme ? &matrixLightTheme : &matrixDarkTheme );
 
-		gfx.DrawImage( m_pImgLogo, rcDst, rcSrc, Gdiplus::UnitPixel, &attrib );
+			gfx.DrawImage( m_pImgLogo, rcDst, rcSrc, Gdiplus::UnitPixel, &attrib );
+		}
 	}
 }
 

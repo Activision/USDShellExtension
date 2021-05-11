@@ -49,3 +49,20 @@ private:
 
 	bool m_bWindowsExplorerUsingLightTheme = true;
 };
+
+class CAutoDpiAware
+{
+public:
+	CAutoDpiAware(DPI_AWARENESS_CONTEXT ctx)
+	{
+		m_PreviousContext = ::GetThreadDpiAwarenessContext();
+		::SetThreadDpiAwarenessContext( ctx );
+	}
+	~CAutoDpiAware()
+	{
+		::SetThreadDpiAwarenessContext( m_PreviousContext );
+	}
+
+private:
+	DPI_AWARENESS_CONTEXT m_PreviousContext;
+};

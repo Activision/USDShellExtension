@@ -10,6 +10,7 @@
 
 static RECT UpdateRectForDPI(HWND hwnd, const RECT& rcWnd)
 {
+#if 0
 	int iDpiProcess = static_cast<int>(::GetSystemDpiForProcess( ::GetCurrentProcess() ));
 	int iDpiWindow = static_cast<int>(::GetDpiForWindow( hwnd ));
 
@@ -19,7 +20,18 @@ static RECT UpdateRectForDPI(HWND hwnd, const RECT& rcWnd)
 	rcDpi.right = MulDiv(rcWnd.right, iDpiProcess, iDpiWindow); 
 	rcDpi.bottom = MulDiv(rcWnd.bottom, iDpiProcess, iDpiWindow); 
 
+	CStringA sDebug;
+	sDebug.Format( "DPI: p:%d w:%d, {%d, %d, %d, %d} -> {%d, %d, %d, %d}\n", iDpiProcess, iDpiWindow, 
+		rcWnd.left, rcWnd.top, rcWnd.right - rcWnd.left, rcWnd.bottom - rcWnd.top,
+		rcDpi.left, rcDpi.top, rcDpi.right - rcDpi.left, rcDpi.bottom - rcDpi.top
+		);
+	OutputDebugStringA( sDebug );
+
 	return rcDpi;
+#else
+	UNREFERENCED_PARAMETER( hwnd );
+	return rcWnd;
+#endif
 }
 
 
@@ -156,6 +168,8 @@ STDMETHODIMP CShellPreviewHandlerImpl::SetWindow(__RPC__in HWND hwnd, __RPC__in 
 	if ( prc == nullptr )
 		return E_POINTER;
 
+	CAutoDpiAware dpi( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE );
+
 	m_hWnd = hwnd;
 	m_rcWndRaw = *prc;
 
@@ -183,6 +197,8 @@ STDMETHODIMP CShellPreviewHandlerImpl::SetRect(__RPC__in const RECT* prc)
 	if ( prc == nullptr )
 		return E_POINTER;
 
+	CAutoDpiAware dpi( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE );
+
 	m_rcWndRaw = *prc;
 	m_rcWndDpiAware = UpdateRectForDPI( m_hWnd, m_rcWndRaw );
 
@@ -204,6 +220,8 @@ STDMETHODIMP CShellPreviewHandlerImpl::DoPreview()
 {
 	if ( m_pPreviewHandler == nullptr )
 		return E_FAIL;
+
+	CAutoDpiAware dpi( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE );
 
 	m_LoadScreenDlg.SetBackgroundColor( m_clrBackground );
 	m_LoadScreenDlg.Create( m_hWnd );
