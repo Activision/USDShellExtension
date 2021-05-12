@@ -196,6 +196,12 @@ CreateDirectory '$SMPROGRAMS\USD Shell Extension'
 CreateShortCut '$SMPROGRAMS\USD Shell Extension\USD Shell Extension Configuration.lnk' '$INSTDIR\USDShellExtension.cfg' ""
 CreateShortCut '$SMPROGRAMS\USD Shell Extension\Uninstall USD Shell Extension.lnk' '$INSTDIR\uninstall.exe' ""
 
+; Write version info to registry
+WriteRegStr HKLM "Software\Activision\UsdShellExtension" "Version" "${VER_MAJOR}.${VER_MINOR}.${VER_REVISION}.${VER_BUILD}"
+WriteRegStr HKLM "Software\Activision\UsdShellExtension" "USD Version" "${USD_VERSION}"
+WriteRegStr HKLM "Software\Activision\UsdShellExtension" "Python Version" "${PYTHON_VERSION}"
+WriteRegStr HKLM "Software\Activision\UsdShellExtension" "Installer" "${OUT_FILE}"
+
 SectionEnd
 
 ;--------------------------------
