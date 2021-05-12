@@ -4,6 +4,7 @@
 !include "MUI2.nsh"
 !include "Library.nsh"
 !include "logiclib.nsh"
+!include "x64.nsh"
 
 !define LIBRARY_X64
 
@@ -37,7 +38,7 @@ Unicode True
 SetCompressor LZMA
 
 ; The default installation directory
-InstallDir $PROGRAMFILES\Activision\UsdShellExtension
+InstallDir $PROGRAMFILES64\Activision\UsdShellExtension
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
@@ -102,6 +103,9 @@ SetPluginUnload  alwaysoff
 ;--------------------------------
 Section "-ShutdownProcesses" 
 
+${DisableX64FSRedirection}
+SetRegView 64
+
 Call ShutdownExplorer
 Call ShutdownWindowsSearch
 Call ShutdownApplications
@@ -111,6 +115,9 @@ SectionEnd
 
 ;--------------------------------
 Section "-UninstallPrevious" 
+
+${DisableX64FSRedirection}
+SetRegView 64
 
 ReadRegStr $R0 HKLM \
 "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" \
@@ -140,6 +147,9 @@ SectionEnd
 ; The stuff to install
 Section "Install" 
 
+${DisableX64FSRedirection}
+SetRegView 64
+
 SetDetailsPrint textonly
 DetailPrint "Installing files..."
 SetDetailsPrint listonly
@@ -160,9 +170,9 @@ SetOutPath "$INSTDIR"
 !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED tbb.dll "$INSTDIR\tbb.dll" $INSTDIR
 !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED tbbmalloc.dll "$INSTDIR\tbbmalloc.dll" $INSTDIR
 !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED ${BOOSTDLL} "$INSTDIR\${BOOSTDLL}" $INSTDIR
-${Unless} ${FileExists} "${PYTHONDLL}"
+!if /FileExists "${PYTHONDLL}"
     !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED ${PYTHONDLL} "$INSTDIR\${PYTHONDLL}" $INSTDIR
-${EndUnless}
+!endif
 !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED usd_ms.dll "$INSTDIR\usd_ms.dll" $INSTDIR
 !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED UsdPreviewHandler.pyd "$INSTDIR\UsdPreviewHandler.pyd" $INSTDIR
 !insertmacro InstallLib REGEXE NOTSHARED REBOOT_NOTPROTECTED UsdPreviewLocalServer.exe "$INSTDIR\UsdPreviewLocalServer.exe" $INSTDIR
@@ -174,17 +184,25 @@ ${EndUnless}
 WriteRegStr HKLM SOFTWARE\Activision\UsdShellExtension "Install_Dir" "$INSTDIR"
 
 ; Write the uninstall keys for Windows
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" "DisplayName" "Activision USD Shell Extension"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" "DisplayName" "${VER_PRODUCTNAME}"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" "DisplayIcon" "$INSTDIR\UsdShellExtension.dll,0"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" "UninstallString" '"$INSTDIR\uninstall.exe"'
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" "NoModify" 1
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellExtension" "NoRepair" 1
 WriteUninstaller "$INSTDIR\uninstall.exe"
 
+; Install start menu items
+CreateDirectory '$SMPROGRAMS\USD Shell Extension'
+CreateShortCut '$SMPROGRAMS\USD Shell Extension\USD Shell Extension Configuration.lnk' '$INSTDIR\USDShellExtension.cfg' ""
+CreateShortCut '$SMPROGRAMS\USD Shell Extension\Uninstall USD Shell Extension.lnk' '$INSTDIR\uninstall.exe' ""
 
 SectionEnd
 
 ;--------------------------------
 Section "-RestartProcesses" 
+
+${DisableX64FSRedirection}
+SetRegView 64
 
 Call RestartExplorer
 Call RestartWindowsSearch
@@ -194,6 +212,9 @@ SectionEnd
 
 ;--------------------------------
 Section "-UpdateConfigFile" 
+
+${DisableX64FSRedirection}
+SetRegView 64
 
 ; In order to support updates to the config file and allow for us 
 ; to support going back to older versions of the shell extension, 
@@ -227,6 +248,9 @@ SectionEnd
 ;--------------------------------
 Section "-Un.ShutdownProcesses" 
 
+${DisableX64FSRedirection}
+SetRegView 64
+
 Call un.ShutdownExplorer
 Call un.ShutdownWindowsSearch
 Call un.ShutdownApplications
@@ -234,7 +258,11 @@ Call un.ShutdownCOMServers
 
 SectionEnd
 
+;--------------------------------
 Section "Uninstall"
+
+${DisableX64FSRedirection}
+SetRegView 64
 
 SetDetailsPrint textonly
 DetailPrint "Uninstalling files..."
@@ -247,9 +275,9 @@ SetDetailsPrint listonly
 !insertmacro UnInstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "$INSTDIR\tbb.dll"
 !insertmacro UnInstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "$INSTDIR\tbbmalloc.dll"
 !insertmacro UnInstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "$INSTDIR\${BOOSTDLL}"
-${If} ${FileExists} "$INSTDIR\${PYTHONDLL}"
+!if /FileExists "${PYTHONDLL}"
     !insertmacro UnInstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "$INSTDIR\${PYTHONDLL}"
-${EndIf}
+!endif
 !insertmacro UnInstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "$INSTDIR\usd_ms.dll"
 !insertmacro UnInstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "$INSTDIR\UsdPreviewHandler.pyd"
   
@@ -269,10 +297,18 @@ Delete /REBOOTOK "$INSTDIR\uninstall.exe"
 ; Remove directories
 RMDir "$INSTDIR"
 
+; Remove start menu items
+Delete '$SMPROGRAMS\USD Shell Extension\USD Shell Extension Configuration.lnk'
+Delete '$SMPROGRAMS\USD Shell Extension\Uninstall USD Shell Extension.lnk'
+RMDir '$SMPROGRAMS\USD Shell Extension'
+
 SectionEnd
 
 ;--------------------------------
 Section "-Un.RestartProcesses" 
+
+${DisableX64FSRedirection}
+SetRegView 64
 
 Call un.RestartExplorer
 Call un.RestartWindowsSearch
