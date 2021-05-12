@@ -2,6 +2,7 @@
 #include "environment.h"
 
 #include <Python.h>
+#include <shlobj_core.h>
 
 std::vector<CStringW> g_UsdPathList;
 std::vector<CStringW> g_UsdPythonPathList;
@@ -161,38 +162,104 @@ static void SetupUsdPluginPathEnvironmentVariable(LPCWSTR sUSD_PluginPath)
 	}
 }
 
-static void GetPrivateProfileStringAndExpandEnvironmentStrings( LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault, LPWSTR lpReturnedString, DWORD nSize, LPCWSTR lpFileName )
+void GetPrivateProfileStringAndExpandEnvironmentStrings( LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault, CStringW& lpReturnedString, const std::vector<CStringW> &ConfigFileList )
 {
+	// a default string that a user wouldn't enter by hand
+	const wchar_t sDefault[] = L"{80CA827C-F8A2-42E3-B582-BF7940014D71}";
 	wchar_t sBuffer[8196];
-	sBuffer[0] = '\0';
-	::GetPrivateProfileStringW( lpAppName, lpKeyName, lpDefault, sBuffer, ARRAYSIZE(sBuffer), lpFileName );
-	::ExpandEnvironmentStringsW( sBuffer, lpReturnedString, nSize );
+
+	for ( const CStringW &sConfigFile : ConfigFileList )
+	{
+		sBuffer[0] = '\0';
+		::GetPrivateProfileStringW( lpAppName, lpKeyName, sDefault, sBuffer, ARRAYSIZE(sBuffer), sConfigFile );
+		if ( sBuffer[0] != '\0' && wcscmp( sBuffer, sDefault ) )
+			break;
+	}
+
+	// if we never found an entry, use the passed in default
+	if ( sBuffer[0] == '\0' || wcscmp( sBuffer, sDefault ) == 0 )
+	{
+		wcscpy_s( sBuffer, lpDefault );
+	}
+
+	DWORD nLengthInChars = ::ExpandEnvironmentStringsW( sBuffer, lpReturnedString.GetBuffer(), lpReturnedString.GetAllocLength() );
+	if ( static_cast<int>(nLengthInChars) > lpReturnedString.GetAllocLength() )
+	{
+		::ExpandEnvironmentStringsW( sBuffer, lpReturnedString.GetBuffer(nLengthInChars), nLengthInChars );
+	}
+
+	lpReturnedString.ReleaseBuffer( nLengthInChars );
 }
 
-void SetupPythonEnvironment()
+std::vector<CStringW> BuildConfigFileList( HMODULE hCurrentModule )
 {
-	wchar_t sModulePath[MAX_PATH];
-	::GetModuleFileNameW( nullptr, sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), L"UsdShellExtension.ini" );
+	std::vector<CStringW> ConfigFileList;
 
-	wchar_t sUSD_Path[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PATH", L"", sUSD_Path, ARRAYSIZE( sUSD_Path ), sModulePath );
+	// 1. current user config file
+	{
+		wchar_t *pFolderPath = nullptr;
+		if ( ::SHGetKnownFolderPath( FOLDERID_LocalAppData, KF_FLAG_DEFAULT, nullptr, &pFolderPath ) == S_OK )
+		{
+			wchar_t sConfigPath[1024];
+			wcscpy_s( sConfigPath, pFolderPath );
+			CoTaskMemFree( pFolderPath );
+			pFolderPath = nullptr;
+			::PathCchAppend( sConfigPath, ARRAYSIZE( sConfigPath ), L"Activision" );
+			::PathCchAppend( sConfigPath, ARRAYSIZE( sConfigPath ), L"UsdShellExtension" );
+			::PathCchAppend( sConfigPath, ARRAYSIZE( sConfigPath ), L"UsdShellExtension.ini" );
+			ConfigFileList.push_back( sConfigPath );
+		}
+	}
 
-	wchar_t sUSD_PythonPath[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PYTHONPATH", L"", sUSD_PythonPath, ARRAYSIZE( sUSD_PythonPath ), sModulePath );
+	// 2. all users config file
+	{
+		wchar_t *pFolderPath = nullptr;
+		if ( ::SHGetKnownFolderPath( FOLDERID_ProgramData, KF_FLAG_DEFAULT, nullptr, &pFolderPath ) == S_OK )
+		{
+			wchar_t sConfigPath[1024];
+			wcscpy_s( sConfigPath, pFolderPath );
+			CoTaskMemFree( pFolderPath );
+			pFolderPath = nullptr;
+			::PathCchAppend( sConfigPath, ARRAYSIZE( sConfigPath ), L"Activision" );
+			::PathCchAppend( sConfigPath, ARRAYSIZE( sConfigPath ), L"UsdShellExtension" );
+			::PathCchAppend( sConfigPath, ARRAYSIZE( sConfigPath ), L"UsdShellExtension.ini" );
+			ConfigFileList.push_back( sConfigPath );
+		}
+	}
 
-	wchar_t sUSD_EditorPath[MAX_PATH];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"EDITOR", L"", sUSD_EditorPath, ARRAYSIZE( sUSD_EditorPath ), sModulePath );
+	// 3. config file next to module
+	{
+		wchar_t sConfigPath[1024];
+		::GetModuleFileNameW( hCurrentModule, sConfigPath, ARRAYSIZE( sConfigPath ) );
+		::PathCchRemoveFileSpec( sConfigPath, ARRAYSIZE( sConfigPath ) );
+		::PathCchAppend( sConfigPath, ARRAYSIZE( sConfigPath ), L"UsdShellExtension.ini" );
+		ConfigFileList.push_back( sConfigPath );
+	}
 
-	wchar_t sUSD_PluginPath[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PXR_PLUGINPATH_NAME", L"", sUSD_PluginPath, ARRAYSIZE( sUSD_PluginPath ), sModulePath );
+	return ConfigFileList;
+}
 
-	wchar_t sPython_Path[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PATH", L"", sPython_Path, ARRAYSIZE( sPython_Path ), sModulePath );
+void SetupPythonEnvironment( HMODULE hCurrentModule )
+{
+	std::vector<CStringW> ConfigFileList = BuildConfigFileList(hCurrentModule);
 
-	wchar_t sPython_PythonPath[2048];
-	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PYTHONPATH", L"", sPython_PythonPath, ARRAYSIZE( sPython_PythonPath ), sModulePath );
+	CStringW sUSD_Path;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PATH", L"", sUSD_Path, ConfigFileList );
+
+	CStringW sUSD_PythonPath;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PYTHONPATH", L"", sUSD_PythonPath, ConfigFileList );
+
+	CStringW sUSD_EditorPath;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"EDITOR", L"", sUSD_EditorPath, ConfigFileList );
+
+	CStringW sUSD_PluginPath;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PXR_PLUGINPATH_NAME", L"", sUSD_PluginPath, ConfigFileList );
+
+	CStringW sPython_Path;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PATH", L"", sPython_Path, ConfigFileList );
+
+	CStringW sPython_PythonPath;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PYTHONPATH", L"", sPython_PythonPath, ConfigFileList );
 
 	g_UsdPathList = TranslatePathsToList(sUSD_Path);
 	g_UsdPythonPathList = TranslatePathsToList(sUSD_PythonPath);

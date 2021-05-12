@@ -12,7 +12,7 @@
 
 HRESULT CUsdPythonToolsImpl::FinalConstruct()
 {
-	SetupPythonEnvironment();
+	SetupPythonEnvironment( g_hInstance );
 
 	return __super::FinalConstruct();
 }

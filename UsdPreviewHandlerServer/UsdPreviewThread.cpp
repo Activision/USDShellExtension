@@ -23,16 +23,12 @@ void CUSDPreviewThread::Term()
 
 static bool GetRendererFromConfig( LPCTSTR system, CStringW &out )
 {
-	TCHAR sModulePath[MAX_PATH];
-	::GetModuleFileName( g_hInstance, sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), _T( "UsdShellExtension.ini" ) );
-	
-	TCHAR sRenderer[128];
-	sRenderer[0] = '\0';
-	::GetPrivateProfileString( _T( "RENDERER" ), system, _T( "GL" ), sRenderer, ARRAYSIZE( sRenderer ), sModulePath );
+	std::vector<CStringW> ConfigFileList = BuildConfigFileList( g_hInstance );
 
-	if ( sRenderer[0] == '\0' )
+	CStringW sRenderer;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"RENDERER", system, L"GL", sRenderer, ConfigFileList );
+
+	if ( sRenderer.IsEmpty() )
 		return false;
 
 	out = sRenderer;

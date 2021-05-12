@@ -8,7 +8,7 @@
 
 HRESULT CUsdPreviewHandlerImpl::FinalConstruct()
 {
-	SetupPythonEnvironment();
+	SetupPythonEnvironment( g_hInstance );
 
 	m_hUsdPreviewLib = LoadLibraryEx(_T("UsdPreviewHandler.pyd"), nullptr, LOAD_LIBRARY_SEARCH_APPLICATION_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
 	if (m_hUsdPreviewLib == nullptr)

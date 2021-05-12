@@ -3,6 +3,7 @@
 #include "resource.h"
 #include "shared/EventViewerMessages.h"
 #include "shared/EventViewerLog.h"
+#include "shared/environment.h"
 
 #include <fstream>
 
@@ -52,15 +53,11 @@ static std::vector<CString> TranslatePathsToList(LPCTSTR paths)
 
 static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars )
 {
-	TCHAR sModulePath[MAX_PATH];
-	::GetModuleFileName( g_hInstance, sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), _T( "UsdShellExtension.ini" ) );
+	std::vector<CStringW> ConfigFileList = BuildConfigFileList( g_hInstance );
 
-	TCHAR sTempBuffer[2048];
-	sTempBuffer[0] = '\0';
-	::GetPrivateProfileString( _T( "PYTHON" ), _T( "PATH" ), _T( "" ), sTempBuffer, ARRAYSIZE( sTempBuffer ), sModulePath );
-	::ExpandEnvironmentStrings( sTempBuffer, sBuffer, nBufferSizeInChars );
+	CStringW sPythonPath;
+	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PATH", L"", sPythonPath, ConfigFileList );
+	wcscpy_s( sBuffer, nBufferSizeInChars, sPythonPath );
 
 	if ( sBuffer[0] == '\0' )
 	{

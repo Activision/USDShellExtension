@@ -8,7 +8,7 @@
 
 HRESULT CUsdSdkToolsImpl::FinalConstruct()
 {
-	SetupPythonEnvironment();
+	SetupPythonEnvironment( g_hInstance );
 
 	return __super::FinalConstruct();
 }

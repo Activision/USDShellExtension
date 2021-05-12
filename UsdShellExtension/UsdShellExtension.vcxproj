@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\shared\environment.h" />
     <ClInclude Include="ArResolverShellExtension.h" />
     <ClInclude Include="UsdMetadata_Atvi.h" />
     <ClInclude Include="UsdPropertyKeys_Atvi.h" />
@@ -27,6 +28,7 @@
     <ClInclude Include="UWPProgressBar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\shared\environment.cpp" />
     <ClCompile Include="ArResolverShellExtension.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

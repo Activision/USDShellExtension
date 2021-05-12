@@ -18,20 +18,22 @@ Function USDPathPage
 		Abort
 	${EndIf}
 
+    SetShellVarContext all
+
     ${NSD_CreateLabel} 0 0 100% 10u "PATH"
-    !insertmacro ReadConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PATH" ""
+    !insertmacro ReadConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PATH" ""
     Pop $R0
     ${NSD_CreateText} 0 10u 100% 12u $R0
     Pop $hWndUsdPathEditPath
 
     ${NSD_CreateLabel} 0 28u 100% 10u "PYTHONPATH"
-    !insertmacro ReadConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PYTHONPATH" ""
+    !insertmacro ReadConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PYTHONPATH" ""
     Pop $R0
     ${NSD_CreateText} 0 38u 100% 12u $R0
     Pop $hWndUsdPathEditPythonPath
 
     ${NSD_CreateLabel} 0 56u 100% 10u "PXR_PLUGINPATH_NAME"
-    !insertmacro ReadConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PXR_PLUGINPATH_NAME" ""
+    !insertmacro ReadConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PXR_PLUGINPATH_NAME" ""
     Pop $R0
     ${NSD_CreateText} 0 66u 100% 12u $R0
     Pop $hWndUsdPathEditPxrPluginPath
@@ -41,7 +43,7 @@ Function USDPathPage
     ${NSD_OnClick} $hWndUsdPathButtonBuild USDPathPageBuildClick
 
     ;${NSD_CreateLabel} 0 -30u 100% 10u "Configuration File"
-    ;${NSD_CreateText} 0 -18u 100% 12u "$INSTDIR\UsdShellExtension.ini"
+    ;${NSD_CreateText} 0 -18u 100% 12u "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini"
     ;Pop $hWndUsdPathConfigPath
     ;${NSD_Edit_SetReadOnly} $hWndUsdPathConfigPath 1
 
@@ -49,15 +51,16 @@ Function USDPathPage
 FunctionEnd
 
 Function USDPathPageLeave
+    SetShellVarContext all
 
 	${NSD_GetText} $hWndUsdPathEditPath $0
-	!insertmacro WriteConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PATH" $0
+	!insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PATH" $0
 
 	${NSD_GetText} $hWndUsdPathEditPythonPath $0
-	!insertmacro WriteConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PYTHONPATH" $0
+	!insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PYTHONPATH" $0
 
 	${NSD_GetText} $hWndUsdPathEditPxrPluginPath $0
-	!insertmacro WriteConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PXR_PLUGINPATH_NAME" $0
+	!insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PXR_PLUGINPATH_NAME" $0
 
 FunctionEnd
 
