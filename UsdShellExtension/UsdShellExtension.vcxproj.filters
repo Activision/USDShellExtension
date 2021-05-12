@@ -130,7 +130,7 @@
     <None Include="unregister.bat">
       <Filter>Files</Filter>
     </None>
-    <None Include="UsdShellExtension.cfg">
+    <None Include="UsdShellExtension.ini">
       <Filter>Files</Filter>
     </None>
   </ItemGroup>

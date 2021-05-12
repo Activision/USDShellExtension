@@ -74,7 +74,7 @@ mc -h %(RelativeDir) %(FullPath)</Command>
     <None Include="ShellPreviewHandlerImpl.rgs" />
     <None Include="ShellPropertyStoreImpl.rgs" />
     <None Include="ShellThumbnailProviderImpl.rgs" />
-    <None Include="UsdShellExtension.cfg" />
+    <None Include="UsdShellExtension.ini" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="ShellExt.idl" />
@@ -192,7 +192,7 @@ mc -h %(RelativeDir) %(FullPath)</Command>
       <Command>xcopy "$(ProjectDir)plugInfo.json" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)register.bat" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)unregister.bat" "$(TargetDir)" /I /Y /F /R
-xcopy "$(ProjectDir)UsdShellExtension.cfg" "$(TargetDir)" /I /Y /D /R
+xcopy "$(ProjectDir)UsdShellExtension.ini" "$(TargetDir)" /I /Y /D /R
 
 %(Command)</Command>
     </PostBuildEvent>
@@ -229,7 +229,7 @@ xcopy "$(ProjectDir)UsdShellExtension.cfg" "$(TargetDir)" /I /Y /D /R
       <Command>xcopy "$(ProjectDir)plugInfo.json" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)register.bat" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)unregister.bat" "$(TargetDir)" /I /Y /F /R
-xcopy "$(ProjectDir)UsdShellExtension.cfg" "$(TargetDir)" /I /Y /D /R
+xcopy "$(ProjectDir)UsdShellExtension.ini" "$(TargetDir)" /I /Y /D /R
 
 %(Command)</Command>
     </PostBuildEvent>

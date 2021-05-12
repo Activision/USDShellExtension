@@ -23,7 +23,7 @@ Function USDConfigPage
     ${NSD_CreateLabel} 0 0 100% 20u "This file contains the configuration for the USD Shell Extension. \
         The configuration can be modified at any time and the changes will be reflected immeditately."
 
-    nsDialogs::CreateControl "${__NSD_Text_CLASS}" "${USDCONFIGCONFIGPATH_STYLE}" "${USDCONFIGCONFIGPATH_EXSTYLE}" 0 30u 100% 12u "$INSTDIR\UsdShellExtension.cfg"
+    nsDialogs::CreateControl "${__NSD_Text_CLASS}" "${USDCONFIGCONFIGPATH_STYLE}" "${USDCONFIGCONFIGPATH_EXSTYLE}" 0 30u 100% 12u "$INSTDIR\UsdShellExtension.ini"
     Pop $hWndUsdConfigConfigPath
     ${NSD_Edit_SetReadOnly} $hWndUsdConfigConfigPath 1
 
@@ -41,5 +41,5 @@ FunctionEnd
 
 Function USDConfigPageShowClick
 
-    ExecWait 'explorer.exe /n,/select,"$INSTDIR\UsdShellExtension.cfg"'
+    ExecWait 'explorer.exe /n,/select,"$INSTDIR\UsdShellExtension.ini"'
 FunctionEnd

@@ -85,6 +85,6 @@ Point this property sheet to the bare-bones USD SDK.
 
 Point this property sheet to the full USD SDK's version of boost.
 
-`UsdShellExtension.cfg`
+`UsdShellExtension.ini`
 
 Point the paths in this configuration file to the full USD SDK.

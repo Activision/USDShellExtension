@@ -59,6 +59,7 @@ InstallDirRegKey HKLM "Software\Activision\UsdShellExtension" "Install_Dir"
 ;Utilities
 !include "${__FILEDIR__}\UsdConfigUtils.nsh"
 !include "${__FILEDIR__}\RestartManager.nsh"
+!include "${__FILEDIR__}\ShellLinkSetRunAs.nsh"
 
 ;--------------------------------
 ;Interface Settings
@@ -149,14 +150,15 @@ Section "Install"
 
 ${DisableX64FSRedirection}
 SetRegView 64
+SetShellVarContext all
 
 SetDetailsPrint textonly
 DetailPrint "Installing files..."
 SetDetailsPrint listonly
 
-${Unless} ${FileExists} "$INSTDIR\UsdShellExtension.cfg"
+${Unless} ${FileExists} "$INSTDIR\UsdShellExtension.ini"
     SetOutPath "$INSTDIR"
-    File UsdShellExtension.cfg
+    File UsdShellExtension.ini
 ${EndUnless}
 
 SetOutPath "$INSTDIR"
@@ -193,8 +195,10 @@ WriteUninstaller "$INSTDIR\uninstall.exe"
 
 ; Install start menu items
 CreateDirectory '$SMPROGRAMS\USD Shell Extension'
-CreateShortCut '$SMPROGRAMS\USD Shell Extension\USD Shell Extension Configuration.lnk' '$INSTDIR\USDShellExtension.cfg' ""
+CreateShortCut '$SMPROGRAMS\USD Shell Extension\USD Shell Extension Configuration.lnk' '"$SYSDIR\NOTEPAD.EXE"' '"$INSTDIR\USDShellExtension.ini"' '$SYSDIR\imageres.dll' 64
 CreateShortCut '$SMPROGRAMS\USD Shell Extension\Uninstall USD Shell Extension.lnk' '$INSTDIR\uninstall.exe' ""
+
+!insertmacro ShellLinkSetRunAs "$SMPROGRAMS\USD Shell Extension\USD Shell Extension Configuration.lnk"
 
 ; Write version info to registry
 WriteRegStr HKLM "Software\Activision\UsdShellExtension" "Version" "${VER_MAJOR}.${VER_MINOR}.${VER_REVISION}.${VER_BUILD}"
@@ -233,17 +237,17 @@ DetailPrint "Updating config file..."
 SetDetailsPrint listonly
 
 
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PATH" ""
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PYTHONPATH" ""
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "PXR_PLUGINPATH_NAME" ""
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "USD" "EDITOR" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PATH" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PYTHONPATH" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "PXR_PLUGINPATH_NAME" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "USD" "EDITOR" ""
 
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "RENDERER" "PREVIEW" "GL"
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "RENDERER" "THUMBNAIL" "GL"
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "RENDERER" "VIEW" "GL"
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "RENDERER" "PREVIEW" "GL"
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "RENDERER" "THUMBNAIL" "GL"
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "RENDERER" "VIEW" "GL"
 
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "PYTHON" "PATH" ""
-!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.cfg" "PYTHON" "PYTHONPATH" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "PYTHON" "PATH" ""
+!insertmacro PatchConfigFile "$INSTDIR\UsdShellExtension.ini" "PYTHON" "PYTHONPATH" ""
 
 SectionEnd
 
@@ -269,6 +273,7 @@ Section "Uninstall"
 
 ${DisableX64FSRedirection}
 SetRegView 64
+SetShellVarContext all
 
 SetDetailsPrint textonly
 DetailPrint "Uninstalling files..."
@@ -292,7 +297,7 @@ DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\UsdShellE
 DeleteRegKey HKLM SOFTWARE\Activision\UsdShellExtension
 
 ; Remove files and uninstaller
-;Delete /REBOOTOK "$INSTDIR\UsdShellExtension.cfg"
+;Delete /REBOOTOK "$INSTDIR\UsdShellExtension.ini"
 Delete /REBOOTOK "$INSTDIR\plugInfo.json"
 RMDir /r /REBOOTOK "$INSTDIR\usd"
 Delete /REBOOTOK "$INSTDIR\UsdPropertyKeys.propdesc"

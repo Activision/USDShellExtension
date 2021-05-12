@@ -26,7 +26,7 @@ static bool GetRendererFromConfig( LPCTSTR system, CStringW &out )
 	TCHAR sModulePath[MAX_PATH];
 	::GetModuleFileName( g_hInstance, sModulePath, ARRAYSIZE( sModulePath ) );
 	::PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), _T( "UsdShellExtension.cfg" ) );
+	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), _T( "UsdShellExtension.ini" ) );
 	
 	TCHAR sRenderer[128];
 	sRenderer[0] = '\0';

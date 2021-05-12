@@ -174,7 +174,7 @@ void SetupPythonEnvironment()
 	wchar_t sModulePath[MAX_PATH];
 	::GetModuleFileNameW( nullptr, sModulePath, ARRAYSIZE( sModulePath ) );
 	::PathCchRemoveFileSpec( sModulePath, ARRAYSIZE( sModulePath ) );
-	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), L"UsdShellExtension.cfg" );
+	::PathCchAppend( sModulePath, ARRAYSIZE( sModulePath ), L"UsdShellExtension.ini" );
 
 	wchar_t sUSD_Path[2048];
 	GetPrivateProfileStringAndExpandEnvironmentStrings( L"USD", L"PATH", L"", sUSD_Path, ARRAYSIZE( sUSD_Path ), sModulePath );
