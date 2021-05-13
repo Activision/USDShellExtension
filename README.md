@@ -1,118 +1,50 @@
-ACTIVISION USD SHELL EXTENSION
+Activision USD Shell Extension
 ==============================
 
-### Goals
+A Windows Shell Extension for the Pixar USD file format. 
 
-There are several goals that this shell extension tries to adhere to.
+**Windows Explorer Features**
+
+* Hydra Realtime Preview 
+* Thumbnails
+* Context Menus
+* Metadata Properties
+
+**Windows Search Features**
+
+* Metadata Search
+
+More details available [here](./docs/FEATURES.md).
+
+Goals
+-----
+
+There are several goals that this shell extension tries to adhere to and takes extra precautions to meet.
 
 * **Performance**  
   It is important that the shell extension not stall Windows Explorer.  
-  This requirement is satisfied by making operations asynchronous via threads and out of process execution.
+
 * **Stability**  
-  The extension should avoid crashing since that will take down Window Explorer and/or the entire desktop.  
-  This requirement is satisfied by making operations occur out-of-process. If the external process crashes, 
-  it does not take down Windows Explorer.  
-  The Python interpreter is kept out Windows Explorer.
+  Instability in the shell extension will take down Window Explorer and/or the entire desktop.  
+
+The mitigation strategy is to run the majority of the shell extension asynchronously out of the 
+Windows Explorer process.
 
 
----
-### UsdShellExtension
+Dependencies
+------------
 
-This is a DLL project. 
+The following dependencies are required:
 
-#### Shell Extension
-It is the core Windows Explorer Shell extension. This DLL is loaded into 
-the Windows Explorer process. As a result, this DLL should not *host* python.
+* [Microsoft Visual Studio](https://visualstudio.microsoft.com/vs/)
+* [Universal Scene Description (USD)](https://graphics.pixar.com/usd/docs/index.html)
+* [Python (2.7, 3.6, 3.7, 3.8, 3.9)](https://www.python.org/)
 
+Required Microsoft Visual Studio Components:
 
-| Extension             | Description                                                                                                   |
-|-                      |-                                                                                                              |
-| **IPreviewHandler**   | Adds a preview for USD files by running `usdStageView` (a part of `usdView`) in an out-of-process viewport. |
-| **IThumbnailProvider**| Generates thumbnails for USD files by running `usdRecord` out-of-process.                                    |
-| **IPropertyStore**    | Exposes USD metadata to Windows Explorer and Windows Search.                                                  |
+* Desktop development with C++
+* C++ ATL
+* Windows 10 SDK
+* Windows Universal C Runtime
+* Python language support
 
-
-##### IPreviewHandler
-
-###### prevhost.exe
-
-The IPreviewHandler runs out of process in a Windows provided COM local server called prevhost.exe. 
-We run the USD loading screen in prevhost.exe but launch the actual preview using our own out of process COM server, 
-UsdPreviewLocalServer. 
-
-###### UsdPreviewLocalServer.exe
-
-This COM server embeds python and launches an instance of usdStageView using a custom python script. 
-It isolates python from any Windows processes.
-
-Stalling a COM call in our implementation of IPreviewHandler would still hang Windows Explorer, even though the preview 
-is running out of process. By having our own asynchronous out of process server, we could operate asynchronously to 
-Windows Explorer.
-
-###### UsdPreviewHandlerPython.py
-
-When launching usdStageView from UsdPreviewLocalServer.exe we use a custom script that uses UsdPreviewHandlerPython.py 
-to send and receive events from C++. The first event that is sent is the HWND of the usdStageView so that it can be made 
-a child of the preview HWND in Windows Explorer.
-
-##### IThumbnailProvider
-
-###### UsdPythonToolsLocalServer.exe
-
-Thumbnail providers already run on background threads in Windows Explorer. The extraction of a thumbnail can take a 
-significant amount of time. We launch an out of process COM server, UsdPythonToolsLocalServer.exe, to run the usdRecord 
-python script provided by USD SDK. This keeps python out of Windows Explorer.
-
-##### IPropertyStore
-
-The IPropertyStore interface runs synchronously to the UI in Windows Explorer. It must execute quickly. For this reason 
-the C++ USD SDK is used directly in Windows Explorer. 
-
-###### USD Activation Context
-
-The USD SDK and all of its dependencies are isolated from the rest of Windows Explorer via a Windows Activation Context. 
-This at least guarantees that if any other extension ever loads USD or any of its dependencies into Windows Explorer, 
-we will not clash.
-
-#### Python Plug-in
-This DLL serves as a python plug-in. The python plug-in is called ArResolverShellExtension. It is used to 
-allow shared reads across the USD SDK. By default, the USD SDK uses fopen which in MSVC does not allow shared reads. 
-
-#### rundll
-This DLL has several rundll entry points. These entry points are executed from Windows Explorer context menus. 
-They are all located in `ShellExecute.cpp`.
-
----
-### UsdPreviewLocalServer
-
-This is COM Local Server executable. 
-
-This project serves `usdStageView`, the USD preview window, out of process. `usdStageView` is a python script 
-written by Pixar. This project hosts python and executes the script. It communicates with `UsdShellExtension` 
-via COM.
-
-If the Preview server crashes. It will not take down Windows Explorer.
-
----
-### UsdPreviewHandlerPython
-
-This is a python extension module.
-
-It is used to communicate between the python preview window and our shell 
-extension. It is hosted by `UsdPreviewLocalServer`.
-
----
-### UsdPythonToolsLocalServer
-
-This is COM Local Server executable. 
-
-It is used to host out of process USD python tools. This server is used to capture thumbnails using 
-usdrecord and to launch `usdview`.
-
----
-### UsdSdkToolsLocalServer
-
-This is COM Local Server executable. 
-
-It is used to host out of process USD C++ tools. This server executes the conversion between USD file 
-formats and generating USD archives.
