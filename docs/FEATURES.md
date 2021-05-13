@@ -5,7 +5,7 @@ Table of contents
 -----------------
 
   - [Windows Explorer Thumbnails](#features-thumbnails)
-  - [Windows Explorer Preview>](#features-preview)
+  - [Windows Explorer Preview](#features-preview)
   - [Windows Explorer Conversion](#features-conversion)
   - [Windows Explorer Edit](#features-edit)
   - [Windows Search](#features-search)
