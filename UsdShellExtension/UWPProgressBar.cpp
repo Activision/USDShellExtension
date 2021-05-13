@@ -59,14 +59,21 @@ void CUWPProgressBar::UpdateProgressBar()
 	}
 }
 
-void CUWPProgressBar::DrawProgressBar( Gdiplus::Graphics &gfx, Gdiplus::RectF &rcArea, Gdiplus::Color &backgroundColor )
+void CUWPProgressBar::DrawProgressBar( HWND hWnd, Gdiplus::Graphics &gfx, Gdiplus::RectF &rcArea, Gdiplus::Color &backgroundColor )
 {
+	float fDpiWindow = static_cast<float>(::GetDpiForWindow( hWnd ));
+	float fDpiScale = fDpiWindow / USER_DEFAULT_SCREEN_DPI;
+
 	Gdiplus::SolidBrush brush( backgroundColor );
 	gfx.FillRectangle( &brush, rcArea );
 
 	Gdiplus::SizeF dot;
 	dot.Width = kfProgressBarDotSize;
 	dot.Height = kfProgressBarDotSize;
+
+	// DPI adjust
+	dot.Width *= fDpiScale;
+	dot.Height *= fDpiScale;
 
 	for ( Gdiplus::PointF &pt : m_ptProgressBarDot )
 	{

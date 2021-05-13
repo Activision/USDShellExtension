@@ -131,7 +131,7 @@ LRESULT CUsdLoadScreenDlg::OnTimer( UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 		if ( m_pGfx && m_hWnd )
 		{
 			m_ProgressBar.UpdateProgressBar();
-			m_ProgressBar.DrawProgressBar( *m_pGfx, m_rcProgressArea, m_Background );
+			m_ProgressBar.DrawProgressBar( m_hWnd, *m_pGfx, m_rcProgressArea, m_Background );
 			InvalidateProgressBar( m_rcProgressArea );
 		}
 		break;
@@ -242,6 +242,9 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 	Gdiplus::SolidBrush brush( m_Background );
 	gfx.FillRectangle( &brush, 0, 0, static_cast<INT>(m_imgBackBuffer.GetWidth()), static_cast<INT>(m_imgBackBuffer.GetHeight()) );
 
+	float fDpiWindow = static_cast<float>(::GetDpiForWindow( m_hWnd ));
+	float fDpiScale = fDpiWindow / USER_DEFAULT_SCREEN_DPI;
+
 	if ( m_pImgLoadScreen != nullptr )
 	{
 		Gdiplus::SizeF margins;
@@ -257,11 +260,16 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 		sizeImageOriginal.Width = static_cast<Gdiplus::REAL>(m_pImgLoadScreen->GetWidth());
 		sizeImageOriginal.Height = static_cast<Gdiplus::REAL>(m_pImgLoadScreen->GetHeight());
 
-		Gdiplus::SizeF sizeImageResized = sizeImageOriginal;
+		// DPI adjust
+		Gdiplus::SizeF sizeImageOriginalDpi = sizeImageOriginal;
+		sizeImageOriginalDpi.Width *= fDpiScale;
+		sizeImageOriginalDpi.Height *= fDpiScale;
 
-		if ( sizeImageOriginal.Width > sizeWindow.Width )
+		Gdiplus::SizeF sizeImageResized = sizeImageOriginalDpi;
+
+		if ( sizeImageOriginalDpi.Width > sizeWindow.Width )
 		{
-			float fAspectRatio = sizeImageOriginal.Height / sizeImageOriginal.Width;
+			float fAspectRatio = sizeImageOriginalDpi.Height / sizeImageOriginalDpi.Width;
 			Gdiplus::SizeF sizeNew;
 			sizeNew.Width = sizeWindow.Width;
 			sizeNew.Height = sizeWindow.Width * fAspectRatio;
@@ -270,9 +278,9 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 				sizeImageResized = sizeNew;
 		}
 
-		if ( sizeImageOriginal.Height > sizeWindow.Height )
+		if ( sizeImageOriginalDpi.Height > sizeWindow.Height )
 		{
-			float fAspectRatio = sizeImageOriginal.Width / sizeImageOriginal.Height;
+			float fAspectRatio = sizeImageOriginalDpi.Width / sizeImageOriginalDpi.Height;
 			Gdiplus::SizeF sizeNew;
 			sizeNew.Height = sizeWindow.Height;
 			sizeNew.Width = sizeWindow.Height * fAspectRatio;
@@ -280,7 +288,6 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 			if ( sizeNew.Width < sizeImageResized.Width || sizeNew.Height < sizeImageResized.Height )
 				sizeImageResized = sizeNew;
 		}
-
 
 		Gdiplus::RectF rcSrc(
 			0, 0,
@@ -301,14 +308,11 @@ void CUsdLoadScreenDlg::Draw( Gdiplus::Graphics &gfx )
 			static_cast<Gdiplus::REAL>(m_imgBackBuffer.GetWidth() - 4),
 			margins.Height
 		);
-		m_ProgressBar.DrawProgressBar( gfx, m_rcProgressArea, m_Background );
+		m_ProgressBar.DrawProgressBar( m_hWnd, gfx, m_rcProgressArea, m_Background );
 	}
 
 	if ( m_pImgLogo != nullptr )
 	{
-		float fDpiWindow = static_cast<float>(::GetDpiForWindow( m_hWnd ));
-		float fDpiScale = fDpiWindow / USER_DEFAULT_SCREEN_DPI;
-
 		Gdiplus::SizeF margins;
 		margins.Width = 10.0f;
 		margins.Height = 10.0f;
