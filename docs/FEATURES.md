@@ -4,14 +4,12 @@ Activision USD Shell Extension
 Table of contents
 -----------------
 
-- [Activision USD Shell Extension](#activision-usd-shell-extension)
-  - [Table of contents](#table-of-contents)
-  - [Windows Explorer Thumbnails <a name="features-thumbnails"></a>](#windows-explorer-thumbnails-)
-  - [Windows Explorer Preview <a name="features-preview"></a>](#windows-explorer-preview-)
-  - [Windows Explorer Conversion <a name="features-conversion"></a>](#windows-explorer-conversion-)
-  - [Windows Explorer Edit <a name="features-edit"></a>](#windows-explorer-edit-)
-  - [Windows Search <a name="features-search"></a>](#windows-search-)
-  - [UsdView <a name="features-usdview"></a>](#usdview-)
+  - [Windows Explorer Thumbnails](#features-thumbnails)
+  - [Windows Explorer Preview>](#features-preview)
+  - [Windows Explorer Conversion](#features-conversion)
+  - [Windows Explorer Edit](#features-edit)
+  - [Windows Search](#features-search)
+  - [UsdView](#features-usdview)
 
 <BR>  
 
