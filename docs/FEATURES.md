@@ -6,7 +6,7 @@ Table of contents
 
   - [Windows Explorer Thumbnails](#features-thumbnails)
   - [Windows Explorer Preview](#features-preview)
-  - [Windows Explorer Conversion](#features-conversion)
+  - [Windows Explorer Format Conversion](#features-conversion)
   - [Windows Explorer Edit](#features-edit)
   - [Windows Search](#features-search)
   - [UsdView](#features-usdview)
@@ -37,8 +37,8 @@ The viewport exposes all installed Hydra renderers. The default Hydra renderer c
 
 <BR>  
 
-Windows Explorer Conversion <a name="features-conversion"></a>
----------------------------
+Windows Explorer Format Conversion <a name="features-conversion"></a>
+----------------------------------
 
 The Windows Explorer context menu can perform conversions on USD files.
 
