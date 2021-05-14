@@ -66,7 +66,7 @@ HKCR
 
 	NoRemove .usd
 	{
-		val PerceivedType = s 'image'
+		val PerceivedType = s 'document'
 		NoRemove OpenWithProgids
 		{
 			ForceRemove val ATVI.USD = s 'Activision Universal Scene Description'
@@ -134,7 +134,7 @@ HKCR
 
 	NoRemove .usda
 	{
-		val PerceivedType = s 'image'
+		val PerceivedType = s 'document'
 		NoRemove OpenWithProgids
 		{
 			ForceRemove val ATVI.USDA = s 'Activision Universal Scene Description ASCII'
@@ -202,7 +202,7 @@ HKCR
 
 	NoRemove .usdc
 	{
-		val PerceivedType = s 'image'
+		val PerceivedType = s 'document'
 		NoRemove OpenWithProgids
 		{
 			ForceRemove val ATVI.USDC = s 'Activision Universal Scene Description Crate'
@@ -235,7 +235,7 @@ HKCR
 
 	NoRemove .usdz
 	{
-		val PerceivedType = s 'image'
+		val PerceivedType = s 'document'
 		NoRemove OpenWithProgids
 		{
 			ForceRemove val ATVI.USDZ = s 'Activision Universal Scene Description Package'
