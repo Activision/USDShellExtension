@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "UsdMetadata.h"
 #include "UsdPropertyKeys.h"
-#include "UsdMetadata_Atvi.h"
 
 static std::string DictionaryToString(const pxr::VtDictionary &dict, std::string prefix = "")
 {
@@ -58,15 +57,13 @@ HRESULT ReadUsdMetadata( const pxr::SdfLayerRefPtr &rootLayer, const pxr::VtDict
 	std::string sCustomLayerData = DictionaryToString( customLayerData );
 	hr = StoreStringValue( pPropertyStoreCache, PKEY_USD_CUSTOMLAYERDATA, sCustomLayerData.c_str() );
 
-	hr = ReadUsdMetadata_Atvi( rootLayer, customLayerData, pPropertyStoreCache );
-	if ( FAILED( hr ) )
-		return hr;
-
 	return S_OK;
 }
 
 HRESULT WriteUsdMetadata( pxr::SdfLayerRefPtr &rootLayer, pxr::VtDictionary &customLayerData, IPropertyStoreCache *pPropertyStoreCache, bool &bIsDirty )
 {
+	UNREFERENCED_PARAMETER( customLayerData );
+
 	HRESULT hr;
 	PSC_STATE state;
 
@@ -94,24 +91,14 @@ HRESULT WriteUsdMetadata( pxr::SdfLayerRefPtr &rootLayer, pxr::VtDictionary &cus
 		}
 	}
 
-	hr = WriteUsdMetadata_Atvi( rootLayer, customLayerData, pPropertyStoreCache, bIsDirty );
-	if ( FAILED( hr ) )
-		return hr;
-
 	return S_OK;
 }
 
 HRESULT IsMetadataPropertyWritable( REFPROPERTYKEY key )
 {
-	HRESULT hr;
-
 	if ( IsEqualPropertyKey( key, PKEY_Comment ) /*||
 		 IsEqualPropertyKey( key, PKEY_USD_DOCUMENTATION )*/ )
 		return S_OK;
-
-	hr = IsMetadataPropertyWritable_Atvi( key );
-	if ( hr == S_OK )
-		return hr;
 
 	return S_FALSE;
 }

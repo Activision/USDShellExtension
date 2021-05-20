@@ -48,13 +48,7 @@
     <ClInclude Include="UsdMetadata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UsdPropertyKeys_Atvi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UsdPropertyKeys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UsdMetadata_Atvi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ArResolverShellExtension.h">
@@ -95,9 +89,6 @@
     <ClCompile Include="UsdMetadata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UsdMetadata_Atvi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ArResolverShellExtension.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -122,9 +113,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ShellPropertyStoreImpl.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="UsdPropertyKeys_Atvi.propdesc">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="UsdPropertyKeys.propdesc">

@@ -4,7 +4,6 @@
 #include "resource.h"
 #include "UsdMetadata.h"
 #include "UsdPropertyKeys.h"
-#include "UsdPropertyKeys_Atvi.h"
 #include "ArResolverShellExtension.h"
 
 static void RegisterUsdPlugins()

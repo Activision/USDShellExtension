@@ -13,8 +13,6 @@
   <ItemGroup>
     <ClInclude Include="..\shared\environment.h" />
     <ClInclude Include="ArResolverShellExtension.h" />
-    <ClInclude Include="UsdMetadata_Atvi.h" />
-    <ClInclude Include="UsdPropertyKeys_Atvi.h" />
     <ClInclude Include="UsdPropertyKeys.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Module.h" />
@@ -49,7 +47,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="UsdMetadata_Atvi.cpp" />
     <ClCompile Include="UsdMetadata.cpp" />
     <ClCompile Include="UsdLoadScreenDlg.cpp" />
     <ClCompile Include="UWPProgressBar.cpp" />
@@ -69,7 +66,6 @@ mc -h %(RelativeDir) %(FullPath)</Command>
     <None Include="plugInfo.json" />
     <None Include="register.bat" />
     <None Include="unregister.bat" />
-    <None Include="UsdPropertyKeys_Atvi.propdesc" />
     <None Include="UsdPropertyKeys.propdesc" />
     <None Include="ShellExt.def" />
     <None Include="ShellExtModule.rgs" />

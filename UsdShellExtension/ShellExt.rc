@@ -100,8 +100,6 @@ IDB_LOGO                PNG                     "logo.png"
 // XML
 //
 
-IDR_XML_PROPDESC_ATVI   XML                     "UsdPropertyKeys_Atvi.propdesc"
-
 IDR_XML_PROPDESC_USD    XML                     "UsdPropertyKeys.propdesc"
 
 
@@ -145,22 +143,10 @@ BEGIN
     IDS_USD_DOCUMENTATION_INVITATIONTEXT "Add documentation"
     IDS_USD_DOCUMENTATION_MNEMONICS "usddocumentation|usddocs|usddoc"
     IDS_USD_PROPGROUP_USD_LABEL "Universal Scene Description"
-    IDS_USD_PROPGROUP_ACTIVISION_LABEL "Activision Metadata"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_USD_ATVISOURCEFILENAME_LABEL "Source filename"
-    IDS_USD_ATVISOURCEFILENAME_MNEMONICS "atvi.sourcefilename|atvi.sourcefile"
-    IDS_USD_ATVIEXPORTDATE_MNEMONICS "atvi.exportdate|atvi.exporttime"
-    IDS_USD_ATVIEXPORTFILENAME_MNEMONICS "atvi.exportfilename|atvi.exportfile"
-    IDS_USD_ATVIEXPORTAPPLICATION_MNEMONICS 
-                            "atvi.exportapplication|atvi.exportapp"
-    IDS_USD_ATVIEXPORTUSER_MNEMONICS "atvi.exportuser"
-    IDS_USD_ATVIEXPORTDATE_LABEL "Export date"
-    IDS_USD_ATVIEXPORTFILENAME_LABEL "Export filename"
-    IDS_USD_ATVIEXPORTAPPLICATION_LABEL "Export application"
-    IDS_USD_ATVIEXPORTUSER_LABEL "Export user"
     IDS_FILE_USD            "Universal Scene Description"
     IDS_FILE_USDA           "Universal Scene Description ASCII"
     IDS_FILE_USDC           "Universal Scene Description Crate"

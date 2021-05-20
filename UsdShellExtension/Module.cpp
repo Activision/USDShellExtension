@@ -356,25 +356,6 @@ STDAPI DllRegisterServer()
 		return hr;
 	}
 
-	hr = RegisterPropDescFile(_T("UsdPropertyKeys_Atvi.propdesc"), IDR_XML_PROPDESC_ATVI);
-	if ( FAILED( hr ) )
-	{
-		if ( s_bSilent == false )
-		{
-			CString sError;
-			sError.Format( 
-				_T( "Failed to install UsdPropertyKeys_Atvi.propdesc.\n\n" )
-				_T( "Error: 0x%.8X" ), 
-				hr );
-
-			::MessageBox( nullptr, 
-				sError,
-				_T( "PSRegisterPropertySchema Failed" ), 
-				MB_ICONERROR );
-		}
-		return hr;
-	}
-
 	hr = InstallEventSource();
 	if ( FAILED( hr ) )
 	{
@@ -407,7 +388,6 @@ STDAPI DllUnregisterServer()
 	g_AtlModule.UpdateRegistry( FALSE );
 
 	UnregisterPropDescFile( _T( "UsdPropertyKeys.propdesc" ) );
-	UnregisterPropDescFile( _T( "UsdPropertyKeys_Atvi.propdesc" ) );
 
 	UninstallEventSource();
 
