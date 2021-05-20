@@ -60,6 +60,7 @@ InstallDirRegKey HKLM "Software\Activision\UsdShellExtension" "Install_Dir"
 !include "${__FILEDIR__}\UsdConfigUtils.nsh"
 !include "${__FILEDIR__}\RestartManager.nsh"
 !include "${__FILEDIR__}\ShellLinkSetRunAs.nsh"
+!include "${__FILEDIR__}\CmdLineArgs.nsh"
 
 ;--------------------------------
 ;Interface Settings
@@ -100,6 +101,14 @@ VIAddVersionKey "CompanyName" "${VER_COMPANYNAME}"
 !endif
 
 SetPluginUnload  alwaysoff
+
+;--------------------------------
+Function .onInit
+
+Call ParseCommandLine
+
+FunctionEnd
+
 
 ;--------------------------------
 Section "-ShutdownProcesses" 
@@ -248,6 +257,47 @@ Function PatchConfigFileAll
 FunctionEnd
 
 ;--------------------------------
+Function ForceConfigFileAll
+
+SetShellVarContext all
+
+${If} $CmdLineUsdPath != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PATH" $CmdLineUsdPath
+${EndIf}
+
+${If} $CmdLineUsdPythonPath != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PYTHONPATH" $CmdLineUsdPythonPath
+${EndIf}
+
+${If} $CmdLineUsdPxrPluginPathName != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "USD" "PXR_PLUGINPATH_NAME" $CmdLineUsdPxrPluginPathName
+${EndIf}
+
+
+${If} $CmdLinePythonPath != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "PYTHON" "PATH" $CmdLinePythonPath
+${EndIf}
+
+${If} $CmdLinePythonPythonPath != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "PYTHON" "PYTHONPATH" $CmdLinePythonPythonPath
+${EndIf}
+
+
+${If} $CmdLineRendererPreview != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "RENDERER" "PREVIEW" $CmdLineRendererPreview
+${EndIf}
+
+${If} $CmdLineRendererThumbnail != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "RENDERER" "THUMBNAIL" $CmdLineRendererThumbnail
+${EndIf}
+
+${If} $CmdLineRendererView != ""
+    !insertmacro WriteConfigFile "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini" "RENDERER" "VIEW" $CmdLineRendererView
+${EndIf}
+
+FunctionEnd
+
+;--------------------------------
 Section "-UpdateConfigFile" 
 
 ${DisableX64FSRedirection}
@@ -267,6 +317,9 @@ SetShellVarContext current
 Call PatchConfigFileAll
 SetShellVarContext all
 Call PatchConfigFileAll
+
+; Force any command line settings into the config file
+Call ForceConfigFileAll
 
 SectionEnd
 
