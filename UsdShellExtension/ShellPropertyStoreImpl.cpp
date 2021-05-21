@@ -203,8 +203,8 @@ HRESULT WINAPI CShellPropertyStoreImpl::UpdateRegistry(_In_ BOOL bRegister) thro
 {
 	const wchar_t pPropertyDescription[] = 
 		L"val InfoTip = s 'prop:System.ItemType;System.Size;System.DateModified'\n"
-		L"val FullDetails = s 'prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;System.Size;System.ItemDate;System.DateCreated;System.DateModified;System.DateAccessed;System.FileAttributes;USD.PropGroup.USD;System.Comment;USD.Documentation;USD.CustomLayerData;USD.PropGroup.Activision;USD.ATVISourceFileName;USD.ATVIExportFileName;USD.ATVIExportApplication;USD.ATVIExportUser;USD.ATVIExportDate'\n"
-		L"val PreviewDetails = s 'prop:USD.PropGroup.USD;System.Comment;USD.Documentation;USD.PropGroup.Activision;USD.ATVISourceFileName;USD.ATVIExportFileName;USD.ATVIExportApplication;USD.ATVIExportUser;USD.ATVIExportDate;'\n"
+		L"val FullDetails = s 'prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;System.Size;System.ItemDate;System.DateCreated;System.DateModified;System.DateAccessed;System.FileAttributes;USD.PropGroup.USD;System.Comment;USD.Documentation;USD.CustomLayerData;USD.PropGroup.Activision'\n"
+		L"val PreviewDetails = s 'prop:USD.PropGroup.USD;System.Comment;USD.Documentation;USD.PropGroup.Activision'\n"
 		L"val PreviewTitle = s 'prop:System.FileName;System.ItemType'\n";
 
 	ATL::_ATL_REGMAP_ENTRY regMapEntries[] =

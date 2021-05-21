@@ -373,7 +373,6 @@ DeleteRegKey HKLM SOFTWARE\Activision\UsdShellExtension
 Delete /REBOOTOK "$INSTDIR\plugInfo.json"
 RMDir /r /REBOOTOK "$INSTDIR\usd"
 Delete /REBOOTOK "$INSTDIR\UsdPropertyKeys.propdesc"
-Delete /REBOOTOK "$INSTDIR\UsdPropertyKeys_Atvi.propdesc"
 
 Delete /REBOOTOK "$INSTDIR\uninstall.exe"
 
