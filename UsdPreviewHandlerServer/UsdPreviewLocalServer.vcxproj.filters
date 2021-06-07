@@ -36,9 +36,6 @@
     <ClInclude Include="UsdPreviewHandlerImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EventViewerLog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\emb.h">
       <Filter>Shared</Filter>
     </ClInclude>

@@ -191,6 +191,8 @@ mc -h %(RelativeDir) %(FullPath)</Command>
 xcopy "$(ProjectDir)register.bat" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)unregister.bat" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)UsdShellExtension.ini" "$(TargetDir)" /I /Y /D /R
+xcopy "$(SolutionDir)NOTICE.txt" "$(TargetDir)" /I /Y /D /R
+xcopy "$(SolutionDir)LICENSE.txt" "$(TargetDir)" /I /Y /D /R
 
 %(Command)</Command>
     </PostBuildEvent>
@@ -228,6 +230,8 @@ xcopy "$(ProjectDir)UsdShellExtension.ini" "$(TargetDir)" /I /Y /D /R
 xcopy "$(ProjectDir)register.bat" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)unregister.bat" "$(TargetDir)" /I /Y /F /R
 xcopy "$(ProjectDir)UsdShellExtension.ini" "$(TargetDir)" /I /Y /D /R
+xcopy "$(SolutionDir)NOTICE.txt" "$(TargetDir)" /I /Y /D /R
+xcopy "$(SolutionDir)LICENSE.txt" "$(TargetDir)" /I /Y /D /R
 
 %(Command)</Command>
     </PostBuildEvent>
