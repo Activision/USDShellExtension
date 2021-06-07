@@ -388,6 +388,8 @@ DeleteRegKey HKLM SOFTWARE\Activision\UsdShellExtension
 ; Remove files and uninstaller
 ;Delete /REBOOTOK "$LOCALAPPDATA\Activision\UsdShellExtension\UsdShellExtension.ini"
 Delete /REBOOTOK "$INSTDIR\plugInfo.json"
+Delete /REBOOTOK "$INSTDIR\LICENSE.txt"
+Delete /REBOOTOK "$INSTDIR\NOTICE.txt"
 RMDir /r /REBOOTOK "$INSTDIR\usd"
 Delete /REBOOTOK "$INSTDIR\UsdPropertyKeys.propdesc"
 
