@@ -36,9 +36,9 @@ Dependencies
 
 The following dependencies are required:
 
-* [Microsoft Visual Studio](https://visualstudio.microsoft.com/vs/)
+* [Microsoft Visual Studio (2017 or newer)](https://visualstudio.microsoft.com/vs/)
 * [Universal Scene Description (USD)](https://graphics.pixar.com/usd/docs/index.html)
-* [Python (2.7, 3.6?, 3.7, 3.8?, 3.9?)](https://www.python.org/)
+* [Python (2.7, 3.6, 3.7)](https://www.python.org/)
 
 Required Microsoft Visual Studio Components:
 
@@ -49,6 +49,3 @@ Required Microsoft Visual Studio Components:
 * Python language support
 
 
-Tests
------
-This extension has currently only been tested with Python 2.7 and 3.7. It should work with 3.6, 3.8, and 3.9 but it hasn't been tested.
