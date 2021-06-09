@@ -16,7 +16,7 @@
 #include "environment.h"
 
 #include <Python.h>
-#include <shlobj_core.h>
+#include <shlobj.h>
 
 std::vector<CStringW> g_UsdPathList;
 std::vector<CStringW> g_UsdPythonPathList;

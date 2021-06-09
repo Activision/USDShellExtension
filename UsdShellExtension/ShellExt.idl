@@ -14,7 +14,7 @@
 
 import "oaidl.idl";
 import "ocidl.idl";
-import "ShObjIdl_core.idl";
+import "ShObjIdl.idl";
 import "thumbcache.idl";
 
 [

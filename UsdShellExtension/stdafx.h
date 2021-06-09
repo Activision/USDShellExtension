@@ -65,8 +65,8 @@
 #include <atlimage.h>
 #include <atlcomtime.h>
 
-#include <shlobj_core.h>
-#include <shobjidl_core.h>
+#include <shlobj.h>
+#include <shobjidl.h>
 #include <pathcch.h>
 #include <thumbcache.h>
 #include <propkey.h>

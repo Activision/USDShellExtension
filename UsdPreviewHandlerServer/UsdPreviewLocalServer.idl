@@ -14,7 +14,7 @@
 
 import "oaidl.idl";
 import "ocidl.idl";
-import "ShObjIdl_core.idl";
+import "ShObjIdl.idl";
 
 [
 	uuid(68DF0FAC-996B-4933-B092-9733E77061BB),
