@@ -5,10 +5,10 @@ ACTIVISION USD SHELL EXTENSION
 ## Dependencies
 
 * Boost
-* Python
+* Python (2.7, 3.6, 3.7)
 * USD SDK
 * Windows 10 SDK
-* Visual Studio
+* Visual Studio 2017+
   * ATL
   * Python C++ Tools
 
@@ -17,14 +17,13 @@ ACTIVISION USD SHELL EXTENSION
 `boost.props`
 
 Boost is required for Boost.Python. It is used to build a python extension module. The boost 
-compilation must much the version of MSVC and python used by the shell extension.
+compilation must match the version of MSVC and Python used by the shell extension.
 
 #### Python
 
 `python.props`
 
-Currenmtly only Python 3.4 or higher is supported by the shell extension. This is currently due to 
-UsdThumbnail.py requiring importlib spec.loader.exec_module.
+Currently only Python 2.7, 3.6, and 3.7 are supported. The USD SDK does not currently support Python 3.8+ on Windows.
 
 #### USD SDK
 
@@ -60,7 +59,7 @@ The following Visual Studio components are required:
 ## Simple Build
 
 The simplest way to build the shell extension is to build two flavors of the USD SDK. The first being a 
-bare-bones version of the SDK that is USD by Windows Explorer. The second is a full version used by 
+bare-bones version of the SDK that is used by Windows Explorer. The second is a full version used by 
 everything else.
 
 Bare-Bones USD SDK
@@ -88,3 +87,10 @@ Point this property sheet to the full USD SDK's version of boost.
 `UsdShellExtension.ini`
 
 Point the paths in this configuration file to the full USD SDK.
+
+```
+[USD]
+PATH=D:\USD-shared-full\bin\;D:\USD-shared-full\lib\
+PYTHONPATH=D:\USD-shared-full\lib\python
+PXR_PLUGINPATH_NAME=
+```
