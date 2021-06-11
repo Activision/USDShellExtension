@@ -228,6 +228,11 @@
     <Image Include="..\shared\usd.ico" />
     <Image Include="shared\usd.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\shared\EventViewerMessages.vcxproj">
+      <Project>{f12e597b-b731-4f5a-bec3-980d20159320}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
