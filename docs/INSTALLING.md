@@ -118,5 +118,4 @@ Windows Settings | Apps | Default apps | Choose default apps by file type
 | .usdc     | Activision USD Shell Extension |
 | .usdz     | Activision USD Shell Extension |
 
-[eventviewer]:eventviewer.png "Event Viewer"
-[filetypes]:filetypes.png "File Type Settings"
+[eventviewer]:EventViewer.png "Event Viewer"
