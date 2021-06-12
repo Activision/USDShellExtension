@@ -83,8 +83,14 @@ static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars 
 
 		CRegKey regPythonInstallPath;
 		ls = regPythonInstallPath.Open( HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ );
-		if ( ls != ERROR_SUCCESS )
-			return false;
+		if (ls != ERROR_SUCCESS)
+		{
+			ls = regPythonInstallPath.Open(HKEY_LOCAL_MACHINE, sPythonRegKeyInstallPath, KEY_READ);
+			if (ls != ERROR_SUCCESS)
+			{
+				return false;
+			}
+		}
 
 		ULONG nChars = nBufferSizeInChars;
 		ls = regPythonInstallPath.QueryStringValue( _T(""), sBuffer, &nChars );

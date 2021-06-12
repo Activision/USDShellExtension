@@ -111,6 +111,11 @@ static void SetupPathEnvironmentVariable(LPCWSTR sUSD_Path, LPCWSTR sPython_Path
 		LSTATUS ls;
 		CRegKey regPythonInstallPath;
 		ls = regPythonInstallPath.Open( HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ );
+		if ( ls != ERROR_SUCCESS )
+		{
+			ls = regPythonInstallPath.Open(HKEY_LOCAL_MACHINE, sPythonRegKeyInstallPath, KEY_READ);
+		}
+
 		if ( ls == ERROR_SUCCESS )
 		{
 			TCHAR sValue[512];
