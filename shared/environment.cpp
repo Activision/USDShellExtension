@@ -97,48 +97,55 @@ static CStringW AppendEnvironmentVariable( LPCWSTR sEnvironmentVariable, LPCWSTR
 	return sSetBuffer;
 }
 
+static bool GetPythonInstallationPathFromRegistry(LPTSTR sBuffer, DWORD nBufferSizeInChars)
+{
+	CString sPythonRegKeyInstallPath;
+	sPythonRegKeyInstallPath.Format(_T("SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath"), _CRT_STRINGIZE(PYTHONVERSION));
+
+	LSTATUS ls;
+
+	CRegKey regPythonInstallPath;
+	ls = regPythonInstallPath.Open(HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ);
+	if (ls != ERROR_SUCCESS)
+	{
+		ls = regPythonInstallPath.Open(HKEY_LOCAL_MACHINE, sPythonRegKeyInstallPath, KEY_READ);
+		if (ls != ERROR_SUCCESS)
+		{
+			return false;
+		}
+	}
+
+	ULONG nChars = nBufferSizeInChars;
+	ls = regPythonInstallPath.QueryStringValue(_T(""), sBuffer, &nChars);
+	if (ls != ERROR_SUCCESS)
+		return false;
+
+	return true;
+}
+
 static void SetupPathEnvironmentVariable(LPCWSTR sUSD_Path, LPCWSTR sPython_Path)
 {
 	CStringW sSetBuffer;
 
 	if ( sPython_Path[0] == '\0' )
 	{
-#if PY_MAJOR_VERSION >= 3
-	#if defined(PYTHONVERSION)
-		CStringW sPythonRegKeyInstallPath;
-		sPythonRegKeyInstallPath.Format( L"SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath", _CRT_STRINGIZE(PYTHONVERSION) );
-
-		LSTATUS ls;
-		CRegKey regPythonInstallPath;
-		ls = regPythonInstallPath.Open( HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ );
-		if ( ls != ERROR_SUCCESS )
+		TCHAR sValue[512];
+		bool bFound = GetPythonInstallationPathFromRegistry( sValue, ARRAYSIZE(sValue) );
+#if (PY_MAJOR_VERSION == 2) && (PY_MINOR_VERSION == 7)
+		if (bFound == false)
 		{
-			ls = regPythonInstallPath.Open(HKEY_LOCAL_MACHINE, sPythonRegKeyInstallPath, KEY_READ);
-		}
-
-		if ( ls == ERROR_SUCCESS )
-		{
-			TCHAR sValue[512];
-			ULONG nChars = ARRAYSIZE( sValue );
-			ls = regPythonInstallPath.QueryStringValue( L"", sValue, &nChars );
-			if ( ls == ERROR_SUCCESS )
-			{
-				if ( !sSetBuffer.IsEmpty() )
-					sSetBuffer += L";";
-				sSetBuffer += sValue;
-			}
-		}
-	#endif
-#elif PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 7
-		static constexpr wchar_t python27InstallPath[] = L"C:\\Python27\\";
-		DWORD nAttrib = ::GetFileAttributesW( python27InstallPath );
-		if ( (nAttrib != INVALID_FILE_ATTRIBUTES) && (nAttrib & FILE_ATTRIBUTE_DIRECTORY) )
-		{
-			if ( !sSetBuffer.IsEmpty() )
-				sSetBuffer += L";";
-			sSetBuffer += python27InstallPath;
+			_tcscpy_s(sValue, ARRAYSIZE(sValue), _T("C:\\Python27\\"));
+			DWORD nAttribs = ::GetFileAttributes(sBuffer);
+			if ((nAttribs != INVALID_FILE_ATTRIBUTES) && (nAttribs & FILE_ATTRIBUTE_DIRECTORY))
+				bResult = true;
 		}
 #endif
+		if (bFound)
+		{
+			if (!sSetBuffer.IsEmpty())
+				sSetBuffer += L";";
+			sSetBuffer += sValue;
+		}
 	}
 	else
 	{
