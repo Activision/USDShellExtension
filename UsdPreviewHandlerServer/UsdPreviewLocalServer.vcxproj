@@ -236,6 +236,9 @@
     <Image Include="..\shared\usd.ico" />
     <Image Include="shared\usd.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="UsdPreviewLocalServer.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
