@@ -73,26 +73,19 @@ static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars 
 	GetPrivateProfileStringAndExpandEnvironmentStrings( L"PYTHON", L"PATH", L"", sPythonPath, ConfigFileList );
 	wcscpy_s( sBuffer, nBufferSizeInChars, sPythonPath );
 
-	if ( sBuffer[0] == '\0' )
+	if (sBuffer[0] == '\0')
 	{
-#if PY_MAJOR_VERSION >= 3
-		CString sPythonRegKeyInstallPath;
-		sPythonRegKeyInstallPath.Format( _T( "SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath" ), _CRT_STRINGIZE(PYTHONVERSION) );
-
-		LSTATUS ls;
-
-		CRegKey regPythonInstallPath;
-		ls = regPythonInstallPath.Open( HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ );
-		if ( ls != ERROR_SUCCESS )
-			return false;
-
-		ULONG nChars = nBufferSizeInChars;
-		ls = regPythonInstallPath.QueryStringValue( _T(""), sBuffer, &nChars );
-		if ( ls != ERROR_SUCCESS )
-			return false;
-#elif (PY_MAJOR_VERSION == 2) && (PY_MINOR_VERSION == 7)
-		_tcscpy_s(sBuffer, nBufferSizeInChars, _T("C:\\Python27\\"));
+		bool bResult = GetPythonInstallationPathFromRegistry( sBuffer, nBufferSizeInChars );
+#if (PY_MAJOR_VERSION == 2) && (PY_MINOR_VERSION == 7)
+		if (bResult == false)
+		{
+			_tcscpy_s(sBuffer, nBufferSizeInChars, _T("C:\\Python27\\"));
+			DWORD nAttribs = ::GetFileAttributes( sBuffer );
+			if ( (nAttribs != INVALID_FILE_ATTRIBUTES) && (nAttribs & FILE_ATTRIBUTE_DIRECTORY) )
+				bResult = true;
+		}
 #endif
+		return bResult;
 	}
 	else
 	{
