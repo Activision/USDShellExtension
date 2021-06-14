@@ -16,8 +16,9 @@ from __future__ import print_function
 import sys
 import os
 import argparse
-from pxr import Usd, UsdUtils, Sdf, UsdAppUtils
+from pxr import Usd, UsdGeom, UsdUtils, Sdf, Tf, UsdAppUtils
 from pxr.Usdviewq.stageView import StageView
+from pxr.Usdviewq._usdviewq import Utils
 from pxr.UsdAppUtils.complexityArgs import RefinementComplexities
 import UsdPreviewHandler
 
@@ -91,6 +92,14 @@ class Widget(QWidget):
                     action.setText(action.text() + " (unsupported)")
                     action.setDisabled(True)
                     break
+
+    def OnCameraSelectionChanged(self, action):
+        self.model.viewSettings.cameraPrim = action.data()
+
+        # reset the Free-Cam camera
+        # it can get messed up if camera controls are used in a fixed camera
+        if not self.model.viewSettings.cameraPrim:
+            self.view.updateView(resetCam=True, forceComputeBBox=False)
 
     def buildContextMenu_Renderer(self, contextMenu):
         self.rendererPluginActionGroup = QActionGroup(self)
@@ -218,12 +227,57 @@ class Widget(QWidget):
         displayPurposesMenu.addAction(self.actionDisplay_Proxy)
         displayPurposesMenu.addAction(self.actionDisplay_Render)
 
+    def buildContextMenu_Camera(self, contextMenu):
+
+        self.view.allSceneCameras = Utils._GetAllPrimsOfType(
+            self.model.stage, Tf.Type.Find(UsdGeom.Camera))
+
+        # only display a camera menu if the scene has cameras
+        if len(self.view.allSceneCameras) == 0:
+            return
+
+        currCamera = self.model.viewSettings.cameraPrim
+        currCameraPath = None
+        if currCamera:
+            currCameraPath = currCamera.GetPath()
+
+        cameraMenu = contextMenu.addMenu("Camera")
+
+        cameraGroup = QActionGroup(self)
+        cameraGroup.setExclusive(True)
+        cameraGroup.triggered.connect(self.OnCameraSelectionChanged)
+
+        # add free-cam
+        actionFreeCamera = QAction("Free Camera", self)
+        actionFreeCamera.setCheckable(True)
+        actionFreeCamera.setData(None)
+        actionFreeCamera.setChecked(currCameraPath == None)
+        cameraMenu.addAction(actionFreeCamera)
+        cameraGroup.addAction(actionFreeCamera)
+
+        actionSeparator = QAction("", self)
+        actionSeparator.setSeparator(True)
+        cameraMenu.addAction(actionSeparator)
+        cameraGroup.addAction(actionSeparator)
+
+        for camera in self.view.allSceneCameras:
+            action = QAction(camera.GetName(), self)
+            action.setData(camera)
+            action.setToolTip(str(camera.GetPath()))
+            action.setCheckable(True)
+
+            action.setChecked(camera.GetPath() == currCameraPath)        
+
+            cameraMenu.addAction(action)
+            cameraGroup.addAction(action)
+
     def buildContextMenu(self):
         self.contextMenu = QMenu(self)
         self.buildContextMenu_Renderer(self.contextMenu)
         self.buildContextMenu_Complexity(self.contextMenu)
         self.buildContextMenu_ShadingMode(self.contextMenu)
         self.buildContextMenu_DisplayPurposes(self.contextMenu)
+        self.buildContextMenu_Camera(self.contextMenu)
 
                               
     def closeEvent(self, event):
