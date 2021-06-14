@@ -65,32 +65,6 @@ static std::vector<CString> TranslatePathsToList(LPCTSTR paths)
 	return pathList;
 }
 
-static bool GetPythonInstallationPathFromRegistry(LPTSTR sBuffer, DWORD nBufferSizeInChars)
-{
-	CString sPythonRegKeyInstallPath;
-	sPythonRegKeyInstallPath.Format(_T("SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath"), _CRT_STRINGIZE(PYTHONVERSION));
-
-	LSTATUS ls;
-
-	CRegKey regPythonInstallPath;
-	ls = regPythonInstallPath.Open(HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ);
-	if (ls != ERROR_SUCCESS)
-	{
-		ls = regPythonInstallPath.Open(HKEY_LOCAL_MACHINE, sPythonRegKeyInstallPath, KEY_READ);
-		if (ls != ERROR_SUCCESS)
-		{
-			return false;
-		}
-	}
-
-	ULONG nChars = nBufferSizeInChars;
-	ls = regPythonInstallPath.QueryStringValue(_T(""), sBuffer, &nChars);
-	if (ls != ERROR_SUCCESS)
-		return false;
-
-	return true;
-}
-
 static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars )
 {
 	std::vector<CStringW> ConfigFileList = BuildConfigFileList( g_hInstance );
@@ -101,7 +75,7 @@ static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars 
 
 	if (sBuffer[0] == '\0')
 	{
-		bool bResult = GetPythonInstallationPathFromRegistry(sBuffer, nBufferSizeInChars);
+		bool bResult = GetPythonInstallationPathFromRegistry( sBuffer, nBufferSizeInChars );
 #if (PY_MAJOR_VERSION == 2) && (PY_MINOR_VERSION == 7)
 		if (bResult == false)
 		{

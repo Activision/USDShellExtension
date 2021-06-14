@@ -97,18 +97,18 @@ static CStringW AppendEnvironmentVariable( LPCWSTR sEnvironmentVariable, LPCWSTR
 	return sSetBuffer;
 }
 
-static bool GetPythonInstallationPathFromRegistry(LPTSTR sBuffer, DWORD nBufferSizeInChars)
+bool GetPythonInstallationPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInChars )
 {
 	CString sPythonRegKeyInstallPath;
-	sPythonRegKeyInstallPath.Format(_T("SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath"), _CRT_STRINGIZE(PYTHONVERSION));
+	sPythonRegKeyInstallPath.Format( _T("SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath"), _CRT_STRINGIZE(PYTHONVERSION) );
 
 	LSTATUS ls;
 
 	CRegKey regPythonInstallPath;
-	ls = regPythonInstallPath.Open(HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ);
+	ls = regPythonInstallPath.Open( HKEY_CURRENT_USER, sPythonRegKeyInstallPath, KEY_READ );
 	if (ls != ERROR_SUCCESS)
 	{
-		ls = regPythonInstallPath.Open(HKEY_LOCAL_MACHINE, sPythonRegKeyInstallPath, KEY_READ);
+		ls = regPythonInstallPath.Open( HKEY_LOCAL_MACHINE, sPythonRegKeyInstallPath, KEY_READ );
 		if (ls != ERROR_SUCCESS)
 		{
 			return false;
@@ -116,7 +116,7 @@ static bool GetPythonInstallationPathFromRegistry(LPTSTR sBuffer, DWORD nBufferS
 	}
 
 	ULONG nChars = nBufferSizeInChars;
-	ls = regPythonInstallPath.QueryStringValue(_T(""), sBuffer, &nChars);
+	ls = regPythonInstallPath.QueryStringValue( _T(""), sBuffer, &nChars );
 	if (ls != ERROR_SUCCESS)
 		return false;
 
