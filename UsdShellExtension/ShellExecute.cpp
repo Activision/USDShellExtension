@@ -66,6 +66,8 @@ void CALLBACK OpenInUsdViewW( HWND hwnd, HINSTANCE hinst, LPWSTR lpszCmdLine, in
 	if ( FAILED( hr ) )
 		return;
 
+	::CoAllowSetForegroundWindow( pUsdPythonTools, nullptr );
+
 	hr = pUsdPythonTools->View( CComBSTR(args.argv[0]), bRendererIsValid ? bstrRenderer : nullptr );
 	if ( FAILED( hr ) )
 		return;

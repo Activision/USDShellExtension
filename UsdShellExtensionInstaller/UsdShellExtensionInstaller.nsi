@@ -195,6 +195,7 @@ SetOutPath "$INSTDIR"
 File plugInfo.json
 File LICENSE.txt
 File NOTICE.txt
+File usd.ico
 
 SetOutPath "$INSTDIR\usd"
 File /r .\usd\*
@@ -390,6 +391,7 @@ DeleteRegKey HKLM SOFTWARE\Activision\UsdShellExtension
 Delete /REBOOTOK "$INSTDIR\plugInfo.json"
 Delete /REBOOTOK "$INSTDIR\LICENSE.txt"
 Delete /REBOOTOK "$INSTDIR\NOTICE.txt"
+Delete /REBOOTOK "$INSTDIR\usd.ico"
 RMDir /r /REBOOTOK "$INSTDIR\usd"
 Delete /REBOOTOK "$INSTDIR\UsdPropertyKeys.propdesc"
 
