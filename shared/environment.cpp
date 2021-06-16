@@ -97,7 +97,7 @@ static CStringW AppendEnvironmentVariable( LPCWSTR sEnvironmentVariable, LPCWSTR
 	return sSetBuffer;
 }
 
-bool GetPythonInstallationPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInChars )
+bool GetPythonInstallPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInChars )
 {
 	CString sPythonRegKeyInstallPath;
 	sPythonRegKeyInstallPath.Format( _T("SOFTWARE\\Python\\PythonCore\\%hs\\InstallPath"), _CRT_STRINGIZE(PYTHONVERSION) );
@@ -123,6 +123,32 @@ bool GetPythonInstallationPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInC
 	return true;
 }
 
+bool GetPythonPythonPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInChars )
+{
+	CString sPythonRegKeyPythonPath;
+	sPythonRegKeyPythonPath.Format( _T("SOFTWARE\\Python\\PythonCore\\%hs\\PythonPath"), _CRT_STRINGIZE(PYTHONVERSION) );
+
+	LSTATUS ls;
+
+	CRegKey regPythonPythonPath;
+	ls = regPythonPythonPath.Open( HKEY_CURRENT_USER, sPythonRegKeyPythonPath, KEY_READ );
+	if (ls != ERROR_SUCCESS)
+	{
+		ls = regPythonPythonPath.Open( HKEY_LOCAL_MACHINE, sPythonRegKeyPythonPath, KEY_READ );
+		if (ls != ERROR_SUCCESS)
+		{
+			return false;
+		}
+	}
+
+	ULONG nChars = nBufferSizeInChars;
+	ls = regPythonPythonPath.QueryStringValue( _T(""), sBuffer, &nChars );
+	if (ls != ERROR_SUCCESS)
+		return false;
+
+	return true;
+}
+
 static void SetupPathEnvironmentVariable(LPCWSTR sUSD_Path, LPCWSTR sPython_Path)
 {
 	CStringW sSetBuffer;
@@ -130,14 +156,14 @@ static void SetupPathEnvironmentVariable(LPCWSTR sUSD_Path, LPCWSTR sPython_Path
 	if ( sPython_Path[0] == '\0' )
 	{
 		TCHAR sValue[512];
-		bool bFound = GetPythonInstallationPathFromRegistry( sValue, ARRAYSIZE(sValue) );
+		bool bFound = GetPythonInstallPathFromRegistry( sValue, ARRAYSIZE(sValue) );
 #if (PY_MAJOR_VERSION == 2) && (PY_MINOR_VERSION == 7)
 		if (bFound == false)
 		{
 			_tcscpy_s(sValue, ARRAYSIZE(sValue), _T("C:\\Python27\\"));
-			DWORD nAttribs = ::GetFileAttributes(sBuffer);
+			DWORD nAttribs = ::GetFileAttributes(sValue);
 			if ((nAttribs != INVALID_FILE_ATTRIBUTES) && (nAttribs & FILE_ATTRIBUTE_DIRECTORY))
-				bResult = true;
+				bFound = true;
 		}
 #endif
 		if (bFound)
@@ -164,9 +190,22 @@ static void SetupPathEnvironmentVariable(LPCWSTR sUSD_Path, LPCWSTR sPython_Path
 static void SetupPythonPathEnvironmentVariable(LPCWSTR sUSD_PythonPath, LPCWSTR sPython_PythonPath)
 {
 	CStringW sSetBuffer = sUSD_PythonPath;
-	if ( !sSetBuffer.IsEmpty() )
-		sSetBuffer += L";";
-	sSetBuffer += sPython_PythonPath;
+
+	if (sPython_PythonPath[0] == '\0')
+	{
+		TCHAR sValue[1024];
+		bool bFound = GetPythonPythonPathFromRegistry(sValue, ARRAYSIZE(sValue));
+		if (bFound)
+		{
+			if (!sSetBuffer.IsEmpty())
+				sSetBuffer += L";";
+			sSetBuffer += sValue;
+		}
+	}
+	else
+	{
+		sSetBuffer += sPython_PythonPath;
+	}
 
 	g_UsdPythonPath = AppendEnvironmentVariable( L"PYTHONPATH", sSetBuffer );
 }

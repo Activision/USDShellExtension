@@ -25,4 +25,5 @@ const CStringW &GetUsdEditor();
 
 std::vector<CStringW> BuildConfigFileList( HMODULE hCurrentModule );
 void GetPrivateProfileStringAndExpandEnvironmentStrings( LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault, CStringW &lpReturnedString, const std::vector<CStringW> &ConfigFileList );
-bool GetPythonInstallationPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInChars );
+bool GetPythonInstallPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInChars );
+bool GetPythonPythonPathFromRegistry( LPTSTR sBuffer, DWORD nBufferSizeInChars );

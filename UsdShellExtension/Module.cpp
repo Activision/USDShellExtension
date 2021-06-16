@@ -75,7 +75,7 @@ static bool GetPythonInstallationPath( LPTSTR sBuffer, DWORD nBufferSizeInChars 
 
 	if (sBuffer[0] == '\0')
 	{
-		bool bResult = GetPythonInstallationPathFromRegistry( sBuffer, nBufferSizeInChars );
+		bool bResult = GetPythonInstallPathFromRegistry( sBuffer, nBufferSizeInChars );
 #if (PY_MAJOR_VERSION == 2) && (PY_MINOR_VERSION == 7)
 		if (bResult == false)
 		{
