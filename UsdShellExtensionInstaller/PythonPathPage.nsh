@@ -1,5 +1,3 @@
-;--------------------------------
-; UsdPathPage
 
 Var hWndPythonPathDlg
 Var hWndPythonPathEditPath
