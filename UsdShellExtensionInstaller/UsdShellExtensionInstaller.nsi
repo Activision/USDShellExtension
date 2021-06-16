@@ -83,12 +83,14 @@ InstallDirRegKey HKLM "Software\Activision\UsdShellExtension" "Install_Dir"
 
 ;--------------------------------
 ;Pages
+!include "${__FILEDIR__}\PythonPathPage.nsh"
 !include "${__FILEDIR__}\UsdPathPage.nsh"
 !include "${__FILEDIR__}\UsdConfigPage.nsh"
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
 !insertmacro MUI_PAGE_INSTFILES
+Page custom PythonPathPage PythonPathPageLeave
 Page custom USDPathPage USDPathPageLeave
 Page custom USDConfigPage USDConfigPageLeave
 !insertmacro MUI_PAGE_FINISH
