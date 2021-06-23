@@ -16,13 +16,13 @@
 -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <BOOSTLIBPATH>D:\USD-shared-full-debug\lib\</BOOSTLIBPATH>
-    <BOOSTINCLUDEPATH>D:\USD-shared-full-debug\include\boost-1_70\</BOOSTINCLUDEPATH>
+    <BOOSTLIBPATH>D:\USD-shared-full-p37-debug\lib\</BOOSTLIBPATH>
+    <BOOSTINCLUDEPATH>D:\USD-shared-full-p37-debug\include\boost-1_70\</BOOSTINCLUDEPATH>
     <BOOSTDLL>boost_$(PythonFileName)-vc$(PlatformToolsetVersion)-mt-gd-x64-1_70.dll</BOOSTDLL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <BOOSTLIBPATH>D:\USD-shared-full\lib\</BOOSTLIBPATH>
-    <BOOSTINCLUDEPATH>D:\USD-shared-full\include\boost-1_70\</BOOSTINCLUDEPATH>
+    <BOOSTLIBPATH>D:\USD-shared-full-p37\lib\</BOOSTLIBPATH>
+    <BOOSTINCLUDEPATH>D:\USD-shared-full-p37\include\boost-1_70\</BOOSTINCLUDEPATH>
     <BOOSTDLL>boost_$(PythonFileName)-vc$(PlatformToolsetVersion)-mt-x64-1_70.dll</BOOSTDLL>
   </PropertyGroup>
 		

@@ -38,6 +38,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Property Sheets", "Property
 		usd.props = usd.props
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EventViewerMessages", "shared\EventViewerMessages.vcxproj", "{F12E597B-B731-4F5A-BEC3-980D20159320}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -66,6 +68,10 @@ Global
 		{6AD79C79-3A9D-4C39-B028-C45072541C28}.Release|x64.Build.0 = Release|x64
 		{1390252A-71E2-4C4E-B874-301909F40CBA}.Debug|x64.ActiveCfg = Debug|x64
 		{1390252A-71E2-4C4E-B874-301909F40CBA}.Release|x64.ActiveCfg = Release|x64
+		{F12E597B-B731-4F5A-BEC3-980D20159320}.Debug|x64.ActiveCfg = Debug|x64
+		{F12E597B-B731-4F5A-BEC3-980D20159320}.Debug|x64.Build.0 = Debug|x64
+		{F12E597B-B731-4F5A-BEC3-980D20159320}.Release|x64.ActiveCfg = Release|x64
+		{F12E597B-B731-4F5A-BEC3-980D20159320}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
