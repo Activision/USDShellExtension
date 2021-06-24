@@ -73,19 +73,26 @@ Troubleshooting
 
 **Python**
 
-By default, the shell extension will try to automatically locate a Python install. The Python 3.x installers from python.org will install registry keys that can be used to locate Python.
+By default, the shell extension will try to automatically locate a Python install. Python installers from python.org will install registry keys that can be used to locate Python.
 
-| Python Version | Search Location                                              |
-|-               |-                                                             |
-| 2.7            | C:\Python27                                                  |
-| 3.6            | HKEY_CURRENT_USER\SOFTWARE\Python\PythonCore\3.6\InstallPath |
-| 3.7            | HKEY_CURRENT_USER\SOFTWARE\Python\PythonCore\3.7\InstallPath |
+The Python install location is searched in the order listed in the table below.
+
+| Python Version | Search Location                                               |
+|-               |-                                                              |
+| 2.7            | HKEY_CURRENT_USER\SOFTWARE\Python\PythonCore\2.7\InstallPath  |
+|                | HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\2.7\InstallPath |
+|                | C:\Python27                                                   |
+| 3.6            | HKEY_CURRENT_USER\SOFTWARE\Python\PythonCore\3.6\InstallPath  |
+|                | HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\3.6\InstallPath |
+| 3.7            | HKEY_CURRENT_USER\SOFTWARE\Python\PythonCore\3.7\InstallPath  |
+|                | HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonCore\3.7\InstallPath |
 
 If the Python install is not found at these locations, then it needs to be set explicitly using the `UsdShellExtension.ini` file.
 
 ```
 [PYTHON]
-PATH=C:\Python37
+PATH=C:\Python36\
+PYTHONPATH=C:\Python36\Lib\;C:\Python36\DLLs\
 ```
 
 **Event Viewer**
