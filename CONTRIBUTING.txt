@@ -1,0 +1,6 @@
+Thank you for your interest in USD Shell Extension. Before contributing code to the project, please sign a Contributor License Agreement (CLA). At the root of the repository you can find the two possible CLAs:
+
+Activision-Corporate-CLA-USD-Shell-Extension.pdf: for corporate contributors
+Activision-Individual-CLA-USD-Shell-Extension.pdf: for individual contributors
+
+Please send your signed CLAs to LegalAffairs@activision.com, making sure to include your github username in the email. Please wait for our confirmation that you're approved for contributions, after which you can submit pull requests.
