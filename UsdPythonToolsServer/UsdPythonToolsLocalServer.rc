@@ -76,6 +76,8 @@ IDI_ICON_USD            ICON                    "shared\\usd.ico"
 
 IDR_PYTHON_THUMBNAIL    PYTHON                  "UsdThumbnail.py"
 
+IDR_PYTHON_VIEW         PYTHON                  "UsdView.py"
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

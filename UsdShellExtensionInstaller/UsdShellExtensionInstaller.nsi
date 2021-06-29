@@ -83,12 +83,14 @@ InstallDirRegKey HKLM "Software\Activision\UsdShellExtension" "Install_Dir"
 
 ;--------------------------------
 ;Pages
+!include "${__FILEDIR__}\PythonPathPage.nsh"
 !include "${__FILEDIR__}\UsdPathPage.nsh"
 !include "${__FILEDIR__}\UsdConfigPage.nsh"
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
 !insertmacro MUI_PAGE_INSTFILES
+Page custom PythonPathPage PythonPathPageLeave
 Page custom USDPathPage USDPathPageLeave
 Page custom USDConfigPage USDConfigPageLeave
 !insertmacro MUI_PAGE_FINISH
@@ -195,6 +197,7 @@ SetOutPath "$INSTDIR"
 File plugInfo.json
 File LICENSE.txt
 File NOTICE.txt
+File usd.ico
 
 SetOutPath "$INSTDIR\usd"
 File /r .\usd\*
@@ -390,6 +393,7 @@ DeleteRegKey HKLM SOFTWARE\Activision\UsdShellExtension
 Delete /REBOOTOK "$INSTDIR\plugInfo.json"
 Delete /REBOOTOK "$INSTDIR\LICENSE.txt"
 Delete /REBOOTOK "$INSTDIR\NOTICE.txt"
+Delete /REBOOTOK "$INSTDIR\usd.ico"
 RMDir /r /REBOOTOK "$INSTDIR\usd"
 Delete /REBOOTOK "$INSTDIR\UsdPropertyKeys.propdesc"
 

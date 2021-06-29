@@ -156,6 +156,8 @@ STDMETHODIMP CUsdSdkToolsImpl::Edit( IN BSTR usdStagePath, IN VARIANT_BOOL force
 		return E_FAIL;
 	}
 
+	::AllowSetForegroundWindow( pi.dwProcessId );
+
 	::WaitForSingleObject( pi.hProcess, INFINITE );
 
 	::CloseHandle( pi.hProcess );

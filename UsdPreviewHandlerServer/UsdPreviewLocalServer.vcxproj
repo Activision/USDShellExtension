@@ -237,6 +237,7 @@
     <Image Include="shared\usd.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Manifest Include="UsdPreviewLocalServer.manifest" />
     <ProjectReference Include="..\shared\EventViewerMessages.vcxproj">
       <Project>{f12e597b-b731-4f5a-bec3-980d20159320}</Project>
     </ProjectReference>

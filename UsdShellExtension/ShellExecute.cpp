@@ -66,6 +66,8 @@ void CALLBACK OpenInUsdViewW( HWND hwnd, HINSTANCE hinst, LPWSTR lpszCmdLine, in
 	if ( FAILED( hr ) )
 		return;
 
+	::CoAllowSetForegroundWindow( pUsdPythonTools, nullptr );
+
 	hr = pUsdPythonTools->View( CComBSTR(args.argv[0]), bRendererIsValid ? bstrRenderer : nullptr );
 	if ( FAILED( hr ) )
 		return;
@@ -199,6 +201,8 @@ void CALLBACK EditInUsdEditW( HWND hwnd, HINSTANCE hinst, LPWSTR lpszCmdLine, in
 	if ( FAILED( hr ) )
 		return;
 
+	::CoAllowSetForegroundWindow( pUSDTools, nullptr );
+
 	hr = pUSDTools->Edit( CComBSTR(args.argv[0]), VARIANT_FALSE );
 	if ( FAILED( hr ) )
 	{
@@ -274,6 +278,8 @@ void CALLBACK PackageDefaultW( HWND hwnd, HINSTANCE hinst, LPWSTR lpszCmdLine, i
 	wcscpy_s( sOutputFile, args.argv[0] );
 	PathCchRenameExtension( sOutputFile, ARRAYSIZE( sOutputFile ), L"usdz" );
 
+	::CoAllowSetForegroundWindow( pUSDTools, nullptr );
+
 	hr = pUSDTools->Package( CComBSTR(args.argv[0]), CComBSTR(sOutputFile), UsdSdkToolsLib::USD_PACKAGE_DEFAULT, VARIANT_TRUE );
 	if ( FAILED( hr ) )
 	{
@@ -310,6 +316,8 @@ void CALLBACK PackageARKitW( HWND hwnd, HINSTANCE hinst, LPWSTR lpszCmdLine, int
 	wcscpy_s( sOutputFile, args.argv[0] );
 	PathCchRenameExtension( sOutputFile, ARRAYSIZE( sOutputFile ), L"usdz" );
 
+	::CoAllowSetForegroundWindow( pUSDTools, nullptr );
+
 	hr = pUSDTools->Package( CComBSTR(args.argv[0]), CComBSTR(sOutputFile), UsdSdkToolsLib::USD_FORMAT_APPLE_ARKIT, VARIANT_TRUE );
 	if ( FAILED( hr ) )
 	{
@@ -342,6 +350,8 @@ void CALLBACK StageStatsW( HWND hwnd, HINSTANCE hinst, LPWSTR lpszCmdLine, int n
 	hr = pUSDTools.CoCreateInstance( __uuidof(UsdSdkToolsLib::UsdSdkTools) );
 	if ( FAILED( hr ) )
 		return;
+
+	::CoAllowSetForegroundWindow( pUSDTools, nullptr );
 
 	hr = pUSDTools->DisplayStageStats( CComBSTR(args.argv[0]) );
 	if ( FAILED( hr ) )

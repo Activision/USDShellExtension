@@ -147,7 +147,9 @@
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
     </Midl>
     <PostBuildEvent>
-      <Command>%(Command)</Command>
+      <Command>xcopy "$(SolutionDir)shared\usd.ico" "$(TargetDir)" /I /Y /D /R
+
+%(Command)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -185,7 +187,9 @@
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
     </Midl>
     <PostBuildEvent>
-      <Command>%(Command)</Command>
+      <Command>xcopy "$(SolutionDir)shared\usd.ico" "$(TargetDir)" /I /Y /D /R
+
+%(Command)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -217,6 +221,7 @@
     <None Include="UsdPythonToolsImpl.rgs" />
     <None Include="UsdPythonToolsLocalServerModule.rgs" />
     <None Include="UsdThumbnail.py" />
+    <None Include="UsdView.py" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="UsdPythonToolsLocalServer.idl" />

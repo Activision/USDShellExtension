@@ -74,6 +74,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="UsdThumbnail.py" />
+    <None Include="UsdView.py" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="UsdPythonToolsLocalServer.idl">

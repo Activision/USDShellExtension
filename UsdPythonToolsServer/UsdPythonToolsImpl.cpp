@@ -151,7 +151,8 @@ static HRESULT RunDiskPythonScript( LPCWSTR sToolFileName, std::vector<const TPy
 	return hr;
 }
 
-static HRESULT RunResourcePythonScript( UINT nResourceId, std::vector<const TPyChar *> &ArgV, std::string &sStdOut, int& exitCode )
+typedef void (*PreExecuteScriptCallback)( CStringA& pyScript );
+static HRESULT RunResourcePythonScript( UINT nResourceId, std::vector<const TPyChar *> &ArgV, std::string &sStdOut, int& exitCode, PreExecuteScriptCallback pfnPreExecuteScriptCallback)
 {
 	exitCode = 0;
 
@@ -189,6 +190,9 @@ static HRESULT RunResourcePythonScript( UINT nResourceId, std::vector<const TPyC
 
 	PyObject* pMainModule = PyImport_AddModule("__main__");
     PyObject* pGlobalDict = PyModule_GetDict(pMainModule);
+
+	if ( pfnPreExecuteScriptCallback )
+		pfnPreExecuteScriptCallback( pyScript );
 
 	CPyObject result = CPyObject( PyRun_String( pyScript.GetString(), Py_file_input, pGlobalDict, pGlobalDict ) );
 
@@ -304,7 +308,7 @@ STDMETHODIMP CUsdPythonToolsImpl::Record( IN BSTR usdStagePath, IN int imageWidt
 	ArgV.push_back( pyTempFileName );
 
 	int exitCode = 0;
-	hr = RunResourcePythonScript( IDR_PYTHON_THUMBNAIL, ArgV, sStdOut, exitCode );
+	hr = RunResourcePythonScript( IDR_PYTHON_THUMBNAIL, ArgV, sStdOut, exitCode, nullptr );
 	if ( FAILED( hr ) )
 		return hr;
 
@@ -324,6 +328,19 @@ STDMETHODIMP CUsdPythonToolsImpl::Record( IN BSTR usdStagePath, IN int imageWidt
 	return S_OK;
 }
 
+static void UsdViewPreExecuteScriptCallback(CStringA &pyScript)
+{
+	wchar_t sPath[MAX_PATH];
+	::GetModuleFileNameW( nullptr, sPath, ARRAYSIZE(sPath) );
+	::PathCchRemoveFileSpec( sPath, ARRAYSIZE(sPath) );
+	::PathCchAppend( sPath, ARRAYSIZE(sPath), L"usd.ico" );
+
+	CStringW sPathEscaped(sPath);
+	sPathEscaped.Replace( L"\\", L"\\\\" );
+
+	pyScript.Replace( "%PATH_TO_USD_ICO%", (LPCSTR)ATL::CW2A(sPathEscaped.GetString(), CP_UTF8) );
+}
+
 STDMETHODIMP CUsdPythonToolsImpl::View( IN BSTR usdStagePath, IN BSTR renderer )
 {
 	DEBUG_RECORD_ENTRY();
@@ -340,8 +357,19 @@ STDMETHODIMP CUsdPythonToolsImpl::View( IN BSTR usdStagePath, IN BSTR renderer )
 
     std::string sStdOut;
 
+	// locate usdview
+	std::wstring sUsdViewAbsolutePath = FindRelativeFile(L"usdview");
+	if (sUsdViewAbsolutePath.empty())
+	{
+		LogEventMessage(PYTHONTOOLS_CATEGORY, L"Failed to locate usdvview", LogEventType::Error);
+		return E_FAIL;
+	}
+
 	std::vector<const TPyChar *> ArgV;
-	ArgV.push_back( sPathToHostExe );
+	// Set the first argument as the absolute path to the usdview python script
+	// We will use argv[0] to load it using importlib
+	CW2Py pyUsdViewAbsolutePath(sUsdViewAbsolutePath.c_str());
+	ArgV.push_back(pyUsdViewAbsolutePath);
 
 	CW2Py pyRenderer(renderer);
 	if ( renderer != nullptr && renderer[0] != '\0' )
@@ -354,8 +382,8 @@ STDMETHODIMP CUsdPythonToolsImpl::View( IN BSTR usdStagePath, IN BSTR renderer )
 	ArgV.push_back( pyUsdStagePath );
 
 	int exitCode = 0;
-	hr = RunDiskPythonScript( L"usdview", ArgV, sStdOut, exitCode );
-	if ( FAILED( hr ) )
+	hr = RunResourcePythonScript( IDR_PYTHON_VIEW, ArgV, sStdOut, exitCode, UsdViewPreExecuteScriptCallback );
+	if (FAILED(hr))
 		return hr;
 
 	if ( exitCode != 0 )
